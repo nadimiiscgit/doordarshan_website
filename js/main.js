@@ -127,17 +127,17 @@ function buildProductCard(product, compact = false) {
 const HERO_SLIDES = [
   {
     bg: 'https://images.unsplash.com/photo-1593784991095-a205069470b6?w=1400&h=600&fit=crop&auto=format',
-    kicker: '🔥 Festive Sale — Up to 40% Off',
+    kicker: '🔥 Authorized Store Deals — Best Local Prices',
     title: 'Premium <span>LED TVs</span><br>At Unbeatable Prices',
-    subtitle: 'Sony, Samsung, LG, TCL & more — all in stock at Doordarshan Electronics, Osmanabad',
+    subtitle: 'Sony, Samsung, LG, TCL & more — Genuine models with official brand warranty',
     btn1: { text: '🛒 Shop LED TVs', href: 'category.html?cat=tv' },
     btn2: { text: 'View All Offers', href: '#offers' },
   },
   {
     bg: 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=1400&h=600&fit=crop&auto=format',
-    kicker: '⚡ New Arrivals 2025',
-    title: '<span>Sony Bravia</span> Google TV<br>Now Available',
-    subtitle: 'Experience Google TV with Dolby Vision & Atmos — Free delivery anywhere in India',
+    kicker: '⚡ New Arrivals 2026',
+    title: '<span>Sony Bravia</span> Google TV<br>Now In Stock',
+    subtitle: 'Experience Google TV with Dolby Vision & Atmos — Safe doorstep delivery & installation',
     btn1: { text: '🛒 Shop Sony', href: 'category.html?cat=tv&brand=Sony' },
     btn2: { text: 'Order on WhatsApp', href: '#', onclick: "Cart.openWhatsApp()" },
   },
@@ -145,7 +145,7 @@ const HERO_SLIDES = [
     bg: 'https://images.unsplash.com/photo-1567690187548-f07b1d7bf5a9?w=1400&h=600&fit=crop&auto=format',
     kicker: '🏷️ EMI Starting ₹999/month',
     title: 'Easy <span>EMI</span> on All<br>Electronics',
-    subtitle: '6 / 12 / 24 month EMI options — No Cost EMI available on select products',
+    subtitle: '6 / 12 / 24 month EMI options — No Cost EMI available on select models',
     btn1: { text: '📞 Call 7020209281', href: 'tel:7020209281' },
     btn2: { text: '💬 WhatsApp Order', href: '#', onclick: "Cart.openWhatsApp()" },
   },
@@ -199,17 +199,31 @@ function startHeroTimer() {
   heroTimer = setTimeout(() => goToSlide(heroIndex + 1), 5000);
 }
 
-// ── Deal Countdown ────────────────────────────────────────
+// ── Deal Countdown (Always active & rolling daily target) ──
 function initCountdown() {
-  const endTime = new Date();
-  endTime.setHours(23, 59, 59, 0); // Ends tonight
+  function getTargetTime() {
+    const now = new Date();
+    // Daily target: midnight of current day
+    const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+    // If less than 1 minute remains in the day, roll over to tomorrow midnight
+    if (end.getTime() - now.getTime() < 60000) {
+      end.setDate(end.getDate() + 1);
+    }
+    return end;
+  }
+
+  let target = getTargetTime();
 
   function tick() {
-    const now  = new Date();
-    let diff   = Math.max(0, endTime - now);
-    const h    = Math.floor(diff / 3600000);       diff -= h * 3600000;
-    const m    = Math.floor(diff / 60000);          diff -= m * 60000;
-    const s    = Math.floor(diff / 1000);
+    const now = new Date();
+    let diff = target.getTime() - now.getTime();
+    if (diff <= 0) {
+      target = getTargetTime();
+      diff = target.getTime() - now.getTime();
+    }
+    const h = Math.floor(diff / (1000 * 60 * 60));
+    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const s = Math.floor((diff % (1000 * 60)) / 1000);
 
     const set = (id, val) => {
       const el = document.getElementById(id);
