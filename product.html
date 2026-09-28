@@ -227,6 +227,8 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
 <script src="js/products-data.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/main.js"></script>
@@ -277,7 +279,15 @@ function renderEMITable(price) {
   `;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  if (typeof fetchProductsFromDB === 'function') {
+    const liveProds = await fetchProductsFromDB();
+    if (liveProds && liveProds.length > 0 && typeof PRODUCTS !== 'undefined') {
+      PRODUCTS.length = 0;
+      PRODUCTS.push(...liveProds);
+    }
+  }
+
   const p = getProductById(pid);
   if (!p) {
     document.getElementById('product-detail').innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:80px;"><h2>Product not found</h2><a href="category.html?cat=tv" style="color:var(--primary);">Browse all TVs →</a></div>`;

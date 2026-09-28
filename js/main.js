@@ -34,6 +34,9 @@ const TV_IMAGES = {
 };
 
 function getProductImage(product) {
+  if (product && product.image && product.image.trim() !== '') {
+    return product.image;
+  }
   const pool = TV_IMAGES[product.brand] || TV_IMAGES.default;
   return pool[product.id % pool.length];
 }
@@ -338,7 +341,7 @@ function initBackToTop() {
 }
 
 // ── Init everything on DOM ready ─────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   initHeroSlider();
   initCountdown();
   initMegaMenu();
@@ -347,11 +350,20 @@ document.addEventListener('DOMContentLoaded', () => {
   initWhatsAppFloat();
   initBackToTop();
 
+  // Load live products from Supabase DB if available
+  if (typeof fetchProductsFromDB === 'function') {
+    const liveProds = await fetchProductsFromDB();
+    if (liveProds && liveProds.length > 0 && typeof PRODUCTS !== 'undefined') {
+      PRODUCTS.length = 0;
+      PRODUCTS.push(...liveProds);
+    }
+  }
+
   // Render featured products
   renderSection('featured-products', getFeaturedProducts(8));
   // Render new arrivals
   renderSection('new-arrivals', PRODUCTS.filter(p => p.isNew).slice(0, 8));
-  // Render all Sony products in deals section
+  // Render deal products
   const dealProducts = PRODUCTS.filter(p => p.brand === 'Sony' && getDiscount(p.mrp, p.price) > 10).slice(0, 4);
   renderSection('deal-products', dealProducts);
 });
