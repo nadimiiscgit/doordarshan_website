@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Doordarshan Electronics — Best Electronics Shop in Osmanabad</title>
-  <meta name="description" content="Buy LED TVs, Refrigerators, ACs, Washing Machines and more at the best prices. Doordarshan Electronics, Osmanabad (Dharashiv), Maharashtra. Free delivery across India." />
-  <meta name="keywords" content="electronics shop osmanabad, led tv osmanabad, refrigerator dharashiv, AC osmanabad, doordarshan electronics" />
+  <title>Doordarshan Electronics — Premium Electronics Store</title>
+  <meta name="description" content="Buy LED TVs, Refrigerators, ACs, Washing Machines and more at the best prices. Doordarshan Electronics, Maharashtra. Free delivery across India." />
+  <meta name="keywords" content="electronics shop, led tv, refrigerator, AC, washing machine, doordarshan electronics" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -31,9 +31,14 @@
       </div>
     </div>
     <div class="topbar-right">
-      <a href="tel:7020209281">📞 7020209281</a>
-      <a href="https://wa.me/917020209281" target="_blank">💬 WhatsApp</a>
-      <a href="#">📍 Osmanabad, MH</a>
+      <div class="lang-switcher" aria-label="Language selection">
+        <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
+        <span style="opacity:0.4;color:#fff;">|</span>
+        <button class="lang-btn" data-lang="mr" onclick="setLanguage('mr')">मराठी</button>
+      </div>
+      <a href="tel:7020209281">📞 <span data-i18n="call_btn">Call</span></a>
+      <a href="https://wa.me/917020209281" target="_blank">💬 <span data-i18n="wa_btn">WhatsApp</span></a>
+      <a href="#">📍 Maharashtra</a>
     </div>
   </div>
 </div>
@@ -44,20 +49,20 @@
     <!-- Logo -->
     <a href="index.html" class="logo" aria-label="Doordarshan Electronics Home">
       <div class="logo-name">Doordarshan <span>Electronics</span></div>
-      <div class="logo-tagline">Osmanabad · Dharashiv · Maharashtra</div>
+      <div class="logo-tagline" data-i18n="store_tagline">Premium Electronics Store · Maharashtra</div>
     </a>
 
     <!-- Search -->
     <form class="search-bar" id="search-form" role="search">
       <select aria-label="Category filter" id="search-category">
-        <option value="">All Categories</option>
-        <option value="tv">LED TVs</option>
-        <option value="refrigerator">Refrigerators</option>
-        <option value="ac">Air Conditioners</option>
-        <option value="washing">Washing Machines</option>
-        <option value="kitchen">Kitchen</option>
+        <option value="" data-i18n="all_categories">All Categories</option>
+        <option value="tv" data-i18n="nav_tv">LED TVs</option>
+        <option value="refrigerator" data-i18n="nav_refrigerator">Refrigerators</option>
+        <option value="ac" data-i18n="nav_ac">Air Conditioners</option>
+        <option value="washing" data-i18n="nav_washing">Washing Machines</option>
+        <option value="kitchen" data-i18n="nav_kitchen">Kitchen</option>
       </select>
-      <input type="search" placeholder="Search for TVs, ACs, Refrigerators…" aria-label="Search products" id="search-input" />
+      <input type="search" placeholder="Search for TVs, ACs, Refrigerators…" aria-label="Search products" id="search-input" data-i18n-placeholder="search_placeholder" />
       <button type="submit" class="search-btn" aria-label="Search">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
           <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
@@ -97,13 +102,13 @@
 
     <!-- LED TVs -->
     <div class="nav-item">
-      <a href="category.html?cat=tv" class="nav-link">
+      <a href="category.html?cat=tv" class="nav-link" data-i18n="nav_tv">
         📺 LED TVs
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
       </a>
       <div class="mega-menu">
         <div class="mega-col">
-          <h4>By Screen Size</h4>
+          <h4 data-i18n="by_screen_size">By Screen Size</h4>
           <ul>
             <li><a href="category.html?cat=tv&sub=32-inch">32 inch <span class="count">1</span></a></li>
             <li><a href="category.html?cat=tv&sub=40-inch">40 inch <span class="count">2</span></a></li>
@@ -144,13 +149,13 @@
 
     <!-- Refrigerators -->
     <div class="nav-item">
-      <a href="category.html?cat=refrigerator" class="nav-link">
+      <a href="category.html?cat=refrigerator" class="nav-link" data-i18n="nav_refrigerator">
         🧊 Refrigerators
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
       </a>
       <div class="mega-menu">
         <div class="mega-col">
-          <h4>By Door Type</h4>
+          <h4 data-i18n="by_door_type">By Door Type</h4>
           <ul>
             <li><a href="category.html?cat=refrigerator&sub=single-door">Single Door</a></li>
             <li><a href="category.html?cat=refrigerator&sub=double-door-top">Double Door (Top Freezer)</a></li>
@@ -184,13 +189,13 @@
 
     <!-- ACs -->
     <div class="nav-item">
-      <a href="category.html?cat=ac" class="nav-link">
+      <a href="category.html?cat=ac" class="nav-link" data-i18n="nav_ac">
         ❄️ Air Conditioners
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
       </a>
       <div class="mega-menu">
         <div class="mega-col">
-          <h4>By Type</h4>
+          <h4 data-i18n="by_type">By Type</h4>
           <ul>
             <li><a href="category.html?cat=ac&type=split">Split AC</a></li>
             <li><a href="category.html?cat=ac&type=window">Window AC</a></li>
@@ -223,13 +228,13 @@
 
     <!-- Washing Machines -->
     <div class="nav-item">
-      <a href="category.html?cat=washing" class="nav-link">
+      <a href="category.html?cat=washing" class="nav-link" data-i18n="nav_washing">
         🫧 Washing Machines
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
       </a>
       <div class="mega-menu">
         <div class="mega-col">
-          <h4>By Type</h4>
+          <h4 data-i18n="by_type">By Type</h4>
           <ul>
             <li><a href="category.html?cat=washing&type=fully-auto-top">Fully Automatic – Top Load</a></li>
             <li><a href="category.html?cat=washing&type=fully-auto-front">Fully Automatic – Front Load</a></li>
@@ -260,22 +265,22 @@
 
     <!-- Kitchen -->
     <div class="nav-item">
-      <a href="category.html?cat=kitchen" class="nav-link">🍳 Kitchen</a>
+      <a href="category.html?cat=kitchen" class="nav-link" data-i18n="nav_kitchen">🍳 Kitchen</a>
     </div>
 
     <!-- Phones -->
     <div class="nav-item">
-      <a href="category.html?cat=phones" class="nav-link">📱 Phones</a>
+      <a href="category.html?cat=phones" class="nav-link" data-i18n="nav_phones">📱 Phones</a>
     </div>
 
     <!-- Small Appliances -->
     <div class="nav-item">
-      <a href="category.html?cat=small" class="nav-link">💡 Small Appliances</a>
+      <a href="category.html?cat=small" class="nav-link" data-i18n="nav_small">💡 Small Appliances</a>
     </div>
 
     <!-- Offers -->
     <div class="nav-item">
-      <a href="offers.html" class="nav-link" style="color:#FFD700;font-weight:800;">🏷️ Offers</a>
+      <a href="offers.html" class="nav-link" style="color:#FFD700;font-weight:800;" data-i18n="nav_offers">🏷️ Offers</a>
     </div>
 
   </div>
@@ -323,8 +328,8 @@
   <div class="container">
     <div class="section-header">
       <div class="section-title">
-        <h2 id="cat-heading">Shop by Category</h2>
-        <p>Browse our complete range of electronics</p>
+        <h2 id="cat-heading" data-i18n="cat_heading">Shop by Category</h2>
+        <p data-i18n="cat_sub">Browse our complete range of electronics</p>
       </div>
     </div>
     <div class="categories-grid">
@@ -378,8 +383,8 @@
     <div class="deals-wrapper">
       <div class="deals-header">
         <div class="section-title">
-          <h2 id="deals-heading">🔥 Deal of the Day</h2>
-          <p>Hurry! Offers end tonight</p>
+          <h2 id="deals-heading" data-i18n="deal_heading">🔥 Deal of the Day</h2>
+          <p data-i18n="deal_sub">Hurry! Offers end tonight</p>
         </div>
         <div class="deal-timer" aria-label="Time remaining">
           <div class="timer-block">
@@ -397,7 +402,7 @@
             <span class="timer-label">Secs</span>
           </div>
         </div>
-        <a href="category.html?cat=tv" class="view-all">View All →</a>
+        <a href="category.html?cat=tv" class="view-all" data-i18n="view_all">View All →</a>
       </div>
       <div class="product-grid-4 scroll-strip" id="deal-products"></div>
     </div>
@@ -409,10 +414,10 @@
   <div class="container">
     <div class="section-header">
       <div class="section-title">
-        <h2 id="featured-heading">⭐ Featured Products</h2>
-        <p>Hand-picked best sellers from our store</p>
+        <h2 id="featured-heading" data-i18n="featured_heading">⭐ Featured Products</h2>
+        <p data-i18n="featured_sub">Hand-picked best sellers from our store</p>
       </div>
-      <a href="category.html?cat=tv" class="view-all">View All TVs →</a>
+      <a href="category.html?cat=tv" class="view-all" data-i18n="view_all_tvs">View All TVs →</a>
     </div>
     <div class="product-grid-4 scroll-strip" id="featured-products"></div>
   </div>
@@ -423,10 +428,10 @@
   <div class="container">
     <div class="section-header">
       <div class="section-title">
-        <h2 id="tv-strip-heading">📺 Smart LED Televisions</h2>
-        <p>4K, Google TV, OLED &amp; QLED from top brands</p>
+        <h2 id="tv-strip-heading" data-i18n="tv_strip_heading">📺 Smart LED Televisions</h2>
+        <p data-i18n="tv_strip_sub">4K, Google TV, OLED &amp; QLED from top brands</p>
       </div>
-      <a href="category.html?cat=tv" class="view-all">View All TVs →</a>
+      <a href="category.html?cat=tv" class="view-all" data-i18n="view_all_tvs">View All TVs →</a>
     </div>
     <div class="product-grid-4 scroll-strip" id="tv-products-strip"></div>
   </div>
@@ -437,10 +442,10 @@
   <div class="container">
     <div class="section-header">
       <div class="section-title">
-        <h2 id="fridge-strip-heading">🧊 Refrigerators &amp; Freezers</h2>
-        <p>Single Door, Double Door &amp; Inverter Refrigerators</p>
+        <h2 id="fridge-strip-heading" data-i18n="fridge_strip_heading">🧊 Refrigerators &amp; Freezers</h2>
+        <p data-i18n="fridge_strip_sub">Single Door, Double Door &amp; Inverter Refrigerators</p>
       </div>
-      <a href="category.html?cat=refrigerator" class="view-all">View All Refrigerators →</a>
+      <a href="category.html?cat=refrigerator" class="view-all" data-i18n="view_all_fridges">View All Refrigerators →</a>
     </div>
     <div class="product-grid-4 scroll-strip" id="refrigerator-products-strip"></div>
   </div>
@@ -451,7 +456,7 @@
   <div class="container">
     <div class="section-header">
       <div class="section-title">
-        <h2 id="brands-heading" style="font-size:1.1rem;">Top Brands We Carry</h2>
+        <h2 id="brands-heading" style="font-size:1.1rem;" data-i18n="brands_heading">Top Brands We Carry</h2>
       </div>
     </div>
     <div class="brands-grid scroll-strip">
@@ -488,10 +493,10 @@
   <div class="container">
     <div class="section-header">
       <div class="section-title">
-        <h2 id="new-heading">🆕 New Arrivals</h2>
-        <p>Latest models just added to our store</p>
+        <h2 id="new-heading" data-i18n="new_heading">🆕 New Arrivals</h2>
+        <p data-i18n="new_sub">Latest models just added to our store</p>
       </div>
-      <a href="category.html?cat=tv&filter=new" class="view-all">See All →</a>
+      <a href="category.html?cat=tv&filter=new" class="view-all" data-i18n="view_all">See All →</a>
     </div>
     <div class="product-grid-4 scroll-strip" id="new-arrivals"></div>
   </div>
@@ -502,30 +507,30 @@
   <div class="container">
     <div class="section-header" style="justify-content:center;text-align:center;">
       <div class="section-title" style="text-align:center;">
-        <h2 id="why-heading">Why Choose Doordarshan Electronics?</h2>
-        <p>Trusted by thousands of families across Osmanabad &amp; beyond</p>
+        <h2 id="why-heading" data-i18n="why_heading">Why Choose Doordarshan Electronics?</h2>
+        <p data-i18n="why_sub">Trusted by thousands of families across Maharashtra &amp; beyond</p>
       </div>
     </div>
     <div class="why-grid">
       <div class="why-card">
         <div class="why-icon">🚚</div>
-        <h3>Free Delivery Anywhere</h3>
-        <p>We deliver to your doorstep — anywhere in India, completely free of charge.</p>
+        <h3 data-i18n="why_1_title">Free Delivery Anywhere</h3>
+        <p data-i18n="why_1_desc">We deliver to your doorstep — anywhere in India, completely free of charge.</p>
       </div>
       <div class="why-card">
         <div class="why-icon">💳</div>
-        <h3>Easy EMI Options</h3>
-        <p>No-cost EMI available from 6 to 24 months on select products. Flexible payment plans.</p>
+        <h3 data-i18n="why_2_title">Easy EMI Options</h3>
+        <p data-i18n="why_2_desc">No-cost EMI available from 6 to 24 months on select products. Flexible payment plans.</p>
       </div>
       <div class="why-card">
         <div class="why-icon">🔧</div>
-        <h3>Free Installation</h3>
-        <p>AC, TV wall mounting, washing machine installation — all done for free at your home.</p>
+        <h3 data-i18n="why_3_title">Free Installation</h3>
+        <p data-i18n="why_3_desc">AC, TV wall mounting, washing machine installation — all done for free at your home.</p>
       </div>
       <div class="why-card">
         <div class="why-icon">🤝</div>
-        <h3>9 Years of Trust</h3>
-        <p>Serving Osmanabad since 2017. Thousands of happy customers, authorised service support.</p>
+        <h3 data-i18n="why_4_title">Years of Trust</h3>
+        <p data-i18n="why_4_desc">Serving with authorized service support and thousands of happy customers.</p>
       </div>
     </div>
   </div>
@@ -535,8 +540,8 @@
 <section style="background:linear-gradient(135deg,#075E54,#128C7E);padding:40px 0;">
   <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
     <div>
-      <h2 style="color:#fff;font-size:1.5rem;margin-bottom:6px;">📱 Order Easily on WhatsApp!</h2>
-      <p style="color:rgba(255,255,255,0.8);font-size:0.95rem;">
+      <h2 style="color:#fff;font-size:1.5rem;margin-bottom:6px;" data-i18n="wa_banner_title">📱 Order Easily on WhatsApp!</h2>
+      <p style="color:rgba(255,255,255,0.8);font-size:0.95rem;" data-i18n="wa_banner_desc">
         Chat with us, share your requirements, get the best price &amp; confirm your order — all on WhatsApp.
       </p>
     </div>
@@ -547,6 +552,7 @@
       style="display:inline-flex;align-items:center;gap:10px;background:#25D366;color:#fff;padding:16px 32px;border-radius:50px;font-size:1rem;font-weight:700;box-shadow:0 6px 24px rgba(0,0,0,0.25);transition:transform 0.2s,box-shadow 0.2s;white-space:nowrap;"
       onmouseover="this.style.transform='scale(1.05)'"
       onmouseout="this.style.transform=''"
+      data-i18n="wa_banner_btn"
     >
       <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
       Chat on WhatsApp — 7020209281
@@ -588,15 +594,15 @@
       <!-- Brand -->
       <div class="footer-brand">
         <div class="logo-name">Doordarshan <span>Electronics</span></div>
-        <p class="footer-desc">
-          Your trusted electronics partner in Osmanabad (Dharashiv), Maharashtra since 2017.
+        <p class="footer-desc" data-i18n="footer_desc">
+          Your trusted electronics partner in Maharashtra since 2017.
           We offer the widest range of LED TVs, ACs, Refrigerators, Washing Machines and more at the best prices.
           Free delivery across India.
         </p>
         <div class="footer-contact">
           <a href="tel:7020209281">📞 +91 70202 09281</a>
           <a href="https://wa.me/917020209281" target="_blank">💬 WhatsApp: 7020209281</a>
-          <a href="#">📍 Osmanabad (Dharashiv), Maharashtra</a>
+          <a href="#">📍 Maharashtra, India</a>
           <a href="#">🕐 Mon–Sat: 10:00 AM – 8:00 PM</a>
         </div>
       </div>
@@ -657,6 +663,7 @@
 <!-- ══ SCRIPTS ════════════════════════════════════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-config.js"></script>
+<script src="js/i18n.js"></script>
 <script src="js/products-data.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/main.js"></script>

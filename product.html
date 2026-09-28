@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Product — Doordarshan Electronics</title>
-  <meta name="description" content="Product details — Doordarshan Electronics, Osmanabad." />
+  <title>Product Details — Doordarshan Electronics</title>
+  <meta name="description" content="Product details — Doordarshan Electronics, Maharashtra." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -133,8 +133,13 @@
       </div>
     </div>
     <div class="topbar-right">
-      <a href="tel:7020209281">📞 7020209281</a>
-      <a href="https://wa.me/917020209281" target="_blank">💬 WhatsApp</a>
+      <div class="lang-switcher" aria-label="Language selection">
+        <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
+        <span style="opacity:0.4;color:#fff;">|</span>
+        <button class="lang-btn" data-lang="mr" onclick="setLanguage('mr')">मराठी</button>
+      </div>
+      <a href="tel:7020209281">📞 <span data-i18n="call_btn">Call</span></a>
+      <a href="https://wa.me/917020209281" target="_blank">💬 <span data-i18n="wa_btn">WhatsApp</span></a>
     </div>
   </div>
 </div>
@@ -144,7 +149,7 @@
   <div class="header-inner">
     <a href="index.html" class="logo">
       <div class="logo-name">Doordarshan <span>Electronics</span></div>
-      <div class="logo-tagline">Osmanabad · Dharashiv · Maharashtra</div>
+      <div class="logo-tagline" data-i18n="store_tagline">Premium Electronics Store · Maharashtra</div>
     </a>
     <form class="search-bar" id="search-form" role="search">
       <select aria-label="Category"><option>All Categories</option></select>
@@ -179,10 +184,10 @@
     <!-- ── Tabs ── -->
     <div class="detail-tabs" id="detail-tabs" style="display:none;">
       <div class="tab-nav">
-        <button class="tab-btn active" onclick="switchTab('description', this)">Description</button>
-        <button class="tab-btn" onclick="switchTab('specs', this)">Specifications</button>
-        <button class="tab-btn" onclick="switchTab('emi', this)">EMI Plans</button>
-        <button class="tab-btn" onclick="switchTab('delivery', this)">Delivery Info</button>
+        <button class="tab-btn active" onclick="switchTab('description', this)" data-i18n="description">Description</button>
+        <button class="tab-btn" onclick="switchTab('specs', this)" data-i18n="specifications">Specifications</button>
+        <button class="tab-btn" onclick="switchTab('emi', this)" data-i18n="emi_plans">EMI Plans</button>
+        <button class="tab-btn" onclick="switchTab('delivery', this)" data-i18n="delivery_info">Delivery Info</button>
       </div>
       <div id="tab-description" class="tab-panel active"></div>
       <div id="tab-specs" class="tab-panel"></div>
@@ -210,8 +215,8 @@
   <div class="similar-section" id="similar-section" style="display:none;">
     <div class="container">
       <div class="section-header">
-        <div class="section-title"><h2>Similar Products</h2></div>
-        <a href="category.html?cat=tv" class="view-all">View All →</a>
+        <div class="section-title"><h2 data-i18n="similar_products">Similar Products</h2></div>
+        <a href="category.html?cat=tv" class="view-all" data-i18n="view_all">View All →</a>
       </div>
       <div class="scroll-strip" id="similar-products"></div>
     </div>
@@ -221,14 +226,15 @@
 <footer class="footer">
   <div class="container">
     <div class="footer-bottom">
-      <p>© 2025 Doordarshan Electronics, Osmanabad. All rights reserved.</p>
-      <a href="https://wa.me/917020209281" style="color:var(--accent);font-weight:600;">💬 7020209281</a>
+      <p>© 2025 Doordarshan Electronics. All rights reserved.</p>
+      <a href="https://wa.me/917020209281" style="color:var(--accent);font-weight:600;">💬 WhatsApp: 7020209281</a>
     </div>
   </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-config.js"></script>
+<script src="js/i18n.js"></script>
 <script src="js/products-data.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/main.js"></script>
