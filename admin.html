@@ -722,23 +722,59 @@ const ADMIN_PASS_KEY = 'de_admin_pass';
 function getPassword() { return localStorage.getItem(ADMIN_PASS_KEY) || 'admin123'; }
 function getUsername()  { return localStorage.getItem('de_admin_user') || 'admin'; }
 
-function doLogin() {
+async function doLogin() {
   const u = document.getElementById('login-user').value.trim();
   const p = document.getElementById('login-pass').value;
+  const loginErr = document.getElementById('login-error');
+  loginErr.style.display = 'none';
+
+  if (!u || !p) {
+    loginErr.textContent = '❌ Please enter username and password';
+    loginErr.style.display = 'block';
+    return;
+  }
+
+  // 1. Authenticate against Supabase admin_users table (Global login)
+  if (typeof verifyAdminLoginFromDB === 'function') {
+    const isValid = await verifyAdminLoginFromDB(u, p);
+    if (isValid) {
+      sessionStorage.setItem('de_logged_in', 'true');
+      sessionStorage.setItem('de_admin_user', u);
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      initApp();
+      return;
+    }
+  }
+
+  // 2. Fallback to local config if db unverified
   if (u === getUsername() && p === getPassword()) {
+    sessionStorage.setItem('de_logged_in', 'true');
+    sessionStorage.setItem('de_admin_user', u);
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     initApp();
   } else {
-    document.getElementById('login-error').style.display = 'block';
+    loginErr.textContent = '❌ Incorrect username or password';
+    loginErr.style.display = 'block';
   }
 }
+
 function doLogout() {
+  sessionStorage.removeItem('de_logged_in');
   document.getElementById('app').style.display = 'none';
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('login-user').value = '';
   document.getElementById('login-pass').value = '';
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem('de_logged_in') === 'true') {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    initApp();
+  }
+});
 
 function toggleMobileSidebar() {
   const sidebar = document.getElementById('sidebar');
@@ -1481,10 +1517,26 @@ async function importCSVRows(rows) {
   document.getElementById('upload-actions').style.display = 'none';
 }
 
-function saveSettings() {
+async function saveSettings() {
   const pass = document.getElementById('setting-pass').value;
-  if (pass) localStorage.setItem(ADMIN_PASS_KEY, pass);
-  toast('✅ Settings saved!');
+  const user = getUsername();
+  if (!pass) {
+    toast('❌ Please enter a new password', 'error');
+    return;
+  }
+  if (typeof updateAdminPasswordInDB === 'function') {
+    try {
+      await updateAdminPasswordInDB(user, pass);
+      localStorage.setItem(ADMIN_PASS_KEY, pass);
+      toast('✅ Global Admin password updated in database!');
+      document.getElementById('setting-pass').value = '';
+    } catch (err) {
+      toast('❌ Failed to update password: ' + (err.message || 'Error'), 'error');
+    }
+  } else {
+    localStorage.setItem(ADMIN_PASS_KEY, pass);
+    toast('✅ Settings saved!');
+  }
 }
 
 function toast(msg, type = 'success') {

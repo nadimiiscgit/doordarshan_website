@@ -1122,11 +1122,52 @@ h3 { font-size: 1.2rem; }
   .header-inner   { flex-wrap: wrap; }
   .search-bar     { order: 3; flex: 0 0 100%; }
   .hdr-label      { display: none; }
-  .categories-grid{ grid-template-columns: repeat(4, 1fr); }
-  .product-grid-4 { grid-template-columns: repeat(2, 1fr); }
-  .product-grid-5 { grid-template-columns: repeat(2, 1fr); }
+  
+  /* Clean wrapping for category cards on mobile phones */
+  .categories-grid {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 10px;
+  }
+  .cat-card {
+    padding: 14px 6px;
+    border-radius: 12px;
+  }
+  .cat-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 1.25rem;
+  }
+  .cat-name {
+    font-size: 0.75rem;
+    word-break: break-word;
+  }
+  .cat-count {
+    font-size: 0.68rem;
+  }
+
+  /* Wrap product cards & scroll strips cleanly on mobile */
+  .product-grid-4 { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .product-grid-5 { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .scroll-strip {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    overflow-x: visible;
+  }
+  .scroll-strip .product-card {
+    flex: unset;
+    width: 100%;
+  }
+
   .why-grid       { grid-template-columns: 1fr; }
   .footer-grid    { grid-template-columns: 1fr; }
   .hero-content   { padding: 0 20px; }
   .topbar-right   { display: none; }
+}
+
+@media (max-width: 420px) {
+  .categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
 }
