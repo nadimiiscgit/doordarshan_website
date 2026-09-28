@@ -1319,21 +1319,132 @@ function handleFileUpload(file) {
   reader.readAsText(file);
 }
 
+const knownBrands = [
+  'Godrej', 'Haier', 'IFB', 'LG', 'Liebherr', 'Samsung', 'Sharp', 'Whirlpool', 'Whirlpoool',
+  'Gem', 'Sony', 'Metz', 'Bush', 'OnePlus', 'Skyworth', 'PHX', 'TCL', 'Voltas', 'Daikin',
+  'Carrier', 'Bosch', 'Panasonic'
+];
+
+function detectBrandFromText(text) {
+  const lower = text.toLowerCase();
+  for (const b of knownBrands) {
+    if (lower.includes(b.toLowerCase())) {
+      if (b.toLowerCase() === 'whirlpoool' || b.toLowerCase() === 'whirlpool') return 'Whirlpool';
+      if (b.toLowerCase() === 'gem') return 'GEM';
+      if (b.toLowerCase() === 'lg') return 'LG';
+      if (b.toLowerCase() === 'ifb') return 'IFB';
+      return b.charAt(0).toUpperCase() + b.slice(1).toLowerCase();
+    }
+  }
+  return 'Other';
+}
+
+function detectCategoryFromText(text) {
+  const upper = text.toUpperCase();
+  if (upper.includes('REF') || upper.includes('FRIDGE') || upper.includes('REFRIGERATOR') || upper.includes('IMPRO') || upper.includes('EDGE')) {
+    return 'refrigerator';
+  }
+  if (upper.includes('AC') || upper.includes('TON') || upper.includes('AIR COND')) {
+    return 'ac';
+  }
+  if (upper.includes('WASH') || upper.includes('WM') || upper.includes('FRONT') || upper.includes('TOP LOAD')) {
+    return 'washing';
+  }
+  if (upper.includes('LED') || upper.includes('TV') || upper.includes('QLED') || upper.includes('OLED')) {
+    return 'tv';
+  }
+  return 'tv';
+}
+
 function parseAndPreviewCSV(text) {
-  const lines = text.trim().split('\n');
-  if (lines.length < 2) { toast('❌ CSV appears empty', 'error'); return; }
-  const headers = lines[0].split(',').map(h => h.replace(/"/g,'').trim());
-  const rows = lines.slice(1).map(line => {
-    const vals = line.match(/(".*?"|[^,]+|(?<=,)(?=,)|^(?=,))/g) || line.split(',');
-    const obj = {};
-    headers.forEach((h, i) => obj[h] = (vals[i]||'').replace(/"/g,'').trim());
-    return obj;
-  }).filter(r => r.name);
+  const lines = text.trim().split(/\r?\n/).map(l => l.trim()).filter(l => l && !l.match(/^,+$|^\"\"/));
+  if (lines.length < 1) { toast('❌ CSV appears empty', 'error'); return; }
+
+  const firstLine = lines[0];
+  const isHeaderStandard = firstLine.toLowerCase().includes('name') || firstLine.toLowerCase().includes('mrp') || firstLine.toLowerCase().includes('price');
+
+  let rows = [];
+
+  if (isHeaderStandard) {
+    const headers = firstLine.split(',').map(h => h.replace(/"/g,'').trim().toLowerCase());
+    rows = lines.slice(1).map((line, idx) => {
+      const vals = line.split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/).map(c => c.replace(/^\"|\"$/g, '').trim());
+      const obj = {};
+      headers.forEach((h, i) => obj[h] = vals[i] || '');
+      if (!obj.name && !obj.product) return null;
+      return {
+        id: parseInt(obj.id) || (2000 + idx),
+        name: obj.name || obj.product,
+        category: obj.category || detectCategoryFromText(obj.name || ''),
+        brand: obj.brand || detectBrandFromText(obj.name || ''),
+        model: obj.model || '',
+        mrp: parseFloat(obj.mrp) || 1,
+        price: parseFloat(obj.price) || 0,
+        stock: parseInt(obj.stock) || 1,
+        description: obj.description || ''
+      };
+    }).filter(Boolean);
+  } else {
+    // Tally / Stock summary CSV format (Sr No, Item Name, Quantity)
+    const startIdx = (firstLine.includes('Items') || firstLine.startsWith('"Items"')) ? 1 : 0;
+    rows = lines.slice(startIdx).map((line, idx) => {
+      const cols = line.split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/).map(c => c.replace(/^\"|\"$/g, '').trim());
+      if (cols.length < 2 || !cols[1] || cols[1] === 'Items') return null;
+
+      const rawName = cols[1];
+      const stockMatch = (cols[2] || '').match(/(\d+)/);
+      const stock = stockMatch ? parseInt(stockMatch[1]) : 1;
+      const brand = detectBrandFromText(rawName);
+      const category = detectCategoryFromText(rawName);
+
+      return {
+        id: parseInt(cols[0]) || (2000 + idx),
+        name: rawName,
+        category: category,
+        brand: brand,
+        model: rawName.split(/\s+/).slice(-2).join(' '),
+        mrp: 1,
+        price: 0,
+        stock: stock,
+        description: `${brand} ${category === 'refrigerator' ? 'Refrigerator' : 'Product'}`
+      };
+    }).filter(Boolean);
+  }
+
+  if (rows.length === 0) {
+    toast('❌ Could not parse any valid product rows from CSV', 'error');
+    return;
+  }
 
   const preview = document.getElementById('csv-preview');
   preview.innerHTML = `
     <div style="margin-top:16px;padding:12px;background:#F0FDF4;border-radius:8px;border:1px solid #86EFAC;font-size:0.85rem;color:#15803D;margin-bottom:12px;">
-      ✅ Found <strong>${rows.length} products</strong> in file. Click below to import to database.
+      ✅ Found <strong>${rows.length} products</strong> in file! Review preview below, then click Confirm &amp; Import.
+    </div>
+    <div style="overflow-x:auto;max-height:300px;border:1px solid var(--border);border-radius:10px;">
+      <table style="width:100%;border-collapse:collapse;font-size:0.82rem;">
+        <thead>
+          <tr style="background:var(--bg);position:sticky;top:0;">
+            <th style="padding:8px 12px;text-align:left;">#</th>
+            <th style="padding:8px 12px;text-align:left;">Product Name</th>
+            <th style="padding:8px 12px;text-align:left;">Category</th>
+            <th style="padding:8px 12px;text-align:left;">Brand</th>
+            <th style="padding:8px 12px;text-align:left;">Stock</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.slice(0, 15).map((r, i) => `
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:8px 12px;">${r.id}</td>
+              <td style="padding:8px 12px;font-weight:700;">${r.name}</td>
+              <td style="padding:8px 12px;"><span class="cat-tag">${r.category}</span></td>
+              <td style="padding:8px 12px;"><span class="brand-tag">${r.brand}</span></td>
+              <td style="padding:8px 12px;font-weight:700;color:var(--success);">${r.stock} in stock</td>
+            </tr>
+          `).join('')}
+          ${rows.length > 15 ? `<tr><td colspan="5" style="padding:10px 12px;color:var(--muted);font-style:italic;">…and ${rows.length - 15} more products</td></tr>` : ''}
+        </tbody>
+      </table>
     </div>
   `;
 
@@ -1344,7 +1455,7 @@ function parseAndPreviewCSV(text) {
 
 async function importCSVRows(rows) {
   const records = rows.map((r, i) => ({
-    id: parseInt(r.id) || (1000 + i),
+    id: parseInt(r.id) || (2000 + i),
     name: r.name,
     category: r.category || 'tv',
     brand: r.brand || '',
@@ -1352,7 +1463,7 @@ async function importCSVRows(rows) {
     subcategory: r.subcategory || '',
     mrp: parseFloat(r.mrp) || 1,
     price: parseFloat(r.price) || 0,
-    stock: parseInt(r.stock) || 0,
+    stock: parseInt(r.stock) || 1,
     description: r.description || ''
   }));
 
