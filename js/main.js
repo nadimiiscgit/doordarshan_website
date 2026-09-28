@@ -365,6 +365,44 @@ async function renderDynamicCategories() {
   }
 }
 
+// ── Enable Mouse Drag-to-Scroll on Desktop ────────────────
+function initHorizontalDragScroll() {
+  const containers = document.querySelectorAll('.scroll-strip, .categories-grid, .brands-grid, .subcat-tabs');
+  containers.forEach(slider => {
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    slider.addEventListener('mousedown', e => {
+      isDown = true;
+      slider.style.cursor = 'grabbing';
+      slider.style.userSelect = 'none';
+      startX = e.pageX - slider.offsetLeft;
+      scrollLeft = slider.scrollLeft;
+    });
+
+    slider.addEventListener('mouseleave', () => {
+      isDown = false;
+      slider.style.cursor = 'default';
+      slider.style.userSelect = 'auto';
+    });
+
+    slider.addEventListener('mouseup', () => {
+      isDown = false;
+      slider.style.cursor = 'default';
+      slider.style.userSelect = 'auto';
+    });
+
+    slider.addEventListener('mousemove', e => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - slider.offsetLeft;
+      const walk = (x - startX) * 2.2;
+      slider.scrollLeft = scrollLeft - walk;
+    });
+  });
+}
+
 // ── Init everything on DOM ready ─────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
   initHeroSlider();
@@ -401,4 +439,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Render Refrigerator Strip
   const fridgeProducts = PRODUCTS.filter(p => p.category === 'refrigerator').slice(0, 8);
   renderSection('refrigerator-products-strip', fridgeProducts.length > 0 ? fridgeProducts : PRODUCTS.slice(0, 8));
+
+  // Enable mouse drag scrolling for desktop
+  initHorizontalDragScroll();
 });
