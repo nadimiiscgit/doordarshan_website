@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel — Doordarshan Electronics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary:      #0B2C6E;
+      --primary-l:    #1a4090;
+      --accent:       #FF6B00;
+      --accent-pale:  #FFF3E8;
+      --bg:           #F0F2F7;
+      --surface:      #FFFFFF;
+      --border:       #E5E7EB;
+      --text:         #1A1A2E;
+      --muted:        #6B7280;
+      --success:      #10B981;
+      --warning:      #F59E0B;
+      --danger:       #EF4444;
+      --sidebar-w:    240px;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--text); }
+    a { text-decoration:none; color:inherit; }
+    button { cursor:pointer; font-family:inherit; }
+    input, select, textarea { font-family:inherit; }
+
+    /* ── Login Screen ── */
+    #login-screen {
+      position:fixed; inset:0; background:linear-gradient(135deg,#0B2C6E,#1a4090);
+      display:flex; align-items:center; justify-content:center; z-index:9999;
+    }
+    .login-card {
+      background:#fff; border-radius:20px; padding:40px; width:360px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.3); text-align:center;
+    }
+    .login-card .logo { font-size:1.3rem; font-weight:900; color:var(--primary); margin-bottom:4px; }
+    .login-card .logo span { color:var(--accent); }
+    .login-card p { font-size:0.82rem; color:var(--muted); margin-bottom:24px; }
+    .login-card h2 { font-size:1.1rem; margin-bottom:20px; }
+    .login-input {
+      width:100%; border:2px solid var(--border); border-radius:10px;
+      padding:12px 16px; font-size:0.95rem; outline:none; margin-bottom:12px;
+      transition:border-color .2s;
+    }
+    .login-input:focus { border-color:var(--primary); }
+    .login-btn {
+      width:100%; background:var(--primary); color:#fff; border:none;
+      border-radius:10px; padding:14px; font-size:1rem; font-weight:700;
+      transition:background .2s;
+    }
+    .login-btn:hover { background:var(--primary-l); }
+    .login-error { color:var(--danger); font-size:0.82rem; margin-top:8px; display:none; }
+
+    /* ── App Shell ── */
+    #app { display:none; min-height:100vh; }
+
+    /* Sidebar */
+    .sidebar {
+      position:fixed; top:0; left:0; bottom:0; width:var(--sidebar-w);
+      background:var(--primary); color:#fff; display:flex; flex-direction:column;
+      z-index:100;
+    }
+    .sidebar-logo {
+      padding:24px 20px; font-size:1rem; font-weight:900; letter-spacing:-0.01em;
+      border-bottom:1px solid rgba(255,255,255,0.1);
+    }
+    .sidebar-logo span { color:var(--accent); }
+    .sidebar-sub { font-size:0.65rem; font-weight:400; opacity:0.55; letter-spacing:0.1em; text-transform:uppercase; margin-top:2px; }
+    .nav-group { padding:12px 0; flex:1; overflow-y:auto; }
+    .nav-label { font-size:0.62rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,255,255,0.35); padding:8px 20px 4px; }
+    .nav-link {
+      display:flex; align-items:center; gap:10px; padding:11px 20px;
+      font-size:0.88rem; font-weight:600; color:rgba(255,255,255,0.75);
+      transition:background .15s, color .15s; cursor:pointer; border:none; background:none; width:100%; text-align:left;
+    }
+    .nav-link:hover { background:rgba(255,255,255,0.08); color:#fff; }
+    .nav-link.active { background:rgba(255,255,255,0.14); color:#fff; border-left:3px solid var(--accent); }
+    .sidebar-footer { padding:16px 20px; border-top:1px solid rgba(255,255,255,0.1); font-size:0.78rem; color:rgba(255,255,255,0.45); }
+    .logout-btn { background:rgba(255,255,255,0.08); border:none; color:rgba(255,255,255,0.7); padding:8px 14px; border-radius:8px; font-size:0.82rem; cursor:pointer; margin-top:8px; width:100%; transition:.2s; }
+    .logout-btn:hover { background:rgba(255,255,255,0.15); color:#fff; }
+
+    /* Main Content */
+    .main { margin-left:var(--sidebar-w); min-height:100vh; }
+    .topbar {
+      background:var(--surface); border-bottom:1px solid var(--border);
+      padding:16px 28px; display:flex; align-items:center; justify-content:space-between;
+      position:sticky; top:0; z-index:50; box-shadow:0 1px 8px rgba(0,0,0,0.06);
+    }
+    .topbar h1 { font-size:1.2rem; font-weight:800; }
+    .topbar-actions { display:flex; gap:10px; }
+    .content { padding:28px; }
+
+    /* ── Stats Cards ── */
+    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px; }
+    .stat-card {
+      background:var(--surface); border-radius:14px; padding:20px;
+      border:1px solid var(--border); display:flex; align-items:center; gap:16px;
+    }
+    .stat-icon { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0; }
+    .stat-body .num { font-size:1.6rem; font-weight:900; line-height:1; }
+    .stat-body .lbl { font-size:0.78rem; color:var(--muted); margin-top:3px; }
+
+    /* ── Toolbar ── */
+    .toolbar {
+      background:var(--surface); border-radius:14px; padding:16px 20px;
+      margin-bottom:16px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+      border:1px solid var(--border);
+    }
+    .search-input {
+      flex:1; min-width:200px; border:1.5px solid var(--border); border-radius:8px;
+      padding:9px 14px; font-size:0.88rem; outline:none; transition:border-color .2s;
+    }
+    .search-input:focus { border-color:var(--primary); }
+    .filter-sel {
+      border:1.5px solid var(--border); border-radius:8px; padding:9px 14px;
+      font-size:0.88rem; background:var(--surface); outline:none; cursor:pointer;
+    }
+    .btn { display:inline-flex; align-items:center; gap:7px; padding:9px 18px; border-radius:8px; font-size:0.88rem; font-weight:700; border:none; transition:.18s; }
+    .btn-primary { background:var(--primary); color:#fff; }
+    .btn-primary:hover { background:var(--primary-l); }
+    .btn-accent  { background:var(--accent); color:#fff; }
+    .btn-accent:hover { background:#e05c00; }
+    .btn-success { background:var(--success); color:#fff; }
+    .btn-danger  { background:var(--danger); color:#fff; }
+    .btn-outline { background:transparent; border:1.5px solid var(--border); color:var(--text); }
+    .btn-outline:hover { border-color:var(--primary); color:var(--primary); }
+
+    /* ── Products Table ── */
+    .table-wrap { background:var(--surface); border-radius:14px; border:1px solid var(--border); overflow:hidden; }
+    table { width:100%; border-collapse:collapse; }
+    thead th {
+      background:var(--bg); padding:12px 16px; text-align:left;
+      font-size:0.75rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+      color:var(--muted); border-bottom:1px solid var(--border); white-space:nowrap;
+    }
+    thead th input[type=checkbox] { width:15px; height:15px; accent-color:var(--primary); }
+    tbody tr { border-bottom:1px solid var(--border); transition:background .15s; }
+    tbody tr:last-child { border-bottom:none; }
+    tbody tr:hover { background:#F8F9FC; }
+    tbody td { padding:13px 16px; font-size:0.87rem; vertical-align:middle; }
+    .product-cell { display:flex; align-items:center; gap:12px; }
+    .product-thumb {
+      width:52px; height:40px; border-radius:6px; background:var(--bg);
+      flex-shrink:0; display:flex; align-items:center; justify-content:center;
+      overflow:hidden; border:1px solid var(--border); font-size:0.6rem; font-weight:700; text-align:center;
+    }
+    .product-thumb img { width:100%; height:100%; object-fit:cover; }
+    .product-name-cell .name { font-weight:700; font-size:0.88rem; }
+    .product-name-cell .model { font-size:0.72rem; color:var(--muted); }
+    .price-cell .mrp { font-size:0.72rem; color:var(--muted); text-decoration:line-through; }
+    .price-cell .sale { font-weight:700; font-size:0.9rem; }
+    .discount-pill {
+      display:inline-block; background:#FEE2E2; color:#DC2626;
+      font-size:0.68rem; font-weight:700; padding:2px 7px; border-radius:999px;
+    }
+    .stock-pill {
+      display:inline-flex; align-items:center; gap:4px;
+      font-size:0.78rem; font-weight:600; padding:3px 10px; border-radius:999px;
+    }
+    .stock-in  { background:#DCFCE7; color:#15803D; }
+    .stock-low { background:#FEF9C3; color:#92400E; }
+    .stock-out { background:#FEE2E2; color:#DC2626; }
+    .brand-tag { font-size:0.75rem; font-weight:700; color:var(--primary); background:rgba(11,44,110,0.07); padding:3px 8px; border-radius:6px; }
+    .action-btns-cell { display:flex; gap:6px; }
+    .icon-btn { width:32px; height:32px; border-radius:7px; display:flex; align-items:center; justify-content:center; border:none; font-size:0.9rem; cursor:pointer; transition:.15s; }
+    .icon-btn:hover { transform:scale(1.08); }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000;
+      display:none; align-items:center; justify-content:center; padding:20px;
+      backdrop-filter:blur(4px);
+    }
+    .modal-overlay.open { display:flex; }
+    .modal {
+      background:var(--surface); border-radius:20px; width:100%; max-width:680px;
+      max-height:90vh; overflow-y:auto; box-shadow:0 24px 80px rgba(0,0,0,0.25);
+      animation:modalIn .25s cubic-bezier(.22,1,.36,1);
+    }
+    @keyframes modalIn { from { opacity:0; transform:translateY(24px) scale(.96); } to { opacity:1; transform:none; } }
+    .modal-header {
+      padding:22px 28px 18px; border-bottom:1px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; background:var(--surface); z-index:1;
+    }
+    .modal-header h2 { font-size:1.1rem; }
+    .modal-close { width:32px; height:32px; border-radius:8px; border:none; background:var(--bg); font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:.15s; }
+    .modal-close:hover { background:var(--border); }
+    .modal-body { padding:24px 28px; display:flex; flex-direction:column; gap:20px; }
+    .modal-footer { padding:16px 28px; border-top:1px solid var(--border); display:flex; gap:10px; justify-content:flex-end; position:sticky; bottom:0; background:var(--surface); }
+
+    /* Form fields */
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .form-grid.full { grid-template-columns:1fr; }
+    .field { display:flex; flex-direction:column; gap:6px; }
+    .field label { font-size:0.78rem; font-weight:700; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase; }
+    .field input, .field select, .field textarea {
+      border:1.5px solid var(--border); border-radius:9px; padding:10px 14px;
+      font-size:0.92rem; color:var(--text); outline:none; transition:border-color .2s;
+      background:var(--surface); font-family:inherit;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(11,44,110,0.07); }
+    .field textarea { resize:vertical; min-height:80px; }
+    .field .helper { font-size:0.72rem; color:var(--muted); }
+
+    /* Price calculator section */
+    .price-calc-box {
+      background:linear-gradient(135deg,#EEF2FF,#E0E7FF); border-radius:12px;
+      padding:18px; border:1.5px solid #C7D2FE;
+    }
+    .price-calc-box h4 { font-size:0.88rem; font-weight:700; color:#3730A3; margin-bottom:14px; display:flex; align-items:center; gap:6px; }
+    .price-calc-grid { display:grid; grid-template-columns:1fr auto 1fr auto 1fr; align-items:end; gap:12px; }
+    .price-calc-grid .arrow { font-size:1.2rem; color:#6366F1; padding-bottom:10px; }
+    .calc-field { display:flex; flex-direction:column; gap:5px; }
+    .calc-field label { font-size:0.72rem; font-weight:700; color:#4338CA; text-transform:uppercase; letter-spacing:0.06em; }
+    .calc-field input {
+      border:2px solid #A5B4FC; border-radius:9px; padding:10px 14px;
+      font-size:1rem; font-weight:700; color:var(--text); outline:none;
+      transition:border-color .2s; background:#fff; font-family:inherit;
+    }
+    .calc-field input:focus { border-color:#6366F1; box-shadow:0 0 0 3px rgba(99,102,241,0.1); }
+    .calc-field input[readonly] { background:#F5F3FF; color:#5B21B6; font-weight:800; cursor:not-allowed; }
+    .calc-result {
+      display:flex; flex-direction:column; gap:3px; padding:10px 16px;
+      background:rgba(255,255,255,0.7); border-radius:8px; border:1px solid #C7D2FE;
+    }
+    .calc-result .pct { font-size:1.4rem; font-weight:900; color:#DC2626; }
+    .calc-result .save { font-size:0.72rem; color:#15803D; font-weight:600; }
+    .price-preview {
+      margin-top:12px; padding:12px; background:rgba(255,255,255,0.8);
+      border-radius:8px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+    }
+    .preview-sale { font-size:1.3rem; font-weight:900; }
+    .preview-mrp  { font-size:0.9rem; color:var(--muted); text-decoration:line-through; }
+    .preview-badge { background:#EF4444; color:#fff; font-size:0.78rem; font-weight:800; padding:4px 10px; border-radius:999px; }
+
+    /* Toggle */
+    .toggle-row { display:flex; align-items:center; justify-content:space-between; padding:10px 0; }
+    .toggle-row label { font-size:0.9rem; font-weight:600; }
+    .toggle-row small { font-size:0.78rem; color:var(--muted); }
+    .toggle { position:relative; width:44px; height:24px; flex-shrink:0; }
+    .toggle input { opacity:0; width:0; height:0; }
+    .toggle-slider {
+      position:absolute; inset:0; background:#D1D5DB; border-radius:999px; cursor:pointer; transition:.3s;
+    }
+    .toggle-slider::before {
+      content:''; position:absolute; width:18px; height:18px; border-radius:50%;
+      background:#fff; top:3px; left:3px; transition:.3s; box-shadow:0 1px 4px rgba(0,0,0,0.2);
+    }
+    .toggle input:checked + .toggle-slider { background:var(--success); }
+    .toggle input:checked + .toggle-slider::before { transform:translateX(20px); }
+
+    /* CSV upload */
+    .upload-zone {
+      border:2px dashed var(--border); border-radius:12px; padding:32px;
+      text-align:center; cursor:pointer; transition:.2s; background:var(--bg);
+    }
+    .upload-zone:hover, .upload-zone.drag { border-color:var(--primary); background:#EEF2FF; }
+    .upload-zone .icon { font-size:2.5rem; margin-bottom:10px; }
+    .upload-zone p { font-size:0.88rem; color:var(--muted); }
+    .upload-zone strong { color:var(--primary); }
+
+    /* Preview table */
+    #csv-preview { margin-top:16px; overflow-x:auto; }
+    #csv-preview table { min-width:600px; }
+
+    /* Section panels */
+    .panel { display:none; }
+    .panel.active { display:block; }
+
+    /* Badge */
+    .badge-info { background:#EEF2FF; color:#3730A3; font-size:0.7rem; font-weight:700; padding:2px 8px; border-radius:6px; }
+
+    /* Toast */
+    #toast-container { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:8px; }
+    .toast {
+      background:var(--text); color:#fff; padding:13px 18px; border-radius:10px;
+      font-size:0.87rem; font-weight:500; box-shadow:0 6px 24px rgba(0,0,0,0.2);
+      display:flex; align-items:center; gap:10px; min-width:240px;
+      border-left:4px solid var(--success);
+      animation:toastIn .3s ease;
+    }
+    .toast.error { border-left-color:var(--danger); }
+    @keyframes toastIn { from { opacity:0; transform:translateX(40px); } to { opacity:1; transform:none; } }
+
+    /* Responsive */
+    @media (max-width:900px) {
+      .sidebar { transform:translateX(-100%); }
+      .main { margin-left:0; }
+      .stats-grid { grid-template-columns:repeat(2,1fr); }
+      .price-calc-grid { grid-template-columns:1fr; }
+      .price-calc-grid .arrow { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ LOGIN ═════════════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="logo">Doordarshan <span>Electronics</span></div>
+    <p>Admin Panel · Osmanabad</p>
+    <h2>🔐 Sign In</h2>
+    <input class="login-input" type="text" id="login-user" placeholder="Username" autocomplete="username" />
+    <input class="login-input" type="password" id="login-pass" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" />
+    <button class="login-btn" onclick="doLogin()">Sign In</button>
+    <div class="login-error" id="login-error">❌ Incorrect username or password</div>
+    <p style="margin-top:16px;font-size:0.72rem;color:#aaa;">Default: admin / admin123</p>
+  </div>
+</div>
+
+<!-- ══ APP ════════════════════════════════════════════════════ -->
+<div id="app">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      Doordarshan <span>Electronics</span>
+      <div class="sidebar-sub">Admin Panel</div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">Main</div>
+      <button class="nav-link active" onclick="showPanel('dashboard',this)">📊 Dashboard</button>
+      <button class="nav-link" onclick="showPanel('products',this)">📦 Products</button>
+      <button class="nav-link" onclick="showPanel('upload',this)">📂 CSV / XLS Upload</button>
+      <div class="nav-label" style="margin-top:8px;">Settings</div>
+      <button class="nav-link" onclick="showPanel('settings',this)">⚙️ Settings</button>
+      <a class="nav-link" href="index.html" target="_blank">🌐 View Website</a>
+    </div>
+    <div class="sidebar-footer">
+      Logged in as <strong>Admin</strong>
+      <button class="logout-btn" onclick="doLogout()">Sign Out</button>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <h1 id="panel-title">Dashboard</h1>
+      <div class="topbar-actions">
+        <button class="btn btn-primary" onclick="showPanel('products',document.querySelector('.nav-link:nth-child(2))'));openAddModal()">+ Add Product</button>
+        <a href="index.html" target="_blank" class="btn btn-outline">🌐 Live Site</a>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ══ DASHBOARD ════════════════════════════════════════ -->
+      <div class="panel active" id="panel-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#EEF2FF;">📦</div>
+            <div class="stat-body"><div class="num" id="stat-total">0</div><div class="lbl">Total Products</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#DCFCE7;">✅</div>
+            <div class="stat-body"><div class="num" id="stat-instock">0</div><div class="lbl">In Stock</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#FEF9C3;">⚡</div>
+            <div class="stat-body"><div class="num" id="stat-low">0</div><div class="lbl">Low Stock (≤3)</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:#FEE2E2;">❌</div>
+            <div class="stat-body"><div class="num" id="stat-out">0</div><div class="lbl">Out of Stock</div></div>
+          </div>
+        </div>
+
+        <div style="background:var(--surface);border-radius:14px;padding:24px;border:1px solid var(--border);margin-bottom:20px;">
+          <h3 style="margin-bottom:16px;">⚡ Quick Actions</h3>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="showPanel('products',null);openAddModal()">+ Add New Product</button>
+            <button class="btn btn-accent" onclick="showPanel('upload',null)">📂 Bulk CSV Upload</button>
+            <button class="btn btn-outline" onclick="exportData()">⬇️ Export Product Data</button>
+            <button class="btn btn-outline" onclick="downloadTemplate()">📋 Download XLS Template</button>
+          </div>
+        </div>
+
+        <div style="background:var(--surface);border-radius:14px;padding:24px;border:1px solid var(--border);">
+          <h3 style="margin-bottom:4px;">📋 Products Summary</h3>
+          <p style="font-size:0.82rem;color:var(--muted);margin-bottom:16px;">Stock overview from your current catalog</p>
+          <div id="dash-brand-summary"></div>
+        </div>
+      </div>
+
+      <!-- ══ PRODUCTS ══════════════════════════════════════════ -->
+      <div class="panel" id="panel-products">
+        <div class="toolbar">
+          <input class="search-input" type="search" id="prod-search" placeholder="🔍  Search by name, brand, model…" oninput="renderTable()" />
+          <select class="filter-sel" id="prod-brand" onchange="renderTable()">
+            <option value="">All Brands</option>
+          </select>
+          <select class="filter-sel" id="prod-stock" onchange="renderTable()">
+            <option value="">All Stock</option>
+            <option value="in">In Stock</option>
+            <option value="low">Low Stock</option>
+            <option value="out">Out of Stock</option>
+          </select>
+          <button class="btn btn-primary" onclick="openAddModal()">+ Add Product</button>
+          <button class="btn btn-outline" onclick="exportData()">⬇️ Export</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="select-all" onchange="toggleSelectAll(this)" /></th>
+                <th>Product</th>
+                <th>Brand</th>
+                <th>MRP / Sale Price</th>
+                <th>Discount</th>
+                <th>Stock</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="products-tbody"></tbody>
+          </table>
+        </div>
+        <div style="padding:12px 16px;font-size:0.82rem;color:var(--muted);" id="table-footer"></div>
+      </div>
+
+      <!-- ══ CSV UPLOAD ════════════════════════════════════════ -->
+      <div class="panel" id="panel-upload">
+        <div style="background:var(--surface);border-radius:14px;padding:28px;border:1px solid var(--border);max-width:800px;">
+          <h2 style="margin-bottom:8px;">📂 Bulk Product Upload</h2>
+          <p style="color:var(--muted);font-size:0.88rem;margin-bottom:24px;">Upload a CSV or Excel file to add/update multiple products at once.</p>
+
+          <div style="margin-bottom:20px;">
+            <button class="btn btn-outline" onclick="downloadTemplate()">📋 Download Sample CSV Template</button>
+            <span style="margin-left:10px;font-size:0.82rem;color:var(--muted);">Fill the template and upload it below</span>
+          </div>
+
+          <div style="background:#FFFBEB;border:1.5px solid #FCD34D;border-radius:10px;padding:14px;margin-bottom:20px;font-size:0.84rem;color:#92400E;">
+            <strong>📌 CSV Column Format:</strong><br/>
+            <code style="display:block;margin-top:6px;font-size:0.8rem;">id, name, brand, category, subcategory, model, mrp, price, stock, description</code>
+            <span style="font-size:0.78rem;color:var(--muted);">Leave <code>id</code> blank for new products. Use existing <code>id</code> to update.</span>
+          </div>
+
+          <div class="upload-zone" id="upload-zone" onclick="document.getElementById('csv-file').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)">
+            <div class="icon">📄</div>
+            <p><strong>Click to upload</strong> or drag & drop your CSV / XLS file here</p>
+            <p style="margin-top:4px;font-size:0.78rem;">Supports: .csv, .xlsx, .xls</p>
+          </div>
+          <input type="file" id="csv-file" accept=".csv,.xlsx,.xls" style="display:none;" onchange="handleFileUpload(this.files[0])" />
+
+          <div id="csv-preview"></div>
+          <div id="upload-actions" style="display:none;margin-top:16px;display:none;">
+            <button class="btn btn-success" id="confirm-upload-btn">✅ Confirm Import</button>
+            <button class="btn btn-outline" onclick="document.getElementById('csv-preview').innerHTML='';document.getElementById('upload-actions').style.display='none'">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ SETTINGS ══════════════════════════════════════════ -->
+      <div class="panel" id="panel-settings">
+        <div style="background:var(--surface);border-radius:14px;padding:28px;border:1px solid var(--border);max-width:520px;">
+          <h2 style="margin-bottom:20px;">⚙️ Settings</h2>
+          <div class="field" style="margin-bottom:16px;">
+            <label>Shop Name</label>
+            <input type="text" value="Doordarshan Electronics" id="setting-shop-name" />
+          </div>
+          <div class="field" style="margin-bottom:16px;">
+            <label>WhatsApp Number</label>
+            <input type="text" value="7020209281" id="setting-wa" />
+          </div>
+          <div class="field" style="margin-bottom:16px;">
+            <label>Phone Number</label>
+            <input type="text" value="7020209281" id="setting-phone" />
+          </div>
+          <div class="field" style="margin-bottom:16px;">
+            <label>Change Admin Password</label>
+            <input type="password" placeholder="New password" id="setting-pass" />
+          </div>
+          <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
+          <hr style="margin:28px 0;border-color:var(--border);" />
+          <h3 style="margin-bottom:12px;color:var(--danger);">⚠️ Danger Zone</h3>
+          <button class="btn btn-danger" onclick="resetAllEdits()">🔄 Reset All Price Edits (Restore Defaults)</button>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ══ EDIT / ADD MODAL ═══════════════════════════════════════ -->
+<div class="modal-overlay" id="edit-modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modal-title">Edit Product</h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-id" />
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Brand</label>
+          <select id="edit-brand">
+            <option>Sony</option><option>Samsung</option><option>LG</option>
+            <option>TCL</option><option>Hisense</option><option>Metz</option>
+            <option>Bush</option><option>OnePlus</option><option>Skyworth</option>
+            <option>PHX</option><option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Model Number</label>
+          <input type="text" id="edit-model" placeholder="e.g. K-43S25M2" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Product Name</label>
+        <input type="text" id="edit-name" placeholder="e.g. Sony Bravia 43″ 4K Google TV" />
+      </div>
+
+      <!-- ── Price Calculator ── -->
+      <div class="price-calc-box">
+        <h4>💰 Price Calculator — MRP & Sale Price</h4>
+        <div class="price-calc-grid">
+          <div class="calc-field">
+            <label>MRP (₹)</label>
+            <input type="number" id="edit-mrp" placeholder="55000" oninput="calcPrice('mrp')" />
+            <span style="font-size:0.7rem;color:#6366F1;margin-top:3px;">Enter full market price</span>
+          </div>
+          <div class="arrow">→</div>
+          <div class="calc-field">
+            <label>Discount %</label>
+            <input type="number" id="edit-discount-pct" placeholder="20" min="0" max="90" oninput="calcPrice('pct')" />
+            <span style="font-size:0.7rem;color:#6366F1;margin-top:3px;">Enter % OR sale price</span>
+          </div>
+          <div class="arrow">→</div>
+          <div class="calc-field">
+            <label>Sale Price (₹)</label>
+            <input type="number" id="edit-price" placeholder="44000" oninput="calcPrice('price')" />
+            <span style="font-size:0.7rem;color:#6366F1;margin-top:3px;">Customer pays this</span>
+          </div>
+        </div>
+        <!-- Live preview -->
+        <div class="price-preview" id="price-preview">
+          <span style="color:var(--muted);font-size:0.85rem;">Enter MRP and Sale Price above to preview…</span>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Stock Quantity</label>
+          <input type="number" id="edit-stock" placeholder="5" min="0" />
+        </div>
+        <div class="field">
+          <label>Screen Size (inches)</label>
+          <input type="number" id="edit-size" placeholder="43" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Description</label>
+        <textarea id="edit-desc" placeholder="Short product description for the website…"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Display Type / Features (comma-separated)</label>
+        <input type="text" id="edit-type" placeholder="4K, Smart TV, Google TV, QLED" />
+        <span class="helper">Used for filtering. Options: OLED, QLED, 4K, Smart TV, Google TV, Full HD, ULED</span>
+      </div>
+
+      <div style="border:1.5px solid var(--border);border-radius:10px;padding:14px;">
+        <div class="toggle-row">
+          <div><label>Show on Website</label><br><small>Toggle off to hide product without deleting</small></div>
+          <label class="toggle"><input type="checkbox" id="edit-active" checked /><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-row" style="border-top:1px solid var(--border);margin-top:8px;padding-top:8px;">
+          <div><label>Mark as New Arrival</label><br><small>Shows "New" badge on product card</small></div>
+          <label class="toggle"><input type="checkbox" id="edit-new" /><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-row" style="border-top:1px solid var(--border);margin-top:8px;padding-top:8px;">
+          <div><label>Featured Product</label><br><small>Appears in "Featured Products" section on homepage</small></div>
+          <label class="toggle"><input type="checkbox" id="edit-featured" /><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveProduct()">💾 Save Product</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TOAST ══════════════════════════════════════════════════ -->
+<div id="toast-container"></div>
+
+<script src="js/products-data.js"></script>
+<script>
+// ── Auth ─────────────────────────────────────────────────────
+const ADMIN_PASS_KEY = 'de_admin_pass';
+const EDITS_KEY      = 'de_admin_edits_v2'; // localStorage key for price overrides
+const ADDED_KEY      = 'de_admin_added_v1'; // manually added products
+
+function getPassword() { return localStorage.getItem(ADMIN_PASS_KEY) || 'admin123'; }
+function getUsername()  { return localStorage.getItem('de_admin_user') || 'admin'; }
+
+function doLogin() {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value;
+  if (u === getUsername() && p === getPassword()) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    initApp();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+  }
+}
+function doLogout() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+}
+
+// ── Product Storage ───────────────────────────────────────────
+// Edits are stored in localStorage as { [id]: { price, mrp, stock, name, ... } }
+// Added products are stored separately
+function getEdits() { try { return JSON.parse(localStorage.getItem(EDITS_KEY)) || {}; } catch { return {}; } }
+function saveEdits(e) { localStorage.setItem(EDITS_KEY, JSON.stringify(e)); }
+function getAdded() { try { return JSON.parse(localStorage.getItem(ADDED_KEY)) || []; } catch { return []; } }
+function saveAdded(a) { localStorage.setItem(ADDED_KEY, JSON.stringify(a)); }
+
+// Merge base + edits
+function getMergedProducts() {
+  const edits  = getEdits();
+  const added  = getAdded();
+  const base   = PRODUCTS.map(p => {
+    const e = edits[p.id];
+    return e ? { ...p, ...e } : { ...p };
+  });
+  return [...base, ...added];
+}
+
+function getNextId() {
+  const all = getMergedProducts();
+  return Math.max(...all.map(p => p.id), 100) + 1;
+}
+
+// ── Init App ──────────────────────────────────────────────────
+function initApp() {
+  updateStats();
+  renderTable();
+  renderBrandSummary();
+  populateBrandFilter();
+}
+
+function showPanel(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.getElementById('panel-title').textContent = { dashboard:'Dashboard', products:'Products', upload:'CSV / XLS Upload', settings:'Settings' }[name] || name;
+  if (btn) btn.classList.add('active');
+}
+
+// ── Stats ─────────────────────────────────────────────────────
+function updateStats() {
+  const prods = getMergedProducts();
+  document.getElementById('stat-total').textContent   = prods.length;
+  document.getElementById('stat-instock').textContent  = prods.filter(p => p.stock > 0).length;
+  document.getElementById('stat-low').textContent      = prods.filter(p => p.stock > 0 && p.stock <= 3).length;
+  document.getElementById('stat-out').textContent      = prods.filter(p => p.stock === 0).length;
+}
+
+function renderBrandSummary() {
+  const prods = getMergedProducts();
+  const brands = {};
+  prods.forEach(p => { brands[p.brand] = (brands[p.brand] || { total:0, inStock:0 }); brands[p.brand].total++; if(p.stock>0) brands[p.brand].inStock++; });
+  const el = document.getElementById('dash-brand-summary');
+  el.innerHTML = `<table style="width:100%;border-collapse:collapse;">
+    <thead><tr style="background:var(--bg);">
+      <th style="padding:10px 16px;text-align:left;font-size:0.75rem;color:var(--muted);">Brand</th>
+      <th style="padding:10px 16px;text-align:center;font-size:0.75rem;color:var(--muted);">Total</th>
+      <th style="padding:10px 16px;text-align:center;font-size:0.75rem;color:var(--muted);">In Stock</th>
+      <th style="padding:10px 16px;text-align:center;font-size:0.75rem;color:var(--muted);">Out of Stock</th>
+    </tr></thead>
+    <tbody>
+      ${Object.entries(brands).map(([b,v],i) => `<tr style="border-top:1px solid var(--border);${i%2?'background:var(--bg)':''}">
+        <td style="padding:10px 16px;font-weight:700;">${b}</td>
+        <td style="padding:10px 16px;text-align:center;">${v.total}</td>
+        <td style="padding:10px 16px;text-align:center;color:var(--success);font-weight:700;">${v.inStock}</td>
+        <td style="padding:10px 16px;text-align:center;color:${v.total-v.inStock>0?'var(--danger)':'var(--muted)'};font-weight:700;">${v.total-v.inStock}</td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+function populateBrandFilter() {
+  const brands = [...new Set(getMergedProducts().map(p => p.brand))].sort();
+  const sel = document.getElementById('prod-brand');
+  brands.forEach(b => { const o = document.createElement('option'); o.value=b; o.textContent=b; sel.appendChild(o); });
+}
+
+// ── Products Table ────────────────────────────────────────────
+function renderTable() {
+  const q     = (document.getElementById('prod-search')?.value || '').toLowerCase();
+  const brand = document.getElementById('prod-brand')?.value || '';
+  const stock = document.getElementById('prod-stock')?.value || '';
+  let prods = getMergedProducts().filter(p => {
+    if (q && !p.name.toLowerCase().includes(q) && !p.brand.toLowerCase().includes(q) && !(p.model||'').toLowerCase().includes(q)) return false;
+    if (brand && p.brand !== brand) return false;
+    if (stock === 'in'  && p.stock === 0) return false;
+    if (stock === 'low' && (p.stock === 0 || p.stock > 3)) return false;
+    if (stock === 'out' && p.stock > 0) return false;
+    return true;
+  });
+
+  const edits = getEdits();
+  const tbody = document.getElementById('products-tbody');
+  tbody.innerHTML = prods.map(p => {
+    const disc   = p.mrp > 1 ? Math.round(((p.mrp - p.price) / p.mrp) * 100) : 0;
+    const isLow  = p.stock > 0 && p.stock <= 3;
+    const stockCls = p.stock === 0 ? 'stock-out' : isLow ? 'stock-low' : 'stock-in';
+    const stockLbl = p.stock === 0 ? '✗ Out' : isLow ? `⚡ ${p.stock} left` : `✓ ${p.stock}`;
+    const isEdited = edits[p.id];
+    return `<tr>
+      <td><input type="checkbox" class="row-check" value="${p.id}" /></td>
+      <td>
+        <div class="product-cell">
+          <div class="product-thumb" style="background:${getBrandColor(p.brand).bg};">
+            <span style="color:${getBrandColor(p.brand).text};font-size:0.55rem;font-weight:900;text-align:center;line-height:1.2;">${p.brand}</span>
+          </div>
+          <div class="product-name-cell">
+            <div class="name">${p.name}</div>
+            <div class="model">${p.model || ''} ${isEdited ? '<span class="badge-info">edited</span>' : ''}</div>
+          </div>
+        </div>
+      </td>
+      <td><span class="brand-tag">${p.brand}</span></td>
+      <td>
+        <div class="price-cell">
+          ${p.mrp > 1 ? `<div class="mrp">₹${p.mrp.toLocaleString('en-IN')}</div>` : '<div class="mrp">—</div>'}
+          <div class="sale">₹${p.price.toLocaleString('en-IN')}</div>
+        </div>
+      </td>
+      <td>${disc > 0 ? `<span class="discount-pill">-${disc}%</span>` : '<span style="color:var(--muted);font-size:0.8rem;">—</span>'}</td>
+      <td><span class="stock-pill ${stockCls}">${stockLbl}</span></td>
+      <td><span style="font-size:0.78rem;color:${p.isActive===false?'var(--danger)':'var(--success)'};">${p.isActive===false?'Hidden':'Visible'}</span></td>
+      <td>
+        <div class="action-btns-cell">
+          <button class="icon-btn" style="background:#EEF2FF;color:#4338CA;" title="Edit" onclick="openEditModal(${p.id})">✏️</button>
+          <button class="icon-btn" style="background:#FEE2E2;color:#DC2626;" title="Delete" onclick="deleteProduct(${p.id})">🗑️</button>
+          <a class="icon-btn" style="background:#F0FDF4;color:#15803D;" title="View on site" href="product.html?id=${p.id}" target="_blank">👁️</a>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('table-footer').textContent = `Showing ${prods.length} of ${getMergedProducts().length} products`;
+}
+
+function toggleSelectAll(cb) {
+  document.querySelectorAll('.row-check').forEach(c => c.checked = cb.checked);
+}
+
+// ── Price Calc ───────────────────────────────────────────────
+function calcPrice(changed) {
+  const mrpEl   = document.getElementById('edit-mrp');
+  const pctEl   = document.getElementById('edit-discount-pct');
+  const priceEl = document.getElementById('edit-price');
+  const mrp   = parseFloat(mrpEl.value)   || 0;
+  const pct   = parseFloat(pctEl.value)   || 0;
+  const price = parseFloat(priceEl.value) || 0;
+
+  if (changed === 'mrp' || changed === 'pct') {
+    if (mrp > 0 && pct > 0) {
+      const sp = Math.round(mrp * (1 - pct / 100));
+      priceEl.value = sp;
+    }
+  } else if (changed === 'price') {
+    if (mrp > 0 && price > 0 && price < mrp) {
+      const disc = Math.round(((mrp - price) / mrp) * 100);
+      pctEl.value = disc;
+    }
+  }
+  updatePricePreview();
+}
+
+function updatePricePreview() {
+  const mrp   = parseFloat(document.getElementById('edit-mrp').value)   || 0;
+  const price = parseFloat(document.getElementById('edit-price').value) || 0;
+  const prev  = document.getElementById('price-preview');
+  if (!mrp || !price) { prev.innerHTML = `<span style="color:var(--muted);font-size:0.85rem;">Enter MRP and Sale Price to preview…</span>`; return; }
+  const disc = mrp > 1 && price < mrp ? Math.round(((mrp - price) / mrp) * 100) : 0;
+  const save = mrp - price;
+  prev.innerHTML = `
+    <span class="preview-sale">₹${price.toLocaleString('en-IN')}</span>
+    ${mrp > 1 ? `<span class="preview-mrp">₹${mrp.toLocaleString('en-IN')}</span>` : ''}
+    ${disc > 0 ? `<span class="preview-badge">${disc}% OFF</span>` : ''}
+    ${save > 0 ? `<span style="color:var(--success);font-size:0.82rem;font-weight:600;">You save ₹${save.toLocaleString('en-IN')}</span>` : ''}
+  `;
+}
+
+// ── Modals ────────────────────────────────────────────────────
+function openEditModal(id) {
+  const prods = getMergedProducts();
+  const p = prods.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('modal-title').textContent = '✏️ Edit Product';
+  document.getElementById('edit-id').value       = p.id;
+  document.getElementById('edit-name').value     = p.name;
+  document.getElementById('edit-brand').value    = p.brand;
+  document.getElementById('edit-model').value    = p.model || '';
+  document.getElementById('edit-mrp').value      = p.mrp > 1 ? p.mrp : '';
+  document.getElementById('edit-price').value    = p.price;
+  document.getElementById('edit-stock').value    = p.stock;
+  document.getElementById('edit-size').value     = p.size || '';
+  document.getElementById('edit-desc').value     = p.description || '';
+  document.getElementById('edit-type').value     = (p.type || []).join(', ');
+  document.getElementById('edit-active').checked   = p.isActive !== false;
+  document.getElementById('edit-new').checked      = p.isNew || false;
+  document.getElementById('edit-featured').checked = p.isFeatured || false;
+  const disc = p.mrp > 1 ? Math.round(((p.mrp - p.price) / p.mrp) * 100) : 0;
+  document.getElementById('edit-discount-pct').value = disc || '';
+  updatePricePreview();
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function openAddModal() {
+  document.getElementById('modal-title').textContent = '+ Add New Product';
+  ['edit-id','edit-name','edit-model','edit-mrp','edit-price','edit-stock','edit-size','edit-desc','edit-type','edit-discount-pct'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('edit-brand').value = 'Sony';
+  document.getElementById('edit-active').checked   = true;
+  document.getElementById('edit-new').checked      = false;
+  document.getElementById('edit-featured').checked = false;
+  updatePricePreview();
+  showPanel('products', document.querySelectorAll('.nav-link')[1]);
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('edit-modal').classList.remove('open'); }
+
+function saveProduct() {
+  const id       = parseInt(document.getElementById('edit-id').value);
+  const name     = document.getElementById('edit-name').value.trim();
+  const brand    = document.getElementById('edit-brand').value;
+  const model    = document.getElementById('edit-model').value.trim();
+  const mrp      = parseFloat(document.getElementById('edit-mrp').value)   || 1;
+  const price    = parseFloat(document.getElementById('edit-price').value) || 0;
+  const stock    = parseInt(document.getElementById('edit-stock').value)   || 0;
+  const size     = parseInt(document.getElementById('edit-size').value)    || 0;
+  const desc     = document.getElementById('edit-desc').value.trim();
+  const typeRaw  = document.getElementById('edit-type').value;
+  const isActive = document.getElementById('edit-active').checked;
+  const isNew    = document.getElementById('edit-new').checked;
+  const isFeat   = document.getElementById('edit-featured').checked;
+
+  if (!name)  { toast('❌ Product name is required', 'error'); return; }
+  if (!price) { toast('❌ Sale price is required', 'error'); return; }
+
+  const type = typeRaw ? typeRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+  const updated = { name, brand, model, mrp, price, stock, size, description: desc, type, isActive, isNew, isFeatured: isFeat };
+
+  const baseProd = PRODUCTS.find(p => p.id === id);
+  if (baseProd) {
+    // Update existing
+    const edits = getEdits();
+    edits[id] = updated;
+    saveEdits(edits);
+  } else {
+    // Check added list
+    const added = getAdded();
+    const idx = added.findIndex(p => p.id === id);
+    if (idx !== -1) {
+      added[idx] = { ...added[idx], ...updated };
+    } else {
+      // Brand new
+      added.push({ id: getNextId(), category: 'tv', subcategory: size ? size+'-inch' : '', rating: 4.0, reviews: 0, ...updated });
+    }
+    saveAdded(added);
+  }
+
+  toast('✅ Product saved successfully!');
+  closeModal();
+  renderTable();
+  updateStats();
+  renderBrandSummary();
+}
+
+function deleteProduct(id) {
+  if (!confirm('Delete this product? This cannot be undone.')) return;
+  const baseProd = PRODUCTS.find(p => p.id === id);
+  if (baseProd) {
+    // Mark as deleted in edits
+    const edits = getEdits();
+    edits[id] = { ...edits[id], _deleted: true };
+    saveEdits(edits);
+  } else {
+    const added = getAdded().filter(p => p.id !== id);
+    saveAdded(added);
+  }
+  renderTable();
+  updateStats();
+  toast('🗑️ Product deleted');
+}
+
+// ── Export ────────────────────────────────────────────────────
+function exportData() {
+  const prods = getMergedProducts().filter(p => !p._deleted);
+  const header = 'id,name,brand,model,category,subcategory,mrp,price,stock,description\n';
+  const rows = prods.map(p =>
+    [p.id, `"${p.name}"`, p.brand, p.model||'', p.category, p.subcategory||'', p.mrp, p.price, p.stock, `"${(p.description||'').replace(/"/g,'""')}"`].join(',')
+  ).join('\n');
+  const blob = new Blob([header + rows], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a'); a.href=url; a.download='doordarshan_products.csv'; a.click();
+  URL.revokeObjectURL(url);
+  toast('⬇️ Products exported as CSV');
+}
+
+function downloadTemplate() {
+  const header = 'id,name,brand,model,category,subcategory,mrp,price,stock,description\n';
+  const sample = ',"Sony Bravia 50 inch 4K Smart TV",Sony,K-50NEW,tv,50-inch,69999,54999,3,"Great 50 inch 4K TV"\n';
+  const blob = new Blob([header + sample], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a'); a.href=url; a.download='doordarshan_template.csv'; a.click();
+  URL.revokeObjectURL(url);
+  toast('📋 Template downloaded!');
+}
+
+// ── CSV Upload ────────────────────────────────────────────────
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('upload-zone').classList.remove('drag');
+  const f = e.dataTransfer.files[0];
+  if (f) handleFileUpload(f);
+}
+
+function handleFileUpload(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const text = e.target.result;
+    parseAndPreviewCSV(text);
+  };
+  reader.readAsText(file);
+}
+
+function parseAndPreviewCSV(text) {
+  const lines = text.trim().split('\n');
+  if (lines.length < 2) { toast('❌ CSV appears empty', 'error'); return; }
+  const headers = lines[0].split(',').map(h => h.replace(/"/g,'').trim());
+  const rows = lines.slice(1).map(line => {
+    const vals = line.match(/(".*?"|[^,]+|(?<=,)(?=,)|^(?=,))/g) || line.split(',');
+    const obj = {};
+    headers.forEach((h, i) => obj[h] = (vals[i]||'').replace(/"/g,'').trim());
+    return obj;
+  }).filter(r => r.name);
+
+  const preview = document.getElementById('csv-preview');
+  preview.innerHTML = `
+    <div style="margin-top:16px;padding:12px;background:#F0FDF4;border-radius:8px;border:1px solid #86EFAC;font-size:0.85rem;color:#15803D;margin-bottom:12px;">
+      ✅ Found <strong>${rows.length} products</strong> in the file. Preview below — confirm to import.
+    </div>
+    <div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;font-size:0.82rem;">
+      <thead><tr style="background:var(--bg);">
+        ${headers.map(h => `<th style="padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);color:var(--muted);font-size:0.72rem;">${h}</th>`).join('')}
+      </tr></thead>
+      <tbody>
+        ${rows.slice(0,10).map((r,i) => `<tr style="${i%2?'background:var(--bg)':''}">
+          ${headers.map(h => `<td style="padding:8px 12px;border-bottom:1px solid var(--border);">${r[h]||'—'}</td>`).join('')}
+        </tr>`).join('')}
+        ${rows.length > 10 ? `<tr><td colspan="${headers.length}" style="padding:10px 12px;color:var(--muted);font-style:italic;">…and ${rows.length-10} more rows</td></tr>` : ''}
+      </tbody>
+    </table></div>
+  `;
+
+  const actEl = document.getElementById('upload-actions');
+  actEl.style.display = 'flex';
+  actEl.style.gap = '10px';
+  document.getElementById('confirm-upload-btn').onclick = () => importCSVRows(rows);
+}
+
+function importCSVRows(rows) {
+  const added = getAdded();
+  const edits = getEdits();
+  let updated = 0, added_ = 0;
+  rows.forEach(r => {
+    const id = parseInt(r.id);
+    const data = {
+      name: r.name, brand: r.brand||'', model: r.model||'',
+      category: r.category||'tv', subcategory: r.subcategory||'',
+      mrp: parseFloat(r.mrp)||1, price: parseFloat(r.price)||0,
+      stock: parseInt(r.stock)||0, description: r.description||'',
+      type: [], rating: 4.0, reviews: 0, isActive: true, isNew: false, isFeatured: false,
+    };
+    if (id && PRODUCTS.find(p => p.id === id)) {
+      edits[id] = { ...edits[id], ...data }; updated++;
+    } else if (id && added.find(p => p.id === id)) {
+      const idx = added.findIndex(p => p.id === id);
+      added[idx] = { ...added[idx], ...data }; updated++;
+    } else {
+      added.push({ id: getNextId() + added_, ...data }); added_++;
+    }
+  });
+  saveEdits(edits);
+  saveAdded(added);
+  toast(`✅ Imported! Updated: ${updated}, Added: ${added_}`);
+  document.getElementById('csv-preview').innerHTML = '';
+  document.getElementById('upload-actions').style.display = 'none';
+  renderTable();
+  updateStats();
+}
+
+// ── Settings ─────────────────────────────────────────────────
+function saveSettings() {
+  const pass = document.getElementById('setting-pass').value;
+  if (pass) localStorage.setItem(ADMIN_PASS_KEY, pass);
+  toast('✅ Settings saved!');
+}
+
+function resetAllEdits() {
+  if (!confirm('This will reset ALL price and stock edits back to the original product data. Continue?')) return;
+  localStorage.removeItem(EDITS_KEY);
+  localStorage.removeItem(ADDED_KEY);
+  renderTable();
+  updateStats();
+  toast('🔄 All edits reset to defaults');
+}
+
+// ── Toast ─────────────────────────────────────────────────────
+function toast(msg, type = 'success') {
+  const c = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = `toast${type==='error'?' error':''}`;
+  el.textContent = msg;
+  c.appendChild(el);
+  setTimeout(() => { el.style.opacity='0'; el.style.transition='.3s'; setTimeout(()=>el.remove(),300); }, 3000);
+}
+
+// ── Keyboard ──────────────────────────────────────────────────
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>
