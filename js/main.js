@@ -340,6 +340,31 @@ function initBackToTop() {
   btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 }
 
+async function renderDynamicCategories() {
+  const catGrid = document.querySelector('.categories-grid');
+  const searchSelect = document.getElementById('search-category');
+  let cats = typeof fetchCategoriesFromDB === 'function' ? await fetchCategoriesFromDB() : [];
+
+  if (searchSelect && cats && cats.length > 0) {
+    searchSelect.innerHTML = '<option value="">All Categories</option>' + 
+      cats.map(c => `<option value="${c.key}">${c.name}</option>`).join('');
+  }
+
+  if (catGrid && cats && cats.length > 0) {
+    catGrid.innerHTML = cats.map(c => {
+      const count = typeof PRODUCTS !== 'undefined' ? PRODUCTS.filter(p => p.category === c.key).length : 0;
+      const countText = count > 0 ? `${count} product${count > 1 ? 's' : ''}` : 'In Stock';
+      return `
+        <a href="category.html?cat=${c.key}" class="cat-card">
+          <div class="cat-icon">${c.icon || '📦'}</div>
+          <div class="cat-name">${c.name}</div>
+          <div class="cat-count">${countText}</div>
+        </a>
+      `;
+    }).join('');
+  }
+}
+
 // ── Init everything on DOM ready ─────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
   initHeroSlider();
@@ -350,7 +375,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initWhatsAppFloat();
   initBackToTop();
 
-  // Load live products from Supabase DB if available
+  // Load live products & categories from Supabase DB if available
   if (typeof fetchProductsFromDB === 'function') {
     const liveProds = await fetchProductsFromDB();
     if (liveProds && liveProds.length > 0 && typeof PRODUCTS !== 'undefined') {
@@ -358,6 +383,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       PRODUCTS.push(...liveProds);
     }
   }
+
+  await renderDynamicCategories();
 
   // Render featured products
   renderSection('featured-products', getFeaturedProducts(8));

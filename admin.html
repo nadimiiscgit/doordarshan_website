@@ -23,7 +23,7 @@
       --sidebar-w:     250px;
     }
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--text); line-height:1.5; }
+    body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--text); line-height:1.5; overflow-x:hidden; }
     a { text-decoration:none; color:inherit; }
     button { cursor:pointer; font-family:inherit; }
     input, select, textarea { font-family:inherit; }
@@ -31,10 +31,10 @@
     /* ── Login Screen ── */
     #login-screen {
       position:fixed; inset:0; background:linear-gradient(135deg,#0F172A,#1E293B);
-      display:flex; align-items:center; justify-content:center; z-index:9999;
+      display:flex; align-items:center; justify-content:center; z-index:9999; padding:20px;
     }
     .login-card {
-      background:#fff; border-radius:20px; padding:40px; width:380px;
+      background:#fff; border-radius:20px; padding:40px 32px; width:100%; max-width:400px;
       box-shadow:0 20px 60px rgba(0,0,0,0.3); text-align:center;
     }
     .login-card .logo { font-size:1.4rem; font-weight:900; color:var(--primary); margin-bottom:4px; }
@@ -62,11 +62,12 @@
     .sidebar {
       position:fixed; top:0; left:0; bottom:0; width:var(--sidebar-w);
       background:var(--primary); color:#fff; display:flex; flex-direction:column;
-      z-index:100;
+      z-index:100; transition:transform 0.3s ease;
     }
     .sidebar-logo {
       padding:24px 20px; font-size:1.05rem; font-weight:900; letter-spacing:-0.01em;
       border-bottom:1px solid rgba(255,255,255,0.08);
+      display:flex; justify-content:space-between; align-items:center;
     }
     .sidebar-logo span { color:#60A5FA; }
     .sidebar-sub { font-size:0.65rem; font-weight:500; opacity:0.6; letter-spacing:0.12em; text-transform:uppercase; margin-top:3px; }
@@ -84,15 +85,18 @@
     .logout-btn:hover { background:rgba(255,255,255,0.18); color:#fff; }
 
     /* Main Content */
-    .main { margin-left:var(--sidebar-w); min-height:100vh; }
+    .main { margin-left:var(--sidebar-w); min-height:100vh; transition:margin-left 0.3s ease; }
     .topbar {
       background:var(--surface); border-bottom:1px solid var(--border);
       padding:16px 28px; display:flex; align-items:center; justify-content:space-between;
       position:sticky; top:0; z-index:50; box-shadow:0 1px 4px rgba(0,0,0,0.04);
+      gap:12px;
     }
     .topbar h1 { font-size:1.25rem; font-weight:800; color:var(--primary); }
-    .topbar-actions { display:flex; gap:10px; }
-    .content { padding:28px; }
+    .topbar-left { display:flex; align-items:center; gap:12px; }
+    .mobile-nav-toggle { display:none; background:none; border:none; font-size:1.4rem; cursor:pointer; padding:4px; }
+    .topbar-actions { display:flex; gap:10px; flex-wrap:wrap; }
+    .content { padding:24px; }
 
     /* ── Stats Cards ── */
     .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px; }
@@ -120,7 +124,7 @@
       border:1.5px solid var(--border); border-radius:8px; padding:10px 14px;
       font-size:0.88rem; background:var(--surface); outline:none; cursor:pointer; color:var(--text);
     }
-    .btn { display:inline-flex; align-items:center; gap:7px; padding:10px 18px; border-radius:8px; font-size:0.88rem; font-weight:700; border:none; transition:.18s; cursor:pointer; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:7px; padding:10px 18px; border-radius:8px; font-size:0.88rem; font-weight:700; border:none; transition:.18s; cursor:pointer; min-height:42px; }
     .btn-primary { background:var(--primary); color:#fff; }
     .btn-primary:hover { background:var(--primary-light); }
     .btn-accent  { background:var(--accent); color:#fff; }
@@ -131,8 +135,8 @@
     .btn-outline:hover { border-color:var(--accent); color:var(--accent); }
 
     /* ── Products Table ── */
-    .table-wrap { background:var(--surface); border-radius:14px; border:1px solid var(--border); overflow:hidden; }
-    table { width:100%; border-collapse:collapse; }
+    .table-wrap { background:var(--surface); border-radius:14px; border:1px solid var(--border); overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; min-width:750px; }
     thead th {
       background:var(--bg); padding:14px 16px; text-align:left;
       font-size:0.75rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase;
@@ -152,6 +156,7 @@
     .product-name-cell .name { font-weight:700; color:var(--primary); font-size:0.88rem; }
     .product-name-cell .model { font-size:0.75rem; color:var(--muted); margin-top:2px; }
     .brand-tag { background:#EFF6FF; color:#1E40AF; font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:999px; }
+    .cat-tag   { background:#F3E8FF; color:#6B21A8; font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:999px; }
     .price-cell .mrp { font-size:0.75rem; color:var(--muted); text-decoration:line-through; }
     .price-cell .sale { font-size:0.95rem; font-weight:800; color:var(--primary); }
     .discount-pill { background:#FEE2E2; color:#DC2626; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:999px; }
@@ -160,18 +165,18 @@
     .stock-low { background:#FEF9C3; color:#92400E; }
     .stock-out { background:#FEE2E2; color:#DC2626; }
     .action-btns-cell { display:flex; gap:6px; }
-    .icon-btn { width:32px; height:32px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; font-size:0.85rem; border:none; transition:.15s; cursor:pointer; }
+    .icon-btn { width:34px; height:34px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; font-size:0.85rem; border:none; transition:.15s; cursor:pointer; }
     .icon-btn:hover { transform:translateY(-1px); }
 
     /* ── Modals ── */
     .modal-overlay {
       position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px);
-      display:none; align-items:center; justify-content:center; z-index:9000; padding:20px;
+      display:none; align-items:center; justify-content:center; z-index:9000; padding:16px;
     }
     .modal-overlay.open { display:flex; }
     .modal {
       background:var(--surface); border-radius:20px; width:100%; max-width:680px;
-      max-height:90vh; overflow-y:auto; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);
+      max-height:92vh; overflow-y:auto; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);
     }
     .modal-header {
       padding:20px 24px; border-bottom:1px solid var(--border);
@@ -257,6 +262,25 @@
     }
     .toast.error { border-left-color:var(--danger); }
     @keyframes toastIn { from { opacity:0; transform:translateX(40px); } to { opacity:1; transform:none; } }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .sidebar { transform:translateX(-100%); }
+      .sidebar.open { transform:translateX(0); }
+      .main { margin-left:0; }
+      .mobile-nav-toggle { display:block; }
+      .stats-grid { grid-template-columns:repeat(2,1fr); }
+      .price-calc-grid { grid-template-columns:1fr; }
+      .price-calc-grid .arrow { display:none; }
+      .form-grid { grid-template-columns:1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .content { padding:16px; }
+      .stats-grid { grid-template-columns:1fr; }
+      .topbar { padding:12px 16px; }
+      .topbar h1 { font-size:1.1rem; }
+    }
   </style>
 </head>
 <body>
@@ -265,36 +289,40 @@
 <div id="login-screen">
   <div class="login-card">
     <div class="logo">Doordarshan <span>Electronics</span></div>
-    <p>Admin Panel · Osmanabad</p>
+    <p>Store Owner Admin Panel · Osmanabad</p>
     <h2>🔐 Sign In</h2>
     <input class="login-input" type="text" id="login-user" placeholder="Username" autocomplete="username" />
     <input class="login-input" type="password" id="login-pass" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" />
     <button class="login-btn" onclick="doLogin()">Sign In</button>
     <div class="login-error" id="login-error">❌ Incorrect username or password</div>
-    <p style="margin-top:16px;font-size:0.72rem;color:#94A3B8;">Default: admin / admin123</p>
+    <p style="margin-top:16px;font-size:0.72rem;color:#94A3B8;">Default login: admin / admin123</p>
   </div>
 </div>
 
 <!-- ══ APP ════════════════════════════════════════════════════ -->
 <div id="app">
+  <!-- Sidebar Overlay for mobile -->
+  <div id="sidebar-overlay" onclick="toggleMobileSidebar()" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99;display:none;"></div>
+
   <!-- Sidebar -->
-  <nav class="sidebar">
+  <nav class="sidebar" id="sidebar">
     <div class="sidebar-logo">
-      Doordarshan <span>Electronics</span>
-      <div class="sidebar-sub">Database &amp; Catalog Admin</div>
+      <div>Doordarshan <span>Electronics</span><div class="sidebar-sub">Shop Owner Dashboard</div></div>
+      <button onclick="toggleMobileSidebar()" style="background:none;border:none;color:#fff;font-size:1.2rem;display:none;" class="mobile-close">✕</button>
     </div>
     <div class="nav-group">
-      <div class="nav-label">Main</div>
+      <div class="nav-label">Main Catalog</div>
       <button class="nav-link active" onclick="showPanel('dashboard',this)">📊 Dashboard</button>
       <button class="nav-link" onclick="showPanel('products',this)">📦 Products Catalog</button>
+      <button class="nav-link" onclick="showPanel('categories',this)">🏷️ Store Categories</button>
       <button class="nav-link" onclick="showPanel('images',this)">📸 Image Uploader &amp; Bulk</button>
       <button class="nav-link" onclick="showPanel('upload',this)">📂 CSV / XLS Upload</button>
       <div class="nav-label" style="margin-top:8px;">Settings</div>
-      <button class="nav-link" onclick="showPanel('settings',this)">⚙️ Settings</button>
+      <button class="nav-link" onclick="showPanel('settings',this)">⚙️ Admin Settings</button>
       <a class="nav-link" href="index.html" target="_blank">🌐 Live Website</a>
     </div>
     <div class="sidebar-footer">
-      Logged in as <strong>Admin</strong>
+      Logged in as <strong>Store Owner</strong>
       <button class="logout-btn" onclick="doLogout()">Sign Out</button>
     </div>
   </nav>
@@ -302,7 +330,10 @@
   <!-- Main -->
   <div class="main">
     <div class="topbar">
-      <h1 id="panel-title">Dashboard</h1>
+      <div class="topbar-left">
+        <button class="mobile-nav-toggle" onclick="toggleMobileSidebar()">☰</button>
+        <h1 id="panel-title">Dashboard</h1>
+      </div>
       <div class="topbar-actions">
         <button class="btn btn-primary" onclick="showPanel('products',document.querySelectorAll('.nav-link')[1]);openAddModal()">+ Add Product</button>
         <a href="index.html" target="_blank" class="btn btn-outline">🌐 Live Site</a>
@@ -327,24 +358,24 @@
             <div class="stat-body"><div class="num" id="stat-low">0</div><div class="lbl">Low Stock (≤3)</div></div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon" style="background:#FEE2E2;">❌</div>
-            <div class="stat-body"><div class="num" id="stat-out">0</div><div class="lbl">Out of Stock</div></div>
+            <div class="stat-icon" style="background:#F3E8FF;">🏷️</div>
+            <div class="stat-body"><div class="num" id="stat-cats">0</div><div class="lbl">Categories</div></div>
           </div>
         </div>
 
         <div style="background:var(--surface);border-radius:14px;padding:24px;border:1px solid var(--border);margin-bottom:20px;">
-          <h3 style="margin-bottom:16px;">⚡ Quick Actions</h3>
+          <h3 style="margin-bottom:16px;">⚡ Quick Actions for Shop Owner</h3>
           <div style="display:flex;gap:10px;flex-wrap:wrap;">
             <button class="btn btn-primary" onclick="showPanel('products',null);openAddModal()">+ Add New Product</button>
-            <button class="btn btn-accent" onclick="showPanel('images',document.querySelectorAll('.nav-link')[2])">📸 Image Upload &amp; Bulk Assign</button>
-            <button class="btn btn-outline" onclick="showPanel('upload',document.querySelectorAll('.nav-link')[3])">📂 Bulk CSV Upload</button>
+            <button class="btn btn-accent" onclick="showPanel('categories',document.querySelectorAll('.nav-link')[2])">🏷️ Add / Manage Categories</button>
+            <button class="btn btn-accent" style="background:#7C3AED;" onclick="showPanel('images',document.querySelectorAll('.nav-link')[3])">📸 Bulk Upload Images</button>
             <button class="btn btn-outline" onclick="exportData()">⬇️ Export CSV</button>
           </div>
         </div>
 
         <div style="background:var(--surface);border-radius:14px;padding:24px;border:1px solid var(--border);">
-          <h3 style="margin-bottom:4px;">📋 Brand Summary</h3>
-          <p style="font-size:0.82rem;color:var(--muted);margin-bottom:16px;">Stock count by brand in Supabase database</p>
+          <h3 style="margin-bottom:4px;">📋 Category &amp; Stock Summary</h3>
+          <p style="font-size:0.82rem;color:var(--muted);margin-bottom:16px;">Overview of products by category and brand in live database</p>
           <div id="dash-brand-summary"></div>
         </div>
       </div>
@@ -353,6 +384,9 @@
       <div class="panel" id="panel-products">
         <div class="toolbar">
           <input class="search-input" type="search" id="prod-search" placeholder="🔍  Search by name, brand, model…" oninput="renderTable()" />
+          <select class="filter-sel" id="prod-category" onchange="renderTable()">
+            <option value="">All Categories</option>
+          </select>
           <select class="filter-sel" id="prod-brand" onchange="renderTable()">
             <option value="">All Brands</option>
           </select>
@@ -363,7 +397,6 @@
             <option value="out">Out of Stock</option>
           </select>
           <button class="btn btn-primary" onclick="openAddModal()">+ Add Product</button>
-          <button class="btn btn-accent" onclick="showPanel('images',document.querySelectorAll('.nav-link')[2])">📸 Bulk Upload Images</button>
           <button class="btn btn-outline" onclick="exportData()">⬇️ Export</button>
         </div>
 
@@ -373,11 +406,11 @@
               <tr>
                 <th><input type="checkbox" id="select-all" onchange="toggleSelectAll(this)" /></th>
                 <th>Product</th>
+                <th>Category</th>
                 <th>Brand</th>
                 <th>MRP / Sale Price</th>
                 <th>Discount</th>
                 <th>Stock</th>
-                <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -387,21 +420,49 @@
         <div style="padding:14px 16px;font-size:0.82rem;color:var(--muted);" id="table-footer"></div>
       </div>
 
+      <!-- ══ CATEGORIES MANAGER ═══════════════════════════════ -->
+      <div class="panel" id="panel-categories">
+        <div style="background:var(--surface);border-radius:14px;padding:28px;border:1px solid var(--border);max-width:960px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+            <div>
+              <h2 style="margin-bottom:4px;">🏷️ Store Categories Manager</h2>
+              <p style="color:var(--muted);font-size:0.88rem;">Add new product categories or edit existing categories shown on the website.</p>
+            </div>
+            <button class="btn btn-primary" onclick="openAddCategoryModal()">+ Add New Category</button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Icon</th>
+                  <th>Category Name</th>
+                  <th>Category Code (Key)</th>
+                  <th>Description</th>
+                  <th>Total Products</th>
+                </tr>
+              </thead>
+              <tbody id="categories-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <!-- ══ BULK IMAGE UPLOADER ══════════════════════════════ -->
       <div class="panel" id="panel-images">
         <div style="background:var(--surface);border-radius:14px;padding:28px;border:1px solid var(--border);max-width:960px;">
           <h2 style="margin-bottom:8px;">📸 Image Upload &amp; Bulk Assign</h2>
           <p style="color:var(--muted);font-size:0.88rem;margin-bottom:24px;">
-            Upload product photos from your device directly to Supabase storage. You can assign the photo to a single product or select multiple products to apply in bulk.
+            Upload product photos from your phone or computer directly to Supabase storage. You can assign the photo to a single product or select multiple products to apply in bulk.
           </p>
 
           <!-- Step 1 -->
           <div style="background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:14px;padding:20px;margin-bottom:24px;">
-            <h3 style="font-size:0.95rem;color:#1E40AF;margin-bottom:12px;font-weight:800;">Step 1: Upload Image from Device</h3>
+            <h3 style="font-size:0.95rem;color:#1E40AF;margin-bottom:12px;font-weight:800;">Step 1: Select Image File from Device</h3>
             <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
               <input type="file" id="bulk-image-file" accept="image/*" style="padding:10px;background:#fff;border-radius:8px;border:1px solid #93C5FD;font-size:0.88rem;" onchange="handleBulkImageUpload(this.files[0])" />
               <span style="font-size:0.85rem;color:var(--muted);font-weight:700;">OR</span>
-              <input type="text" id="bulk-image-url-input" placeholder="Paste Image URL directly..." style="flex:1;min-width:260px;padding:10px 14px;border:1px solid #93C5FD;border-radius:8px;font-size:0.88rem;" oninput="updateBulkPreview(this.value)" />
+              <input type="text" id="bulk-image-url-input" placeholder="Paste Image URL directly..." style="flex:1;min-width:240px;padding:10px 14px;border:1px solid #93C5FD;border-radius:8px;font-size:0.88rem;" oninput="updateBulkPreview(this.value)" />
             </div>
 
             <div id="bulk-upload-preview-box" style="margin-top:16px;display:none;align-items:center;gap:16px;background:#fff;padding:14px;border-radius:10px;border:1px solid #93C5FD;">
@@ -418,22 +479,14 @@
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
               <div>
                 <h3 style="font-size:0.95rem;font-weight:800;margin-bottom:2px;">Step 2: Select Products to Apply Image</h3>
-                <p style="font-size:0.82rem;color:var(--muted);">Check products below (or filter by Brand/Size) to apply this image in bulk</p>
+                <p style="font-size:0.82rem;color:var(--muted);">Check products below to apply this image to all selected items</p>
               </div>
               <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                <select id="bulk-filter-cat" class="filter-sel" onchange="renderBulkProductList()">
+                  <option value="">All Categories</option>
+                </select>
                 <select id="bulk-filter-brand" class="filter-sel" onchange="renderBulkProductList()">
                   <option value="">All Brands</option>
-                </select>
-                <select id="bulk-filter-size" class="filter-sel" onchange="renderBulkProductList()">
-                  <option value="">All Sizes</option>
-                  <option value="32">32 inch</option>
-                  <option value="40">40 inch</option>
-                  <option value="43">43 inch</option>
-                  <option value="50">50 inch</option>
-                  <option value="55">55 inch</option>
-                  <option value="58">58 inch</option>
-                  <option value="65">65 inch</option>
-                  <option value="75">75 inch</option>
                 </select>
                 <button class="btn btn-outline" style="padding:7px 12px;font-size:0.8rem;" onclick="selectAllBulk(true)">Select All</button>
                 <button class="btn btn-outline" style="padding:7px 12px;font-size:0.8rem;" onclick="selectAllBulk(false)">Deselect All</button>
@@ -446,6 +499,7 @@
                   <tr style="background:var(--surface);position:sticky;top:0;border-bottom:1px solid var(--border);z-index:2;">
                     <th style="padding:10px 14px;text-align:left;width:40px;"><input type="checkbox" id="bulk-check-all" onchange="selectAllBulk(this.checked)" /></th>
                     <th style="padding:10px 14px;text-align:left;">Product</th>
+                    <th style="padding:10px 14px;text-align:left;">Category</th>
                     <th style="padding:10px 14px;text-align:left;">Brand</th>
                     <th style="padding:10px 14px;text-align:left;">Current Image</th>
                   </tr>
@@ -468,7 +522,7 @@
       <div class="panel" id="panel-upload">
         <div style="background:var(--surface);border-radius:14px;padding:28px;border:1px solid var(--border);max-width:800px;">
           <h2 style="margin-bottom:8px;">📂 Bulk Product CSV Upload</h2>
-          <p style="color:var(--muted);font-size:0.88rem;margin-bottom:24px;">Upload a CSV or Excel file to add/update multiple products directly into Supabase database.</p>
+          <p style="color:var(--muted);font-size:0.88rem;margin-bottom:24px;">Upload a CSV or Excel file to add/update multiple products directly into database.</p>
 
           <div style="margin-bottom:20px;">
             <button class="btn btn-outline" onclick="downloadTemplate()">📋 Download Sample CSV Template</button>
@@ -504,7 +558,7 @@
   </div><!-- /main -->
 </div><!-- /app -->
 
-<!-- ══ EDIT / ADD MODAL ═══════════════════════════════════════ -->
+<!-- ══ EDIT / ADD PRODUCT MODAL ═══════════════════════════════ -->
 <div class="modal-overlay" id="edit-modal" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <div class="modal-header">
@@ -516,6 +570,12 @@
 
       <div class="form-grid">
         <div class="field">
+          <label>Category</label>
+          <select id="edit-category">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+        <div class="field">
           <label>Brand</label>
           <select id="edit-brand">
             <option>Sony</option><option>Samsung</option><option>LG</option>
@@ -524,29 +584,31 @@
             <option>PHX</option><option>Other</option>
           </select>
         </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Product Name</label>
+          <input type="text" id="edit-name" placeholder="e.g. Sony Bravia 43″ 4K Google TV" />
+        </div>
         <div class="field">
           <label>Model Number</label>
           <input type="text" id="edit-model" placeholder="e.g. K-43S25M2" />
         </div>
       </div>
 
-      <div class="field">
-        <label>Product Name</label>
-        <input type="text" id="edit-name" placeholder="e.g. Sony Bravia 43″ 4K Google TV" />
-      </div>
-
       <!-- Image Upload Field -->
       <div class="field" style="background:#F8FAFC;border:1.5px dashed var(--border);border-radius:12px;padding:16px;">
         <label style="font-weight:700;display:flex;align-items:center;gap:6px;">📸 Product Image</label>
-        <div style="display:flex;gap:12px;align-items:center;margin-top:8px;">
-          <div id="edit-image-preview-wrap" style="width:70px;height:55px;border-radius:8px;border:1px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
+        <div style="display:flex;gap:12px;align-items:center;margin-top:8px;flex-wrap:wrap;">
+          <div id="edit-image-preview-wrap" style="width:75px;height:60px;border-radius:8px;border:1px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
             <img id="edit-image-preview" src="" alt="Preview" style="width:100%;height:100%;object-fit:cover;display:none;" />
-            <span id="edit-image-placeholder" style="font-size:1.4rem;">📷</span>
+            <span id="edit-image-placeholder" style="font-size:1.5rem;">📷</span>
           </div>
-          <div style="flex:1;">
+          <div style="flex:1;min-width:200px;">
             <input type="file" id="edit-image-file" accept="image/*" style="font-size:0.85rem;" onchange="uploadSingleImageFile(this.files[0])" />
             <input type="text" id="edit-image-url" placeholder="Or enter Image URL (e.g. https://...)" style="margin-top:6px;width:100%;font-size:0.82rem;" oninput="updateModalImagePreview(this.value)" />
-            <span id="upload-status-text" style="font-size:0.75rem;color:var(--accent);margin-top:4px;display:block;">Upload image from your device or paste URL</span>
+            <span id="upload-status-text" style="font-size:0.75rem;color:var(--accent);margin-top:4px;display:block;">Select image file from device or paste URL</span>
           </div>
         </div>
       </div>
@@ -581,8 +643,8 @@
           <input type="number" id="edit-stock" placeholder="5" min="0" />
         </div>
         <div class="field">
-          <label>Screen Size (inches)</label>
-          <input type="number" id="edit-size" placeholder="43" />
+          <label>Size / Variant (e.g. 43, 55, 250L)</label>
+          <input type="text" id="edit-size" placeholder="e.g. 43" />
         </div>
       </div>
 
@@ -593,7 +655,7 @@
 
       <div class="field">
         <label>Features / Tags (comma-separated)</label>
-        <input type="text" id="edit-type" placeholder="4K, Smart TV, Google TV, QLED" />
+        <input type="text" id="edit-type" placeholder="4K, Smart TV, Google TV, Inverter" />
       </div>
 
       <div style="border:1.5px solid var(--border);border-radius:10px;padding:14px;">
@@ -602,7 +664,7 @@
           <label class="toggle"><input type="checkbox" id="edit-new" /><span class="toggle-slider"></span></label>
         </div>
         <div class="toggle-row" style="border-top:1px solid var(--border);margin-top:8px;padding-top:8px;">
-          <div><label>Featured Product</label></div>
+          <div><label>Featured Product on Homepage</label></div>
           <label class="toggle"><input type="checkbox" id="edit-featured" /><span class="toggle-slider"></span></label>
         </div>
       </div>
@@ -611,6 +673,39 @@
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
       <button class="btn btn-primary" onclick="saveProduct()">💾 Save to Database</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADD CATEGORY MODAL ════════════════════════════════════ -->
+<div class="modal-overlay" id="category-modal" onclick="if(event.target===this)closeCategoryModal()">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header">
+      <h2>+ Add New Category</h2>
+      <button class="modal-close" onclick="closeCategoryModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Category Name</label>
+        <input type="text" id="cat-name-input" placeholder="e.g. Smart Watches" />
+      </div>
+      <div class="field">
+        <label>Category Code / Key (Unique)</label>
+        <input type="text" id="cat-key-input" placeholder="e.g. watches" />
+        <span class="helper">Short lowercase code (no spaces), e.g. watches, audio, gaming</span>
+      </div>
+      <div class="field">
+        <label>Emoji Icon</label>
+        <input type="text" id="cat-icon-input" placeholder="⌚" style="font-size:1.2rem;" />
+      </div>
+      <div class="field">
+        <label>Description</label>
+        <textarea id="cat-desc-input" placeholder="Short summary of items in this category..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeCategoryModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCategory()">✨ Save Category</button>
     </div>
   </div>
 </div>
@@ -645,11 +740,42 @@ function doLogout() {
   document.getElementById('login-pass').value = '';
 }
 
+function toggleMobileSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  sidebar.classList.toggle('open');
+  overlay.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
+}
+
 let liveProducts = [];
+let liveCategories = [];
 let currentBulkImageUrl = '';
 
 async function initApp() {
+  await loadCategoriesData();
   await loadAdminData();
+}
+
+async function loadCategoriesData() {
+  if (typeof fetchCategoriesFromDB === 'function') {
+    liveCategories = await fetchCategoriesFromDB();
+  } else {
+    liveCategories = DEFAULT_CATEGORIES;
+  }
+  populateCategoryDropdowns();
+  renderCategoriesTable();
+}
+
+function populateCategoryDropdowns() {
+  const editCat = document.getElementById('edit-category');
+  const prodCat = document.getElementById('prod-category');
+  const bulkCat = document.getElementById('bulk-filter-cat');
+
+  const optionsHTML = liveCategories.map(c => `<option value="${c.key}">${c.icon || '📦'} ${c.name}</option>`).join('');
+
+  if (editCat) editCat.innerHTML = optionsHTML;
+  if (prodCat) prodCat.innerHTML = '<option value="">All Categories</option>' + optionsHTML;
+  if (bulkCat) bulkCat.innerHTML = '<option value="">All Categories</option>' + optionsHTML;
 }
 
 async function loadAdminData() {
@@ -679,11 +805,16 @@ function showPanel(name, btn) {
   document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
   document.getElementById('panel-title').textContent = {
-    dashboard: 'Dashboard', products: 'Products Catalog',
+    dashboard: 'Dashboard', products: 'Products Catalog', categories: 'Store Categories',
     images: 'Image Uploader & Bulk Assign', upload: 'CSV Upload', settings: 'Settings'
   }[name] || name;
   if (btn) btn.classList.add('active');
+  if (window.innerWidth <= 900) {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar.classList.contains('open')) toggleMobileSidebar();
+  }
   if (name === 'images') renderBulkProductList();
+  if (name === 'categories') renderCategoriesTable();
 }
 
 function updateStats() {
@@ -691,7 +822,7 @@ function updateStats() {
   document.getElementById('stat-total').textContent   = prods.length;
   document.getElementById('stat-instock').textContent  = prods.filter(p => p.stock > 0).length;
   document.getElementById('stat-low').textContent      = prods.filter(p => p.stock > 0 && p.stock <= 3).length;
-  document.getElementById('stat-out').textContent      = prods.filter(p => p.stock === 0).length;
+  document.getElementById('stat-cats').textContent     = liveCategories.length;
 }
 
 function renderBrandSummary() {
@@ -702,7 +833,7 @@ function renderBrandSummary() {
   el.innerHTML = `<table style="width:100%;border-collapse:collapse;">
     <thead><tr style="background:var(--bg);">
       <th style="padding:10px 16px;text-align:left;font-size:0.75rem;color:var(--muted);">Brand</th>
-      <th style="padding:10px 16px;text-align:center;font-size:0.75rem;color:var(--muted);">Total</th>
+      <th style="padding:10px 16px;text-align:center;font-size:0.75rem;color:var(--muted);">Total Products</th>
       <th style="padding:10px 16px;text-align:center;font-size:0.75rem;color:var(--muted);">In Stock</th>
       <th style="padding:10px 16px;text-align:center;font-size:0.75rem;color:var(--muted);">Out of Stock</th>
     </tr></thead>
@@ -715,6 +846,55 @@ function renderBrandSummary() {
       </tr>`).join('')}
     </tbody>
   </table>`;
+}
+
+function renderCategoriesTable() {
+  const tbody = document.getElementById('categories-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = liveCategories.map(c => {
+    const prodCount = liveProducts.filter(p => p.category === c.key).length;
+    return `<tr>
+      <td style="font-size:1.4rem;">${c.icon || '📦'}</td>
+      <td style="font-weight:700;color:var(--primary);">${c.name}</td>
+      <td><code>${c.key}</code></td>
+      <td style="color:var(--muted);">${c.description || '—'}</td>
+      <td><span class="cat-tag">${prodCount} products</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function openAddCategoryModal() {
+  document.getElementById('cat-name-input').value = '';
+  document.getElementById('cat-key-input').value = '';
+  document.getElementById('cat-icon-input').value = '';
+  document.getElementById('cat-desc-input').value = '';
+  document.getElementById('category-modal').classList.add('open');
+}
+
+function closeCategoryModal() {
+  document.getElementById('category-modal').classList.remove('open');
+}
+
+async function saveCategory() {
+  const name = document.getElementById('cat-name-input').value.trim();
+  let key    = document.getElementById('cat-key-input').value.trim().toLowerCase().replace(/\s+/g, '-');
+  const icon = document.getElementById('cat-icon-input').value.trim() || '📦';
+  const desc = document.getElementById('cat-desc-input').value.trim();
+
+  if (!name) { toast('❌ Category name is required', 'error'); return; }
+  if (!key) key = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  const catObj = { key, name, description: desc, icon };
+
+  try {
+    await saveCategoryToDB(catObj);
+    await loadCategoriesData();
+    toast('✅ New Category added successfully!');
+    closeCategoryModal();
+  } catch (err) {
+    console.error('Save category error:', err);
+    toast('❌ Error saving category: ' + (err.message || 'Error'), 'error');
+  }
 }
 
 function populateBrandFilter() {
@@ -731,10 +911,12 @@ function populateBrandFilter() {
 
 function renderTable() {
   const q     = (document.getElementById('prod-search')?.value || '').toLowerCase();
+  const cat   = document.getElementById('prod-category')?.value || '';
   const brand = document.getElementById('prod-brand')?.value || '';
   const stock = document.getElementById('prod-stock')?.value || '';
   let prods = getMergedProducts().filter(p => {
     if (q && !p.name.toLowerCase().includes(q) && !p.brand.toLowerCase().includes(q) && !(p.model||'').toLowerCase().includes(q)) return false;
+    if (cat && p.category !== cat) return false;
     if (brand && p.brand !== brand) return false;
     if (stock === 'in'  && p.stock === 0) return false;
     if (stock === 'low' && (p.stock === 0 || p.stock > 3)) return false;
@@ -749,6 +931,8 @@ function renderTable() {
     const stockCls = p.stock === 0 ? 'stock-out' : isLow ? 'stock-low' : 'stock-in';
     const stockLbl = p.stock === 0 ? '✗ Out' : isLow ? `⚡ ${p.stock} left` : `✓ ${p.stock}`;
     const imgThumb = p.image ? `<img src="${p.image}" style="width:100%;height:100%;object-fit:cover;" />` : `<span style="font-size:0.55rem;font-weight:900;">${p.brand}</span>`;
+    const catObj = liveCategories.find(c => c.key === p.category);
+    const catName = catObj ? catObj.name : p.category;
 
     return `<tr>
       <td><input type="checkbox" class="row-check" value="${p.id}" /></td>
@@ -763,6 +947,7 @@ function renderTable() {
           </div>
         </div>
       </td>
+      <td><span class="cat-tag">${catName}</span></td>
       <td><span class="brand-tag">${p.brand}</span></td>
       <td>
         <div class="price-cell">
@@ -772,7 +957,6 @@ function renderTable() {
       </td>
       <td>${disc > 0 ? `<span class="discount-pill">-${disc}%</span>` : '<span style="color:var(--muted);font-size:0.8rem;">—</span>'}</td>
       <td><span class="stock-pill ${stockCls}">${stockLbl}</span></td>
-      <td><span style="font-size:0.78rem;color:var(--success);">Active</span></td>
       <td>
         <div class="action-btns-cell">
           <button class="icon-btn" style="background:#EFF6FF;color:#1E40AF;" title="Edit" onclick="openEditModal(${p.id})">✏️</button>
@@ -854,11 +1038,11 @@ function updateBulkPreview(url) {
 }
 
 function renderBulkProductList() {
+  const cat   = document.getElementById('bulk-filter-cat')?.value || '';
   const brand = document.getElementById('bulk-filter-brand')?.value || '';
-  const size  = document.getElementById('bulk-filter-size')?.value || '';
   const prods = liveProducts.filter(p => {
+    if (cat && p.category !== cat) return false;
     if (brand && p.brand !== brand) return false;
-    if (size && String(p.size) !== size) return false;
     return true;
   });
 
@@ -866,9 +1050,11 @@ function renderBulkProductList() {
   if (!tbody) return;
   tbody.innerHTML = prods.map(p => {
     const currentImg = p.image ? `<img src="${p.image}" style="width:40px;height:30px;object-fit:cover;border-radius:4px;" />` : `<span style="color:var(--muted);font-size:0.75rem;">None</span>`;
+    const catObj = liveCategories.find(c => c.key === p.category);
     return `<tr style="border-bottom:1px solid var(--border);">
       <td style="padding:10px 14px;"><input type="checkbox" class="bulk-item-check" value="${p.id}" onchange="updateBulkSelectedCount()" /></td>
       <td style="padding:10px 14px;font-weight:700;">${p.name} <span style="font-size:0.75rem;color:var(--muted);">(${p.model||''})</span></td>
+      <td style="padding:10px 14px;"><span class="cat-tag">${catObj ? catObj.name : p.category}</span></td>
       <td style="padding:10px 14px;"><span class="brand-tag">${p.brand}</span></td>
       <td style="padding:10px 14px;">${currentImg}</td>
     </tr>`;
@@ -914,7 +1100,6 @@ async function applyBulkImage() {
     }
   }
 
-  // Update local
   liveProducts.forEach(p => {
     if (selectedIds.includes(p.id)) {
       p.image = currentBulkImageUrl;
@@ -969,6 +1154,7 @@ function openEditModal(id) {
   document.getElementById('modal-title').textContent = '✏️ Edit Product';
   document.getElementById('edit-id').value       = p.id;
   document.getElementById('edit-name').value     = p.name;
+  document.getElementById('edit-category').value = p.category || 'tv';
   document.getElementById('edit-brand').value    = p.brand;
   document.getElementById('edit-model').value    = p.model || '';
   document.getElementById('edit-mrp').value      = p.mrp > 1 ? p.mrp : '';
@@ -993,6 +1179,7 @@ function openAddModal() {
   ['edit-id','edit-name','edit-model','edit-mrp','edit-price','edit-stock','edit-size','edit-desc','edit-type','edit-discount-pct','edit-image-url'].forEach(id => {
     const el = document.getElementById(id); if (el) el.value = '';
   });
+  document.getElementById('edit-category').value = liveCategories[0]?.key || 'tv';
   document.getElementById('edit-brand').value = 'Sony';
   document.getElementById('edit-new').checked      = false;
   document.getElementById('edit-featured').checked = false;
@@ -1005,38 +1192,40 @@ function openAddModal() {
 function closeModal() { document.getElementById('edit-modal').classList.remove('open'); }
 
 async function saveProduct() {
-  const idRaw  = document.getElementById('edit-id').value;
-  const id     = idRaw ? parseInt(idRaw) : (Math.max(...liveProducts.map(p=>p.id), 0) + 1);
-  const name   = document.getElementById('edit-name').value.trim();
-  const brand  = document.getElementById('edit-brand').value;
-  const model  = document.getElementById('edit-model').value.trim();
-  const mrp    = parseFloat(document.getElementById('edit-mrp').value)   || 1;
-  const price  = parseFloat(document.getElementById('edit-price').value) || 0;
-  const stock  = parseInt(document.getElementById('edit-stock').value)   || 0;
-  const size   = parseInt(document.getElementById('edit-size').value)    || 0;
-  const desc   = document.getElementById('edit-desc').value.trim();
-  const typeRaw= document.getElementById('edit-type').value;
-  const isNew  = document.getElementById('edit-new').checked;
-  const isFeat = document.getElementById('edit-featured').checked;
-  const image  = document.getElementById('edit-image-url').value.trim();
+  const idRaw    = document.getElementById('edit-id').value;
+  const id       = idRaw ? parseInt(idRaw) : (Math.max(...liveProducts.map(p=>p.id), 0) + 1);
+  const name     = document.getElementById('edit-name').value.trim();
+  const category = document.getElementById('edit-category').value;
+  const brand    = document.getElementById('edit-brand').value;
+  const model    = document.getElementById('edit-model').value.trim();
+  const mrp      = parseFloat(document.getElementById('edit-mrp').value)   || 1;
+  const price    = parseFloat(document.getElementById('edit-price').value) || 0;
+  const stock    = parseInt(document.getElementById('edit-stock').value)   || 0;
+  const sizeVal  = document.getElementById('edit-size').value.trim();
+  const desc     = document.getElementById('edit-desc').value.trim();
+  const typeRaw  = document.getElementById('edit-type').value;
+  const isNew    = document.getElementById('edit-new').checked;
+  const isFeat   = document.getElementById('edit-featured').checked;
+  const image    = document.getElementById('edit-image-url').value.trim();
 
   if (!name)  { toast('❌ Product name is required', 'error'); return; }
   if (!price) { toast('❌ Sale price is required', 'error'); return; }
 
   const type = typeRaw ? typeRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+  const sizeNum = parseInt(sizeVal) || null;
 
   const record = {
     id: id,
     name: name,
+    category: category,
     brand: brand,
     model: model,
-    category: 'tv',
-    subcategory: size ? size + '-inch' : '',
+    subcategory: sizeVal ? (sizeVal.includes('inch') ? sizeVal : sizeVal + '-inch') : '',
     type: type,
     mrp: mrp,
     price: price,
     stock: stock,
-    size: size,
+    size: sizeNum,
     description: desc,
     is_new: isNew,
     is_featured: isFeat,
@@ -1052,11 +1241,10 @@ async function saveProduct() {
     }
   }
 
-  // Update memory list
   const idx = liveProducts.findIndex(p => p.id === id);
   const formattedObj = {
-    id, name, brand, model, category:'tv', subcategory: size ? size+'-inch':'',
-    type, mrp, price, stock, size, description: desc, isNew, isFeatured: isFeat, image,
+    id, name, category, brand, model, subcategory: record.subcategory,
+    type, mrp, price, stock, size: sizeNum, description: desc, isNew, isFeatured: isFeat, image,
     rating: 4.0, reviews: 0
   };
 
@@ -1093,9 +1281,9 @@ async function deleteProduct(id) {
 
 // ── Export CSV ────────────────────────────────────────────────
 function exportData() {
-  const header = 'id,name,brand,model,category,subcategory,mrp,price,stock,image,description\n';
+  const header = 'id,name,category,brand,model,subcategory,mrp,price,stock,image,description\n';
   const rows = liveProducts.map(p =>
-    [p.id, `"${p.name}"`, p.brand, p.model||'', p.category||'tv', p.subcategory||'', p.mrp, p.price, p.stock, `"${p.image||''}"`, `"${(p.description||'').replace(/"/g,'""')}"`].join(',')
+    [p.id, `"${p.name}"`, p.category||'tv', p.brand, p.model||'', p.subcategory||'', p.mrp, p.price, p.stock, `"${p.image||''}"`, `"${(p.description||'').replace(/"/g,'""')}"`].join(',')
   ).join('\n');
   const blob = new Blob([header + rows], { type: 'text/csv' });
   const url  = URL.createObjectURL(blob);
@@ -1105,8 +1293,8 @@ function exportData() {
 }
 
 function downloadTemplate() {
-  const header = 'id,name,brand,model,category,subcategory,mrp,price,stock,description\n';
-  const sample = ',"Sony Bravia 50 inch 4K Smart TV",Sony,K-50NEW,tv,50-inch,69999,54999,3,"Great 50 inch 4K TV"\n';
+  const header = 'id,name,category,brand,model,subcategory,mrp,price,stock,description\n';
+  const sample = ',"Sony Bravia 50 inch 4K Smart TV",tv,Sony,K-50NEW,50-inch,69999,54999,3,"Great 50 inch 4K TV"\n';
   const blob = new Blob([header + sample], { type: 'text/csv' });
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a'); a.href=url; a.download='doordarshan_template.csv'; a.click();
@@ -1145,7 +1333,7 @@ function parseAndPreviewCSV(text) {
   const preview = document.getElementById('csv-preview');
   preview.innerHTML = `
     <div style="margin-top:16px;padding:12px;background:#F0FDF4;border-radius:8px;border:1px solid #86EFAC;font-size:0.85rem;color:#15803D;margin-bottom:12px;">
-      ✅ Found <strong>${rows.length} products</strong> in file. Click below to import to Supabase database.
+      ✅ Found <strong>${rows.length} products</strong> in file. Click below to import to database.
     </div>
   `;
 
@@ -1158,9 +1346,9 @@ async function importCSVRows(rows) {
   const records = rows.map((r, i) => ({
     id: parseInt(r.id) || (1000 + i),
     name: r.name,
+    category: r.category || 'tv',
     brand: r.brand || '',
     model: r.model || '',
-    category: r.category || 'tv',
     subcategory: r.subcategory || '',
     mrp: parseFloat(r.mrp) || 1,
     price: parseFloat(r.price) || 0,
@@ -1197,7 +1385,7 @@ function toast(msg, type = 'success') {
   setTimeout(() => { el.style.opacity='0'; el.style.transition='.3s'; setTimeout(()=>el.remove(),300); }, 3000);
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeCategoryModal(); } });
 </script>
 </body>
 </html>
