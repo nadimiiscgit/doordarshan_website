@@ -3,205 +3,633 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aslam Shaikh</title>
-  <meta name="description" content="Welcome to Aslam Shaikh's personal page." />
+  <title>Doordarshan Electronics — Best Electronics Shop in Osmanabad</title>
+  <meta name="description" content="Buy LED TVs, Refrigerators, ACs, Washing Machines and more at the best prices. Doordarshan Electronics, Osmanabad (Dharashiv), Maharashtra. Free delivery across India." />
+  <meta name="keywords" content="electronics shop osmanabad, led tv osmanabad, refrigerator dharashiv, AC osmanabad, doordarshan electronics" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --accent-1: #a855f7;
-      --accent-2: #6366f1;
-      --accent-3: #ec4899;
-      --bg-dark: #0a0a0f;
-      --bg-card: rgba(255, 255, 255, 0.05);
-      --border: rgba(255, 255, 255, 0.1);
-    }
-
-    html, body {
-      height: 100%;
-      font-family: 'Outfit', sans-serif;
-      background-color: var(--bg-dark);
-      color: #fff;
-      overflow: hidden;
-    }
-
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 20% 30%, rgba(168, 85, 247, 0.25) 0%, transparent 60%),
-        radial-gradient(ellipse 70% 50% at 80% 70%, rgba(99, 102, 241, 0.2) 0%, transparent 55%),
-        radial-gradient(ellipse 60% 40% at 50% 90%, rgba(236, 72, 153, 0.15) 0%, transparent 50%);
-      animation: bgPulse 8s ease-in-out infinite alternate;
-      z-index: 0;
-    }
-
-    @keyframes bgPulse {
-      0%   { opacity: 0.8; transform: scale(1);    }
-      100% { opacity: 1;   transform: scale(1.05); }
-    }
-
-    .orb {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.35;
-      animation: float linear infinite;
-      z-index: 0;
-      pointer-events: none;
-    }
-    .orb-1 { width: 400px; height: 400px; background: var(--accent-1); top: -100px; left: -100px; animation-duration: 18s; }
-    .orb-2 { width: 300px; height: 300px; background: var(--accent-2); bottom: -80px; right: -80px; animation-duration: 14s; animation-direction: reverse; }
-    .orb-3 { width: 200px; height: 200px; background: var(--accent-3); top: 50%; left: 60%; animation-duration: 22s; }
-
-    @keyframes float {
-      0%   { transform: translate(0, 0) rotate(0deg);         }
-      33%  { transform: translate(30px, -40px) rotate(120deg);}
-      66%  { transform: translate(-20px, 20px) rotate(240deg);}
-      100% { transform: translate(0, 0) rotate(360deg);       }
-    }
-
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40L40 0' stroke='rgba(255,255,255,0.03)' stroke-width='1'/%3E%3C/svg%3E");
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    main {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      gap: 2rem;
-      text-align: center;
-      padding: 2rem;
-    }
-
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 28px;
-      padding: 4rem 5rem;
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.05) inset,
-        0 32px 80px rgba(0,0,0,0.5);
-      animation: cardEntry 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
-      position: relative;
-    }
-
-    @keyframes cardEntry {
-      from { opacity: 0; transform: translateY(40px) scale(0.96); }
-      to   { opacity: 1; transform: translateY(0)    scale(1);    }
-    }
-
-    .greeting {
-      display: inline-block;
-      font-size: 0.85rem;
-      font-weight: 600;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.45);
-      margin-bottom: 1.25rem;
-      animation: fadeUp 0.8s 0.3s both;
-    }
-
-    h1 {
-      font-size: clamp(3rem, 8vw, 6.5rem);
-      font-weight: 900;
-      line-height: 1.05;
-      background: linear-gradient(135deg, #ffffff 0%, #c084fc 40%, #818cf8 70%, #f472b6 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      background-size: 200% 200%;
-      animation: gradientShift 5s ease infinite, fadeUp 0.8s 0.5s both;
-      letter-spacing: -0.02em;
-    }
-
-    @keyframes gradientShift {
-      0%   { background-position: 0%   50%; }
-      50%  { background-position: 100% 50%; }
-      100% { background-position: 0%   50%; }
-    }
-
-    .underline-bar {
-      height: 4px;
-      width: 80px;
-      margin: 1.5rem auto 0;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--accent-1), var(--accent-2), var(--accent-3));
-      animation: barExpand 1s 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
-    }
-
-    @keyframes barExpand {
-      from { width: 0; opacity: 0; }
-      to   { width: 80px; opacity: 1; }
-    }
-
-    .tagline {
-      margin-top: 1.5rem;
-      font-size: 1.05rem;
-      font-weight: 300;
-      color: rgba(255,255,255,0.45);
-      letter-spacing: 0.04em;
-      animation: fadeUp 0.8s 1s both;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0);    }
-    }
-
-    .pulse-ring {
-      position: absolute;
-      inset: -2px;
-      border-radius: 30px;
-      border: 1.5px solid rgba(168,85,247,0.3);
-      animation: ringPulse 3s ease-in-out infinite;
-      pointer-events: none;
-    }
-
-    @keyframes ringPulse {
-      0%, 100% { opacity: 0.3; transform: scale(1);    }
-      50%       { opacity: 0.7; transform: scale(1.01); }
-    }
-
-    @media (max-width: 600px) {
-      .card { padding: 2.5rem 2rem; }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
-
-  <main>
-    <div class="card">
-      <div class="pulse-ring"></div>
-      <p class="greeting">Welcome</p>
-      <h1>Aslam Shaikh</h1>
-      <div class="underline-bar"></div>
-      <p class="tagline">More coming soon &mdash; stay tuned.</p>
+<!-- ══ ANNOUNCEMENT TOPBAR ══════════════════════════════════ -->
+<div class="topbar">
+  <div class="topbar-inner container">
+    <div class="topbar-scroll">
+      <div class="topbar-scroll-track" id="topbar-track">
+        <span><span class="dot"></span> Free Delivery Across India on All Orders</span>
+        <span><span class="dot"></span> Easy EMI — Starting at ₹999/month</span>
+        <span><span class="dot"></span> 36 LED TVs In Stock — Sony, Samsung, LG & More</span>
+        <span><span class="dot"></span> Call: 7020209281 for Best Price</span>
+        <span><span class="dot"></span> Order on WhatsApp 24/7</span>
+        <span><span class="dot"></span> Free Delivery Across India on All Orders</span>
+        <span><span class="dot"></span> Easy EMI — Starting at ₹999/month</span>
+        <span><span class="dot"></span> 36 LED TVs In Stock — Sony, Samsung, LG & More</span>
+        <span><span class="dot"></span> Call: 7020209281 for Best Price</span>
+        <span><span class="dot"></span> Order on WhatsApp 24/7</span>
+      </div>
     </div>
-  </main>
+    <div class="topbar-right">
+      <a href="tel:7020209281">📞 7020209281</a>
+      <a href="https://wa.me/917020209281" target="_blank">💬 WhatsApp</a>
+      <a href="#">📍 Osmanabad, MH</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══ HEADER ════════════════════════════════════════════════ -->
+<header class="header">
+  <div class="header-inner">
+    <!-- Logo -->
+    <a href="index.html" class="logo" aria-label="Doordarshan Electronics Home">
+      <div class="logo-name">Doordarshan <span>Electronics</span></div>
+      <div class="logo-tagline">Osmanabad · Dharashiv · Maharashtra</div>
+    </a>
+
+    <!-- Search -->
+    <form class="search-bar" id="search-form" role="search">
+      <select aria-label="Category filter" id="search-category">
+        <option value="">All Categories</option>
+        <option value="tv">LED TVs</option>
+        <option value="refrigerator">Refrigerators</option>
+        <option value="ac">Air Conditioners</option>
+        <option value="washing">Washing Machines</option>
+        <option value="kitchen">Kitchen</option>
+      </select>
+      <input type="search" placeholder="Search for TVs, ACs, Refrigerators…" aria-label="Search products" id="search-input" />
+      <button type="submit" class="search-btn" aria-label="Search">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+      </button>
+    </form>
+
+    <!-- Actions -->
+    <div class="header-actions">
+      <a href="tel:7020209281" class="hdr-btn" id="call-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+        </svg>
+        <span class="hdr-label">Call</span>
+      </a>
+      <a href="https://wa.me/917020209281" target="_blank" class="hdr-btn" id="wa-header-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="color:#25D366;" width="22" height="22">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        <span class="hdr-label">WhatsApp</span>
+      </a>
+      <a href="cart.html" class="hdr-btn" id="cart-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/>
+        </svg>
+        <span class="hdr-label">Cart</span>
+        <span class="cart-badge" style="display:none;">0</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ══ MAIN NAVIGATION ═══════════════════════════════════════ -->
+<nav class="main-nav" aria-label="Main navigation">
+  <div class="nav-inner">
+
+    <!-- LED TVs -->
+    <div class="nav-item">
+      <a href="category.html?cat=tv" class="nav-link">
+        📺 LED TVs
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </a>
+      <div class="mega-menu">
+        <div class="mega-col">
+          <h4>By Screen Size</h4>
+          <ul>
+            <li><a href="category.html?cat=tv&sub=32-inch">32 inch <span class="count">1</span></a></li>
+            <li><a href="category.html?cat=tv&sub=40-inch">40 inch <span class="count">2</span></a></li>
+            <li><a href="category.html?cat=tv&sub=43-inch">43 inch ★ <span class="count">16</span></a></li>
+            <li><a href="category.html?cat=tv&sub=50-inch">50 inch <span class="count">5</span></a></li>
+            <li><a href="category.html?cat=tv&sub=55-inch">55 inch <span class="count">9</span></a></li>
+            <li><a href="category.html?cat=tv&sub=58-inch">58 inch <span class="count">1</span></a></li>
+            <li><a href="category.html?cat=tv&sub=65-inch">65 inch <span class="count">7</span></a></li>
+            <li><a href="category.html?cat=tv&sub=75-inch">75 inch & above <span class="count">1</span></a></li>
+          </ul>
+        </div>
+        <div class="mega-col">
+          <h4>By Type</h4>
+          <ul>
+            <li><a href="category.html?cat=tv&type=OLED">OLED <span class="tag">Premium</span></a></li>
+            <li><a href="category.html?cat=tv&type=QLED">QLED <span class="tag">Vivid</span></a></li>
+            <li><a href="category.html?cat=tv&type=4K">4K Ultra HD</a></li>
+            <li><a href="category.html?cat=tv&type=Smart+TV">Smart TV</a></li>
+            <li><a href="category.html?cat=tv&type=Google+TV">Google TV</a></li>
+            <li><a href="category.html?cat=tv&type=Full+HD">Full HD</a></li>
+          </ul>
+        </div>
+        <div class="mega-col">
+          <h4>Top Brands</h4>
+          <div class="mega-brands">
+            <a href="category.html?cat=tv&brand=Sony" class="mega-brand-pill" style="color:#0033A0;">Sony</a>
+            <a href="category.html?cat=tv&brand=Samsung" class="mega-brand-pill" style="color:#1428A0;">Samsung</a>
+            <a href="category.html?cat=tv&brand=LG" class="mega-brand-pill" style="color:#A50034;">LG</a>
+            <a href="category.html?cat=tv&brand=TCL" class="mega-brand-pill" style="color:#D52B1E;">TCL</a>
+            <a href="category.html?cat=tv&brand=Hisense" class="mega-brand-pill" style="color:#E4002B;">Hisense</a>
+            <a href="category.html?cat=tv&brand=Metz" class="mega-brand-pill">Metz</a>
+            <a href="category.html?cat=tv&brand=OnePlus" class="mega-brand-pill" style="color:#F5010C;">OnePlus</a>
+            <a href="category.html?cat=tv&brand=Bush" class="mega-brand-pill" style="color:#005EB8;">Bush</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Refrigerators -->
+    <div class="nav-item">
+      <a href="category.html?cat=refrigerator" class="nav-link">
+        🧊 Refrigerators
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </a>
+      <div class="mega-menu">
+        <div class="mega-col">
+          <h4>By Door Type</h4>
+          <ul>
+            <li><a href="category.html?cat=refrigerator&sub=single-door">Single Door</a></li>
+            <li><a href="category.html?cat=refrigerator&sub=double-door-top">Double Door (Top Freezer)</a></li>
+            <li><a href="category.html?cat=refrigerator&sub=double-door-bottom">Double Door (Bottom Freezer)</a></li>
+            <li><a href="category.html?cat=refrigerator&sub=side-by-side">Side-by-Side</a></li>
+            <li><a href="category.html?cat=refrigerator&sub=triple-door">Triple Door</a></li>
+          </ul>
+        </div>
+        <div class="mega-col">
+          <h4>By Capacity (Litres)</h4>
+          <ul>
+            <li><a href="category.html?cat=refrigerator&cap=upto-200l">Up to 200 Litres</a></li>
+            <li><a href="category.html?cat=refrigerator&cap=201-300l">201 – 300 Litres</a></li>
+            <li><a href="category.html?cat=refrigerator&cap=301-400l">301 – 400 Litres</a></li>
+            <li><a href="category.html?cat=refrigerator&cap=400l-plus">400+ Litres</a></li>
+          </ul>
+        </div>
+        <div class="mega-col">
+          <h4>Top Brands</h4>
+          <div class="mega-brands">
+            <a href="category.html?cat=refrigerator&brand=Samsung" class="mega-brand-pill">Samsung</a>
+            <a href="category.html?cat=refrigerator&brand=LG" class="mega-brand-pill">LG</a>
+            <a href="category.html?cat=refrigerator&brand=Whirlpool" class="mega-brand-pill">Whirlpool</a>
+            <a href="category.html?cat=refrigerator&brand=Haier" class="mega-brand-pill">Haier</a>
+            <a href="category.html?cat=refrigerator&brand=Godrej" class="mega-brand-pill">Godrej</a>
+            <a href="category.html?cat=refrigerator&brand=Bosch" class="mega-brand-pill">Bosch</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACs -->
+    <div class="nav-item">
+      <a href="category.html?cat=ac" class="nav-link">
+        ❄️ Air Conditioners
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </a>
+      <div class="mega-menu">
+        <div class="mega-col">
+          <h4>By Type</h4>
+          <ul>
+            <li><a href="category.html?cat=ac&type=split">Split AC</a></li>
+            <li><a href="category.html?cat=ac&type=window">Window AC</a></li>
+            <li><a href="category.html?cat=ac&type=portable">Portable AC</a></li>
+            <li><a href="category.html?cat=ac&type=cassette">Cassette AC</a></li>
+          </ul>
+        </div>
+        <div class="mega-col">
+          <h4>By Capacity (Ton)</h4>
+          <ul>
+            <li><a href="category.html?cat=ac&cap=1-ton">1 Ton</a></li>
+            <li><a href="category.html?cat=ac&cap=1.5-ton">1.5 Ton <span class="tag">Popular</span></a></li>
+            <li><a href="category.html?cat=ac&cap=2-ton">2 Ton</a></li>
+            <li><a href="category.html?cat=ac&cap=3-ton">3 Ton & above</a></li>
+          </ul>
+        </div>
+        <div class="mega-col">
+          <h4>Top Brands</h4>
+          <div class="mega-brands">
+            <a href="category.html?cat=ac&brand=Samsung" class="mega-brand-pill">Samsung</a>
+            <a href="category.html?cat=ac&brand=LG" class="mega-brand-pill">LG</a>
+            <a href="category.html?cat=ac&brand=Daikin" class="mega-brand-pill">Daikin</a>
+            <a href="category.html?cat=ac&brand=Voltas" class="mega-brand-pill">Voltas</a>
+            <a href="category.html?cat=ac&brand=Hitachi" class="mega-brand-pill">Hitachi</a>
+            <a href="category.html?cat=ac&brand=Carrier" class="mega-brand-pill">Carrier</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Washing Machines -->
+    <div class="nav-item">
+      <a href="category.html?cat=washing" class="nav-link">
+        🫧 Washing Machines
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </a>
+      <div class="mega-menu">
+        <div class="mega-col">
+          <h4>By Type</h4>
+          <ul>
+            <li><a href="category.html?cat=washing&type=fully-auto-top">Fully Automatic – Top Load</a></li>
+            <li><a href="category.html?cat=washing&type=fully-auto-front">Fully Automatic – Front Load</a></li>
+            <li><a href="category.html?cat=washing&type=semi-auto">Semi Automatic</a></li>
+          </ul>
+        </div>
+        <div class="mega-col">
+          <h4>By Capacity (KG)</h4>
+          <ul>
+            <li><a href="category.html?cat=washing&cap=upto-7kg">Up to 7 KG</a></li>
+            <li><a href="category.html?cat=washing&cap=7.5-9kg">7.5 – 9 KG</a></li>
+            <li><a href="category.html?cat=washing&cap=9.5kg-plus">9.5 KG & above</a></li>
+          </ul>
+        </div>
+        <div class="mega-col">
+          <h4>Top Brands</h4>
+          <div class="mega-brands">
+            <a href="category.html?cat=washing&brand=Samsung" class="mega-brand-pill">Samsung</a>
+            <a href="category.html?cat=washing&brand=LG" class="mega-brand-pill">LG</a>
+            <a href="category.html?cat=washing&brand=Whirlpool" class="mega-brand-pill">Whirlpool</a>
+            <a href="category.html?cat=washing&brand=IFB" class="mega-brand-pill">IFB</a>
+            <a href="category.html?cat=washing&brand=Bosch" class="mega-brand-pill">Bosch</a>
+            <a href="category.html?cat=washing&brand=Haier" class="mega-brand-pill">Haier</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kitchen -->
+    <div class="nav-item">
+      <a href="category.html?cat=kitchen" class="nav-link">🍳 Kitchen</a>
+    </div>
+
+    <!-- Phones -->
+    <div class="nav-item">
+      <a href="category.html?cat=phones" class="nav-link">📱 Phones</a>
+    </div>
+
+    <!-- Small Appliances -->
+    <div class="nav-item">
+      <a href="category.html?cat=small" class="nav-link">💡 Small Appliances</a>
+    </div>
+
+    <!-- Offers -->
+    <div class="nav-item">
+      <a href="offers.html" class="nav-link" style="color:#FFD700;font-weight:800;">🏷️ Offers</a>
+    </div>
+
+  </div>
+</nav>
+
+<!-- ══ HERO SLIDER ════════════════════════════════════════════ -->
+<section class="hero" aria-label="Featured promotions">
+  <div id="hero-slides"></div>
+  <button class="hero-arrow prev" aria-label="Previous slide" onclick="goToSlide(heroIndex - 1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="20" height="20"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <button class="hero-arrow next" aria-label="Next slide" onclick="goToSlide(heroIndex + 1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="20" height="20"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+  <div id="hero-dots" class="hero-dots"></div>
+</section>
+
+<!-- ══ OFFER STRIP ════════════════════════════════════════════ -->
+<div class="offer-strip" role="marquee" aria-label="Current offers">
+  <div class="offer-strip-track">
+    <div class="offer-item">🔥 Up to 40% off on Sony Bravia TVs</div>
+    <div class="sep">|</div>
+    <div class="offer-item">⚡ Samsung QLED from ₹74,999</div>
+    <div class="sep">|</div>
+    <div class="offer-item">🎁 Free Installation on ACs & Washing Machines</div>
+    <div class="sep">|</div>
+    <div class="offer-item">💳 No Cost EMI on 6/12/24 months</div>
+    <div class="sep">|</div>
+    <div class="offer-item">📦 Free Delivery Across India</div>
+    <div class="sep">|</div>
+    <div class="offer-item">🔥 Up to 40% off on Sony Bravia TVs</div>
+    <div class="sep">|</div>
+    <div class="offer-item">⚡ Samsung QLED from ₹74,999</div>
+    <div class="sep">|</div>
+    <div class="offer-item">🎁 Free Installation on ACs & Washing Machines</div>
+    <div class="sep">|</div>
+    <div class="offer-item">💳 No Cost EMI on 6/12/24 months</div>
+    <div class="sep">|</div>
+    <div class="offer-item">📦 Free Delivery Across India</div>
+  </div>
+</div>
+
+<!-- ══ CATEGORIES ════════════════════════════════════════════ -->
+<section class="categories-section section-light" aria-labelledby="cat-heading">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-title">
+        <h2 id="cat-heading">Shop by Category</h2>
+        <p>Browse our complete range of electronics</p>
+      </div>
+    </div>
+    <div class="categories-grid">
+      <a href="category.html?cat=tv" class="cat-card" id="cat-tv">
+        <div class="cat-icon">📺</div>
+        <div class="cat-name">LED TVs</div>
+        <div class="cat-count">36 products</div>
+      </a>
+      <a href="category.html?cat=refrigerator" class="cat-card" id="cat-fridge">
+        <div class="cat-icon">🧊</div>
+        <div class="cat-name">Refrigerators</div>
+        <div class="cat-count">Coming soon</div>
+      </a>
+      <a href="category.html?cat=ac" class="cat-card" id="cat-ac">
+        <div class="cat-icon">❄️</div>
+        <div class="cat-name">Air Conditioners</div>
+        <div class="cat-count">Coming soon</div>
+      </a>
+      <a href="category.html?cat=washing" class="cat-card" id="cat-washing">
+        <div class="cat-icon">🫧</div>
+        <div class="cat-name">Washing Machines</div>
+        <div class="cat-count">Coming soon</div>
+      </a>
+      <a href="category.html?cat=kitchen" class="cat-card" id="cat-kitchen">
+        <div class="cat-icon">🍳</div>
+        <div class="cat-name">Kitchen Appliances</div>
+        <div class="cat-count">Coming soon</div>
+      </a>
+      <a href="category.html?cat=phones" class="cat-card" id="cat-phones">
+        <div class="cat-icon">📱</div>
+        <div class="cat-name">Phones &amp; Tablets</div>
+        <div class="cat-count">Coming soon</div>
+      </a>
+      <a href="category.html?cat=laptop" class="cat-card" id="cat-laptop">
+        <div class="cat-icon">💻</div>
+        <div class="cat-name">Laptops</div>
+        <div class="cat-count">Coming soon</div>
+      </a>
+      <a href="category.html?cat=small" class="cat-card" id="cat-small">
+        <div class="cat-icon">💡</div>
+        <div class="cat-name">Small Appliances</div>
+        <div class="cat-count">Coming soon</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ DEAL OF THE DAY ════════════════════════════════════════ -->
+<section class="deals-section" id="offers" aria-labelledby="deals-heading">
+  <div class="container">
+    <div class="deals-wrapper">
+      <div class="deals-header">
+        <div class="section-title">
+          <h2 id="deals-heading">🔥 Deal of the Day</h2>
+          <p>Hurry! Offers end tonight</p>
+        </div>
+        <div class="deal-timer" aria-label="Time remaining">
+          <div class="timer-block">
+            <span class="timer-num" id="timer-h">00</span>
+            <span class="timer-label">Hours</span>
+          </div>
+          <span class="timer-sep">:</span>
+          <div class="timer-block">
+            <span class="timer-num" id="timer-m">00</span>
+            <span class="timer-label">Mins</span>
+          </div>
+          <span class="timer-sep">:</span>
+          <div class="timer-block">
+            <span class="timer-num" id="timer-s">00</span>
+            <span class="timer-label">Secs</span>
+          </div>
+        </div>
+        <a href="category.html?cat=tv" class="view-all">View All →</a>
+      </div>
+      <div class="product-grid-4" id="deal-products"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURED PRODUCTS ══════════════════════════════════════ -->
+<section class="section section-light" aria-labelledby="featured-heading">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-title">
+        <h2 id="featured-heading">⭐ Featured Products</h2>
+        <p>Hand-picked best sellers from our store</p>
+      </div>
+      <a href="category.html?cat=tv" class="view-all">View All TVs →</a>
+    </div>
+    <div class="product-grid-4" id="featured-products"></div>
+  </div>
+</section>
+
+<!-- ══ BRAND STRIP ═══════════════════════════════════════════ -->
+<section class="brands-section" aria-labelledby="brands-heading">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-title">
+        <h2 id="brands-heading" style="font-size:1.1rem;">Top Brands We Carry</h2>
+      </div>
+    </div>
+    <div class="brands-grid">
+      <a href="category.html?cat=tv&brand=Sony" class="brand-logo-card" id="brand-sony">
+        <span style="color:#0033A0;font-size:1.2rem;">SONY</span>
+      </a>
+      <a href="category.html?cat=tv&brand=Samsung" class="brand-logo-card" id="brand-samsung">
+        <span style="color:#1428A0;">SAMSUNG</span>
+      </a>
+      <a href="category.html?cat=tv&brand=LG" class="brand-logo-card" id="brand-lg">
+        <span style="color:#A50034;font-size:1.3rem;font-style:italic;">LG</span>
+      </a>
+      <a href="category.html?cat=tv&brand=TCL" class="brand-logo-card" id="brand-tcl">
+        <span style="color:#D52B1E;font-size:1.3rem;">TCL</span>
+      </a>
+      <a href="category.html?cat=tv&brand=Hisense" class="brand-logo-card" id="brand-hisense">
+        <span style="color:#E4002B;">HISENSE</span>
+      </a>
+      <a href="category.html?cat=tv&brand=Metz" class="brand-logo-card" id="brand-metz">
+        <span style="color:#2C2C2C;">METZ</span>
+      </a>
+      <a href="category.html?cat=tv&brand=OnePlus" class="brand-logo-card" id="brand-oneplus">
+        <span style="color:#F5010C;">OnePlus</span>
+      </a>
+      <a href="category.html?cat=tv&brand=Bush" class="brand-logo-card" id="brand-bush">
+        <span style="color:#005EB8;">BUSH</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ NEW ARRIVALS ═══════════════════════════════════════════ -->
+<section class="section" aria-labelledby="new-heading">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-title">
+        <h2 id="new-heading">🆕 New Arrivals</h2>
+        <p>Latest models just added to our store</p>
+      </div>
+      <a href="category.html?cat=tv&filter=new" class="view-all">See All →</a>
+    </div>
+    <div class="product-grid-4" id="new-arrivals"></div>
+  </div>
+</section>
+
+<!-- ══ WHY CHOOSE US ══════════════════════════════════════════ -->
+<section class="why-section section-light" aria-labelledby="why-heading">
+  <div class="container">
+    <div class="section-header" style="justify-content:center;text-align:center;">
+      <div class="section-title" style="text-align:center;">
+        <h2 id="why-heading">Why Choose Doordarshan Electronics?</h2>
+        <p>Trusted by thousands of families across Osmanabad &amp; beyond</p>
+      </div>
+    </div>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon">🚚</div>
+        <h3>Free Delivery Anywhere</h3>
+        <p>We deliver to your doorstep — anywhere in India, completely free of charge.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">💳</div>
+        <h3>Easy EMI Options</h3>
+        <p>No-cost EMI available from 6 to 24 months on select products. Flexible payment plans.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">🔧</div>
+        <h3>Free Installation</h3>
+        <p>AC, TV wall mounting, washing machine installation — all done for free at your home.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">🤝</div>
+        <h3>9 Years of Trust</h3>
+        <p>Serving Osmanabad since 2017. Thousands of happy customers, authorised service support.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ WHATSAPP ORDER BANNER ══════════════════════════════════ -->
+<section style="background:linear-gradient(135deg,#075E54,#128C7E);padding:40px 0;">
+  <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
+    <div>
+      <h2 style="color:#fff;font-size:1.5rem;margin-bottom:6px;">📱 Order Easily on WhatsApp!</h2>
+      <p style="color:rgba(255,255,255,0.8);font-size:0.95rem;">
+        Chat with us, share your requirements, get the best price &amp; confirm your order — all on WhatsApp.
+      </p>
+    </div>
+    <a
+      href="https://wa.me/917020209281?text=Hi!%20I%20want%20to%20enquire%20about%20a%20product."
+      target="_blank"
+      id="wa-banner-btn"
+      style="display:inline-flex;align-items:center;gap:10px;background:#25D366;color:#fff;padding:16px 32px;border-radius:50px;font-size:1rem;font-weight:700;box-shadow:0 6px 24px rgba(0,0,0,0.25);transition:transform 0.2s,box-shadow 0.2s;white-space:nowrap;"
+      onmouseover="this.style.transform='scale(1.05)'"
+      onmouseout="this.style.transform=''"
+    >
+      <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Chat on WhatsApp — 7020209281
+    </a>
+  </div>
+</section>
+
+<!-- ══ PAYMENT COMING SOON ════════════════════════════════════ -->
+<section style="background:var(--surface);padding:32px 0;border-top:1px solid var(--border);">
+  <div class="container" style="display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap;text-align:center;">
+    <div>
+      <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;">Payment Options</p>
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:center;">
+        <div style="display:flex;align-items:center;gap:6px;background:var(--bg);border:1.5px solid var(--border);padding:8px 16px;border-radius:8px;">
+          <span>💬</span><span style="font-size:0.85rem;font-weight:600;color:#25D366;">WhatsApp Order</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;background:var(--bg);border:1.5px solid var(--border);padding:8px 16px;border-radius:8px;">
+          <span>📞</span><span style="font-size:0.85rem;font-weight:600;">Call to Order</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;background:var(--bg);border:1.5px dashed #ccc;padding:8px 16px;border-radius:8px;opacity:0.6;">
+          <span>💳</span>
+          <span style="font-size:0.85rem;font-weight:600;color:var(--text-muted);">Online Payment</span>
+          <span style="font-size:0.65rem;background:var(--accent);color:#fff;padding:2px 6px;border-radius:4px;font-weight:700;">COMING SOON</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;background:var(--bg);border:1.5px dashed #ccc;padding:8px 16px;border-radius:8px;opacity:0.6;">
+          <span>🏦</span>
+          <span style="font-size:0.85rem;font-weight:600;color:var(--text-muted);">Razorpay UPI/Cards</span>
+          <span style="font-size:0.65rem;background:var(--accent);color:#fff;padding:2px 6px;border-radius:4px;font-weight:700;">COMING SOON</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ═════════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <!-- Brand -->
+      <div class="footer-brand">
+        <div class="logo-name">Doordarshan <span>Electronics</span></div>
+        <p class="footer-desc">
+          Your trusted electronics partner in Osmanabad (Dharashiv), Maharashtra since 2017.
+          We offer the widest range of LED TVs, ACs, Refrigerators, Washing Machines and more at the best prices.
+          Free delivery across India.
+        </p>
+        <div class="footer-contact">
+          <a href="tel:7020209281">📞 +91 70202 09281</a>
+          <a href="https://wa.me/917020209281" target="_blank">💬 WhatsApp: 7020209281</a>
+          <a href="#">📍 Osmanabad (Dharashiv), Maharashtra</a>
+          <a href="#">🕐 Mon–Sat: 10:00 AM – 8:00 PM</a>
+        </div>
+      </div>
+
+      <!-- Categories -->
+      <div class="footer-col">
+        <h4>Categories</h4>
+        <ul>
+          <li><a href="category.html?cat=tv">LED Televisions</a></li>
+          <li><a href="category.html?cat=refrigerator">Refrigerators</a></li>
+          <li><a href="category.html?cat=ac">Air Conditioners</a></li>
+          <li><a href="category.html?cat=washing">Washing Machines</a></li>
+          <li><a href="category.html?cat=kitchen">Kitchen Appliances</a></li>
+          <li><a href="category.html?cat=phones">Phones &amp; Tablets</a></li>
+          <li><a href="category.html?cat=small">Small Appliances</a></li>
+        </ul>
+      </div>
+
+      <!-- Top Brands -->
+      <div class="footer-col">
+        <h4>Top Brands</h4>
+        <ul>
+          <li><a href="category.html?brand=Sony">Sony Bravia</a></li>
+          <li><a href="category.html?brand=Samsung">Samsung</a></li>
+          <li><a href="category.html?brand=LG">LG</a></li>
+          <li><a href="category.html?brand=TCL">TCL</a></li>
+          <li><a href="category.html?brand=Hisense">Hisense</a></li>
+          <li><a href="category.html?brand=Metz">Metz</a></li>
+          <li><a href="category.html?brand=OnePlus">OnePlus</a></li>
+        </ul>
+      </div>
+
+      <!-- Help -->
+      <div class="footer-col">
+        <h4>Help &amp; Info</h4>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="#">EMI Information</a></li>
+          <li><a href="#">Warranty Policy</a></li>
+          <li><a href="#">Return Policy</a></li>
+          <li><a href="admin.html">Admin Panel 🔐</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2024–2025 Doordarshan Electronics, Osmanabad. All rights reserved.</p>
+      <div class="footer-social">
+        <a href="#" class="social-btn" aria-label="Facebook">f</a>
+        <a href="https://wa.me/917020209281" class="social-btn" aria-label="WhatsApp" target="_blank">W</a>
+        <a href="#" class="social-btn" aria-label="Instagram">📷</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ══ SCRIPTS ════════════════════════════════════════════════ -->
+<script src="js/products-data.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/main.js"></script>
 
 </body>
 </html>

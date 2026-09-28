@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Products — Doordarshan Electronics</title>
+  <meta name="description" content="Browse all electronics products at Doordarshan Electronics, Osmanabad. LED TVs, ACs, Refrigerators, Washing Machines and more." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .page-layout { display: grid; grid-template-columns: 280px 1fr; gap: 24px; padding: 28px 0 60px; align-items: start; }
+    /* ── Filter Sidebar ── */
+    .filter-sidebar { background: var(--surface); border-radius: var(--radius-lg); border: 1.5px solid var(--border); padding: 20px; position: sticky; top: 90px; }
+    .filter-sidebar h3 { font-size: 1rem; margin-bottom: 16px; display:flex;align-items:center;justify-content:space-between; }
+    .filter-clear { font-size: 0.78rem; font-weight: 600; color: var(--accent); cursor: pointer; }
+    .filter-group { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border-light); }
+    .filter-group:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .filter-group-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 12px; display:flex;align-items:center;justify-content:space-between;cursor:pointer; }
+    .filter-group-title .chevron { transition: transform 0.2s; }
+    .filter-group.collapsed .filter-group-title .chevron { transform: rotate(-90deg); }
+    .filter-group.collapsed .filter-group-body { display: none; }
+    .filter-option { display: flex; align-items: center; gap: 10px; padding: 7px 0; cursor: pointer; font-size: 0.87rem; color: var(--text); transition: color 0.2s; }
+    .filter-option:hover { color: var(--primary); }
+    .filter-option input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer; }
+    .filter-option .filter-count { margin-left: auto; font-size: 0.72rem; color: var(--text-muted); background: var(--surface-2); padding: 1px 6px; border-radius: 999px; }
+    /* Price Range */
+    .price-range-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+    .price-range-inputs input { width: 100%; border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; font-size: 0.82rem; color: var(--text); font-family: inherit; outline: none; transition: border-color 0.2s; }
+    .price-range-inputs input:focus { border-color: var(--primary); }
+    .price-apply-btn { width: 100%; margin-top: 10px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-sm); padding: 10px; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+    .price-apply-btn:hover { background: var(--primary-light); }
+    /* ── Product area ── */
+    .products-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+    .products-count { font-size: 0.9rem; color: var(--text-muted); }
+    .products-count strong { color: var(--text); font-weight: 700; }
+    .sort-select { border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 8px 14px; font-size: 0.85rem; color: var(--text); background: var(--surface); cursor: pointer; outline: none; font-family: inherit; }
+    /* Active filters strip */
+    .active-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .filter-tag { display: inline-flex; align-items: center; gap: 6px; background: var(--accent-pale); color: var(--accent); border: 1.5px solid rgba(255,107,0,0.2); padding: 5px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; }
+    .filter-tag button { background: none; border: none; cursor: pointer; color: var(--accent); font-size: 0.9rem; line-height: 1; padding: 0; }
+    /* ── Breadcrumb ── */
+    .breadcrumb { display: flex; align-items: center; gap: 8px; padding: 16px 0 4px; font-size: 0.82rem; color: var(--text-muted); flex-wrap: wrap; }
+    .breadcrumb a { color: var(--text-muted); transition: color 0.2s; }
+    .breadcrumb a:hover { color: var(--primary); }
+    .breadcrumb .sep { opacity: 0.4; }
+    .breadcrumb .current { color: var(--text); font-weight: 600; }
+    /* ── Sub-category tabs ── */
+    .subcat-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+    .subcat-tab { padding: 8px 18px; border-radius: 999px; font-size: 0.82rem; font-weight: 600; border: 1.5px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; transition: all 0.2s; }
+    .subcat-tab:hover { border-color: var(--primary); color: var(--primary); }
+    .subcat-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    /* ── Grid ── */
+    #products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .no-products { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    .no-products h3 { font-size: 1.2rem; margin-bottom: 8px; }
+    @media (max-width: 1100px) { #products-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 900px) { .page-layout { grid-template-columns: 1fr; } .filter-sidebar { position: static; } }
+    @media (max-width: 500px) { #products-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- ══ TOPBAR ════════════════════════════════════════════════ -->
+<div class="topbar">
+  <div class="topbar-inner container">
+    <div class="topbar-scroll">
+      <div class="topbar-scroll-track">
+        <span><span class="dot"></span> Free Delivery Across India</span>
+        <span><span class="dot"></span> Easy EMI Available</span>
+        <span><span class="dot"></span> WhatsApp: 7020209281</span>
+        <span><span class="dot"></span> Free Delivery Across India</span>
+        <span><span class="dot"></span> Easy EMI Available</span>
+        <span><span class="dot"></span> WhatsApp: 7020209281</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <a href="tel:7020209281">📞 7020209281</a>
+      <a href="https://wa.me/917020209281" target="_blank">💬 WhatsApp</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══ HEADER ════════════════════════════════════════════════ -->
+<header class="header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-name">Doordarshan <span>Electronics</span></div>
+      <div class="logo-tagline">Osmanabad · Dharashiv · Maharashtra</div>
+    </a>
+    <form class="search-bar" id="search-form" role="search">
+      <select id="search-category" aria-label="Category"><option value="">All Categories</option><option value="tv">LED TVs</option></select>
+      <input type="search" id="search-input" placeholder="Search products…" aria-label="Search" />
+      <button type="submit" class="search-btn" aria-label="Search">🔍</button>
+    </form>
+    <div class="header-actions">
+      <a href="tel:7020209281" class="hdr-btn">📞 <span class="hdr-label">Call</span></a>
+      <a href="https://wa.me/917020209281" target="_blank" class="hdr-btn" style="color:#25D366;">💬 <span class="hdr-label">WhatsApp</span></a>
+      <a href="cart.html" class="hdr-btn" id="cart-btn">
+        🛒 <span class="hdr-label">Cart</span>
+        <span class="cart-badge" style="display:none;">0</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ══ MAIN ══════════════════════════════════════════════════ -->
+<main>
+  <div class="container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="sep">›</span>
+      <span class="current" id="breadcrumb-current">LED Televisions</span>
+    </nav>
+
+    <!-- Page heading -->
+    <div style="margin-bottom:8px;">
+      <h1 id="page-title" style="font-size:1.6rem;">LED Televisions</h1>
+    </div>
+
+    <!-- Sub-category tabs -->
+    <div class="subcat-tabs" id="subcat-tabs"></div>
+
+    <!-- Layout -->
+    <div class="page-layout">
+      <!-- ── Sidebar Filters ─────────────────────────── -->
+      <aside class="filter-sidebar" aria-label="Product filters">
+        <h3>Filters <span class="filter-clear" onclick="clearFilters()">Clear all</span></h3>
+
+        <!-- Brand -->
+        <div class="filter-group" id="fg-brand">
+          <div class="filter-group-title" onclick="toggleGroup('fg-brand')">Brand <span class="chevron">▾</span></div>
+          <div class="filter-group-body" id="brand-options"></div>
+        </div>
+
+        <!-- Price Range -->
+        <div class="filter-group">
+          <div class="filter-group-title">Price Range</div>
+          <div class="filter-group-body">
+            <div class="price-range-inputs">
+              <input type="number" id="price-min" placeholder="Min ₹" min="0" />
+              <input type="number" id="price-max" placeholder="Max ₹" max="999999" />
+            </div>
+            <button class="price-apply-btn" onclick="applyPriceFilter()">Apply</button>
+          </div>
+        </div>
+
+        <!-- Screen Size (TVs) -->
+        <div class="filter-group" id="fg-size">
+          <div class="filter-group-title" onclick="toggleGroup('fg-size')">Screen Size <span class="chevron">▾</span></div>
+          <div class="filter-group-body" id="size-options">
+            <label class="filter-option"><input type="checkbox" data-size="32" onchange="applyFilters()"> 32 inch <span class="filter-count">1</span></label>
+            <label class="filter-option"><input type="checkbox" data-size="40" onchange="applyFilters()"> 40 inch <span class="filter-count">2</span></label>
+            <label class="filter-option"><input type="checkbox" data-size="43" onchange="applyFilters()"> 43 inch <span class="filter-count">16</span></label>
+            <label class="filter-option"><input type="checkbox" data-size="50" onchange="applyFilters()"> 50 inch <span class="filter-count">5</span></label>
+            <label class="filter-option"><input type="checkbox" data-size="55" onchange="applyFilters()"> 55 inch <span class="filter-count">9</span></label>
+            <label class="filter-option"><input type="checkbox" data-size="58" onchange="applyFilters()"> 58 inch <span class="filter-count">1</span></label>
+            <label class="filter-option"><input type="checkbox" data-size="65" onchange="applyFilters()"> 65 inch <span class="filter-count">7</span></label>
+            <label class="filter-option"><input type="checkbox" data-size="75" onchange="applyFilters()"> 75 inch <span class="filter-count">1</span></label>
+          </div>
+        </div>
+
+        <!-- Type -->
+        <div class="filter-group" id="fg-type">
+          <div class="filter-group-title" onclick="toggleGroup('fg-type')">Display Type <span class="chevron">▾</span></div>
+          <div class="filter-group-body">
+            <label class="filter-option"><input type="checkbox" data-type="OLED" onchange="applyFilters()"> OLED <span class="filter-count">4</span></label>
+            <label class="filter-option"><input type="checkbox" data-type="QLED" onchange="applyFilters()"> QLED <span class="filter-count">6</span></label>
+            <label class="filter-option"><input type="checkbox" data-type="4K" onchange="applyFilters()"> 4K Ultra HD</label>
+            <label class="filter-option"><input type="checkbox" data-type="Google TV" onchange="applyFilters()"> Google TV</label>
+            <label class="filter-option"><input type="checkbox" data-type="Smart TV" onchange="applyFilters()"> Smart TV</label>
+            <label class="filter-option"><input type="checkbox" data-type="Full HD" onchange="applyFilters()"> Full HD</label>
+          </div>
+        </div>
+
+        <!-- Stock -->
+        <div class="filter-group">
+          <div class="filter-group-title">Availability</div>
+          <div class="filter-group-body">
+            <label class="filter-option"><input type="checkbox" id="filter-instock" onchange="applyFilters()"> In Stock Only</label>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ── Products Area ──────────────────────────── -->
+      <div>
+        <!-- Active filter tags -->
+        <div class="active-filters" id="active-filters"></div>
+
+        <!-- Sort & count -->
+        <div class="products-header">
+          <p class="products-count" id="products-count">Showing <strong>0</strong> products</p>
+          <select class="sort-select" id="sort-select" onchange="applyFilters()" aria-label="Sort products">
+            <option value="featured">Sort: Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="discount">Best Discount</option>
+            <option value="rating">Top Rated</option>
+            <option value="newest">Newest First</option>
+          </select>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="products-grid"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ══ FOOTER (Simplified) ═══════════════════════════════════ -->
+<footer class="footer" style="margin-top:0;">
+  <div class="container">
+    <div class="footer-bottom">
+      <p>© 2025 Doordarshan Electronics, Osmanabad. Free delivery across India.</p>
+      <a href="https://wa.me/917020209281" style="color:var(--accent);font-weight:600;">💬 Order on WhatsApp: 7020209281</a>
+    </div>
+  </div>
+</footer>
+
+<script src="js/products-data.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/main.js"></script>
+<script>
+// ── Category page controller ──────────────────────────────
+const params = new URLSearchParams(window.location.search);
+const CAT   = params.get('cat')   || 'tv';
+const BRAND = params.get('brand') || null;
+const SUB   = params.get('sub')   || null;
+const TYPE  = params.get('type')  || null;
+const Q     = params.get('q')     || null;
+
+const CAT_NAMES = {
+  tv: 'LED Televisions', refrigerator: 'Refrigerators',
+  ac: 'Air Conditioners', washing: 'Washing Machines',
+  kitchen: 'Kitchen Appliances', phones: 'Phones & Tablets',
+  laptop: 'Laptops', small: 'Small Appliances',
+};
+const TV_SUBCATS = [
+  { label: 'All Sizes', key: null },
+  { label: '32"', key: '32-inch' },
+  { label: '40"', key: '40-inch' },
+  { label: '43"', key: '43-inch' },
+  { label: '50"', key: '50-inch' },
+  { label: '55"', key: '55-inch' },
+  { label: '58"', key: '58-inch' },
+  { label: '65"', key: '65-inch' },
+  { label: '75"+', key: '75-inch' },
+];
+
+let activeBrands = BRAND ? [BRAND] : [];
+let activeSizes  = SUB ? [SUB.replace('-inch','')] : [];
+let activeTypes  = TYPE ? [TYPE] : [];
+let activeInstock = false;
+let activePriceMin = 0;
+let activePriceMax = 0;
+let activeSubcat  = SUB;
+
+function initPage() {
+  // Update page title
+  const title = Q ? `Search: "${Q}"` : (BRAND ? BRAND + ' ' : '') + (CAT_NAMES[CAT] || 'Products');
+  document.getElementById('page-title').textContent = title;
+  document.getElementById('breadcrumb-current').textContent = title;
+  document.title = title + ' — Doordarshan Electronics';
+
+  // Build brand options
+  const brands = [...new Set(PRODUCTS.filter(p => p.category === CAT).map(p => p.brand))].sort();
+  const brandContainer = document.getElementById('brand-options');
+  brandContainer.innerHTML = brands.map(b => {
+    const cnt = PRODUCTS.filter(p => p.category === CAT && p.brand === b).length;
+    const checked = activeBrands.includes(b) ? 'checked' : '';
+    return `<label class="filter-option">
+      <input type="checkbox" data-brand="${b}" ${checked} onchange="toggleBrand('${b}')">
+      ${b} <span class="filter-count">${cnt}</span>
+    </label>`;
+  }).join('');
+
+  // Build subcategory tabs (TV only)
+  if (CAT === 'tv') {
+    const tabsEl = document.getElementById('subcat-tabs');
+    tabsEl.innerHTML = TV_SUBCATS.map(sc => `
+      <button class="subcat-tab ${activeSubcat === sc.key ? 'active' : ''}"
+        onclick="setSubcat(${sc.key ? `'${sc.key}'` : 'null'})">
+        ${sc.label}
+      </button>
+    `).join('');
+  }
+
+  // Pre-check size filters
+  if (SUB) {
+    const sizeNum = SUB.replace('-inch', '');
+    document.querySelectorAll(`[data-size="${sizeNum}"]`).forEach(el => el.checked = true);
+  }
+
+  applyFilters();
+}
+
+function setSubcat(key) {
+  activeSubcat = key;
+  activeSizes  = key ? [key.replace('-inch', '')] : [];
+  document.querySelectorAll('.subcat-tab').forEach((tab, i) => {
+    tab.classList.toggle('active', TV_SUBCATS[i].key === key);
+  });
+  document.querySelectorAll('[data-size]').forEach(cb => {
+    cb.checked = activeSizes.includes(cb.dataset.size);
+  });
+  applyFilters();
+}
+
+function toggleBrand(brand) {
+  const idx = activeBrands.indexOf(brand);
+  if (idx === -1) activeBrands.push(brand);
+  else activeBrands.splice(idx, 1);
+  applyFilters();
+}
+
+function toggleGroup(id) {
+  document.getElementById(id).classList.toggle('collapsed');
+}
+
+function applyPriceFilter() {
+  activePriceMin = parseInt(document.getElementById('price-min').value) || 0;
+  activePriceMax = parseInt(document.getElementById('price-max').value) || 0;
+  applyFilters();
+}
+
+function clearFilters() {
+  activeBrands = [];
+  activeSizes  = [];
+  activeTypes  = [];
+  activeInstock = false;
+  activePriceMin = activePriceMax = 0;
+  document.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
+  document.getElementById('price-min').value = '';
+  document.getElementById('price-max').value = '';
+  setSubcat(null);
+}
+
+function applyFilters() {
+  // Collect checked sizes and types
+  activeSizes  = [...document.querySelectorAll('[data-size]:checked')].map(cb => cb.dataset.size);
+  activeTypes  = [...document.querySelectorAll('[data-type]:checked')].map(cb => cb.dataset.type);
+  activeBrands = [...document.querySelectorAll('[data-brand]:checked')].map(cb => cb.dataset.brand);
+  activeInstock= document.getElementById('filter-instock').checked;
+
+  let results = PRODUCTS.filter(p => {
+    if (p.category !== CAT) return false;
+    if (Q && !p.name.toLowerCase().includes(Q.toLowerCase()) && !p.brand.toLowerCase().includes(Q.toLowerCase()) && !p.model.toLowerCase().includes(Q.toLowerCase())) return false;
+    if (activeBrands.length && !activeBrands.includes(p.brand)) return false;
+    if (activeSizes.length && !activeSizes.includes(String(p.size))) return false;
+    if (activeTypes.length && !activeTypes.some(t => p.type.includes(t))) return false;
+    if (activeInstock && p.stock === 0) return false;
+    if (activePriceMin > 0 && p.price < activePriceMin) return false;
+    if (activePriceMax > 0 && p.price > activePriceMax) return false;
+    return true;
+  });
+
+  // Sort
+  const sort = document.getElementById('sort-select').value;
+  if (sort === 'price-asc')  results.sort((a,b) => a.price - b.price);
+  if (sort === 'price-desc') results.sort((a,b) => b.price - a.price);
+  if (sort === 'discount')   results.sort((a,b) => getDiscount(b.mrp,b.price) - getDiscount(a.mrp,a.price));
+  if (sort === 'rating')     results.sort((a,b) => b.rating - a.rating);
+  if (sort === 'newest')     results.sort((a,b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
+
+  renderResults(results);
+  renderActiveTags();
+}
+
+function renderResults(products) {
+  const grid = document.getElementById('products-grid');
+  const count = document.getElementById('products-count');
+  count.innerHTML = `Showing <strong>${products.length}</strong> product${products.length !== 1 ? 's' : ''}`;
+  if (!products.length) {
+    grid.innerHTML = `<div class="no-products" style="grid-column:1/-1;">
+      <div style="font-size:3rem;margin-bottom:12px;">🔍</div>
+      <h3>No products found</h3>
+      <p>Try clearing some filters or <a href="https://wa.me/917020209281" style="color:var(--accent);">ask us on WhatsApp</a></p>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = products.map(p => buildProductCard(p)).join('');
+}
+
+function renderActiveTags() {
+  const container = document.getElementById('active-filters');
+  const tags = [];
+  activeBrands.forEach(b => tags.push({ label: b, remove: () => { activeBrands = activeBrands.filter(x=>x!==b); document.querySelector(`[data-brand="${b}"]`).checked=false; applyFilters(); }}));
+  activeSizes.forEach(s => tags.push({ label: s+'"', remove: () => { document.querySelector(`[data-size="${s}"]`).checked=false; applyFilters(); }}));
+  activeTypes.forEach(t => tags.push({ label: t, remove: () => { document.querySelector(`[data-type="${t}"]`).checked=false; applyFilters(); }}));
+  if (activePriceMin || activePriceMax) tags.push({ label: `₹${activePriceMin}–₹${activePriceMax}`, remove: () => { activePriceMin=activePriceMax=0; document.getElementById('price-min').value=''; document.getElementById('price-max').value=''; applyFilters(); }});
+  container.innerHTML = tags.map((t,i) => `<span class="filter-tag">${t.label} <button onclick="window._filterRemove(${i})">×</button></span>`).join('');
+  window._filterRemove = i => tags[i].remove();
+}
+
+// Init on DOMContentLoaded (main.js fires its own, so we rely on products data being loaded)
+document.addEventListener('DOMContentLoaded', initPage);
+</script>
+</body>
+</html>
