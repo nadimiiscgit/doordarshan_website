@@ -393,4 +393,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Render deal products
   const dealProducts = PRODUCTS.filter(p => p.brand === 'Sony' && getDiscount(p.mrp, p.price) > 10).slice(0, 4);
   renderSection('deal-products', dealProducts);
+
+  // Render LED TV Strip
+  const tvProducts = PRODUCTS.filter(p => p.category === 'tv').slice(0, 8);
+  renderSection('tv-products-strip', tvProducts.length > 0 ? tvProducts : getFeaturedProducts(8));
+
+  // Render Refrigerator Strip
+  const fridgeProducts = PRODUCTS.filter(p => p.category === 'refrigerator').slice(0, 8);
+  renderSection('refrigerator-products-strip', fridgeProducts.length > 0 ? fridgeProducts : PRODUCTS.slice(0, 8));
 });
