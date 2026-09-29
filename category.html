@@ -90,20 +90,54 @@
 <!-- ══ HEADER ════════════════════════════════════════════════ -->
 <header class="header">
   <div class="header-inner">
-    <a href="index.html" class="logo">
+    <a href="index.html" class="logo" aria-label="Doordarshan Electronics Home">
       <div class="logo-name">Doordarshan <span>Electronics</span></div>
-      <div class="logo-tagline" data-i18n="store_tagline">Premium Electronics Store · Maharashtra</div>
+      <div class="logo-tagline" data-i18n="store_tagline">Dharashiv's Largest Electronics Superstore</div>
     </a>
-    <form class="search-bar" id="search-form" role="search">
-      <select id="search-category" aria-label="Category"><option value="">All Categories</option><option value="tv">LED TVs</option></select>
-      <input type="search" id="search-input" placeholder="Search products…" aria-label="Search" />
-      <button type="submit" class="search-btn" aria-label="Search">🔍</button>
+    <form class="search-bar" id="search-form" role="search" style="position:relative;">
+      <select id="search-category" aria-label="Category">
+        <option value="">All Categories</option>
+        <option value="tv">LED TVs</option>
+        <option value="refrigerator">Refrigerators</option>
+        <option value="ac">Air Conditioners</option>
+        <option value="washing">Washing Machines</option>
+        <option value="kitchen">Kitchen</option>
+      </select>
+      <input type="search" id="search-input" placeholder="Search brands, TVs, ACs, Refrigerators…" aria-label="Search" autocomplete="off" />
+      <button type="submit" class="search-btn" aria-label="Search">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+      </button>
+      <div id="search-suggest-box" class="search-suggest-box"></div>
     </form>
     <div class="header-actions">
-      <a href="tel:7020209281" class="hdr-btn">📞 <span class="hdr-label">Call</span></a>
-      <a href="https://wa.me/917020209281" target="_blank" class="hdr-btn" style="color:#25D366;">💬 <span class="hdr-label">WhatsApp</span></a>
+      <!-- Compare Button -->
+      <button type="button" class="hdr-btn" id="nav-compare-btn" title="Compare Products" onclick="CompareEngine.openModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M9 3H5a2 2 0 00-2 2v14a2 2 0 002 2h4M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M9 12h6M12 9l3 3-3 3"/>
+        </svg>
+        <span class="hdr-label">Compare</span>
+        <span class="compare-badge" id="compare-badge" style="display:none;">0</span>
+      </button>
+      <a href="contact.html" class="hdr-btn" title="Stores">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+        </svg>
+        <span class="hdr-label">Stores</span>
+      </a>
+      <a href="https://wa.me/917020209281" target="_blank" class="hdr-btn" id="wa-header-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="color:#25D366;" width="22" height="22">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        <span class="hdr-label">WhatsApp</span>
+      </a>
       <a href="cart.html" class="hdr-btn" id="cart-btn">
-        🛒 <span class="hdr-label">Cart</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/>
+        </svg>
+        <span class="hdr-label">Cart</span>
         <span class="cart-badge" style="display:none;">0</span>
       </a>
     </div>
@@ -122,7 +156,7 @@
 
     <!-- Page heading -->
     <div style="margin-bottom:8px;">
-      <h1 id="page-title" style="font-size:1.6rem;">LED Televisions</h1>
+      <h1 id="page-title" style="font-size:1.6rem;font-weight:800;color:var(--text);">LED Televisions</h1>
     </div>
 
     <!-- Sub-category tabs -->
@@ -130,61 +164,94 @@
 
     <!-- Layout -->
     <div class="page-layout">
-      <!-- ── Sidebar Filters ─────────────────────────── -->
+      <!-- ── VIJAY SALES EXPANDABLE ACCORDION FILTERS ── -->
       <aside class="filter-sidebar" aria-label="Product filters">
-        <h3><span data-i18n="filters_title">Filters</span> <span class="filter-clear" onclick="clearFilters()" data-i18n="clear_all">Clear all</span></h3>
+        <div class="accordion-filter-card">
+          <div class="accordion-filter-header">
+            <h3><span data-i18n="filters_title">Filters</span></h3>
+            <span class="filter-clear" onclick="clearFilters()" data-i18n="clear_all">Clear all</span>
+          </div>
 
-        <!-- Brand -->
-        <div class="filter-group" id="fg-brand">
-          <div class="filter-group-title" onclick="toggleGroup('fg-brand')">Brand <span class="chevron">▾</span></div>
-          <div class="filter-group-body" id="brand-options"></div>
-        </div>
-
-        <!-- Price Range -->
-        <div class="filter-group">
-          <div class="filter-group-title" data-i18n="price_range">Price Range</div>
-          <div class="filter-group-body">
-            <div class="price-range-inputs">
-              <input type="number" id="price-min" placeholder="Min ₹" min="0" data-i18n-placeholder="min_price" />
-              <input type="number" id="price-max" placeholder="Max ₹" max="999999" data-i18n-placeholder="max_price" />
+          <!-- 1. Brand Accordion -->
+          <div class="accordion-item open" id="acc-brand">
+            <button type="button" class="accordion-trigger" onclick="toggleAccordion('acc-brand')">
+              <span>Brand</span>
+              <span class="accordion-chevron">▾</span>
+            </button>
+            <div class="accordion-content">
+              <input type="text" class="brand-search-box" id="brand-search" placeholder="Search brands (e.g. Sony, LG)…" oninput="filterBrandList(this.value)">
+              <div class="filter-group-body" id="brand-options"></div>
             </div>
-            <button class="price-apply-btn" onclick="applyPriceFilter()" data-i18n="apply_btn">Apply</button>
           </div>
-        </div>
 
-        <!-- Screen Size (TVs) -->
-        <div class="filter-group" id="fg-size">
-          <div class="filter-group-title" onclick="toggleGroup('fg-size')">Screen Size <span class="chevron">▾</span></div>
-          <div class="filter-group-body" id="size-options">
-            <label class="filter-option"><input type="checkbox" data-size="32" onchange="applyFilters()"> 32 inch <span class="filter-count">1</span></label>
-            <label class="filter-option"><input type="checkbox" data-size="40" onchange="applyFilters()"> 40 inch <span class="filter-count">2</span></label>
-            <label class="filter-option"><input type="checkbox" data-size="43" onchange="applyFilters()"> 43 inch <span class="filter-count">16</span></label>
-            <label class="filter-option"><input type="checkbox" data-size="50" onchange="applyFilters()"> 50 inch <span class="filter-count">5</span></label>
-            <label class="filter-option"><input type="checkbox" data-size="55" onchange="applyFilters()"> 55 inch <span class="filter-count">9</span></label>
-            <label class="filter-option"><input type="checkbox" data-size="58" onchange="applyFilters()"> 58 inch <span class="filter-count">1</span></label>
-            <label class="filter-option"><input type="checkbox" data-size="65" onchange="applyFilters()"> 65 inch <span class="filter-count">7</span></label>
-            <label class="filter-option"><input type="checkbox" data-size="75" onchange="applyFilters()"> 75 inch <span class="filter-count">1</span></label>
+          <!-- 2. Price Range Accordion -->
+          <div class="accordion-item open" id="acc-price">
+            <button type="button" class="accordion-trigger" onclick="toggleAccordion('acc-price')">
+              <span data-i18n="price_range">Price Range</span>
+              <span class="accordion-chevron">▾</span>
+            </button>
+            <div class="accordion-content">
+              <div class="quick-price-chips">
+                <button type="button" class="price-chip" onclick="setPriceChip(0, 20000)">Under ₹20k</button>
+                <button type="button" class="price-chip" onclick="setPriceChip(20000, 40000)">₹20k–₹40k</button>
+                <button type="button" class="price-chip" onclick="setPriceChip(40000, 70000)">₹40k–₹70k</button>
+                <button type="button" class="price-chip" onclick="setPriceChip(70000, 0)">₹70k+</button>
+              </div>
+              <div class="price-range-inputs">
+                <input type="number" id="price-min" placeholder="Min ₹" min="0" data-i18n-placeholder="min_price" />
+                <input type="number" id="price-max" placeholder="Max ₹" max="999999" data-i18n-placeholder="max_price" />
+              </div>
+              <button class="price-apply-btn" onclick="applyPriceFilter()" data-i18n="apply_btn">Apply Price</button>
+            </div>
           </div>
-        </div>
 
-        <!-- Type -->
-        <div class="filter-group" id="fg-type">
-          <div class="filter-group-title" onclick="toggleGroup('fg-type')">Display Type <span class="chevron">▾</span></div>
-          <div class="filter-group-body">
-            <label class="filter-option"><input type="checkbox" data-type="OLED" onchange="applyFilters()"> OLED <span class="filter-count">4</span></label>
-            <label class="filter-option"><input type="checkbox" data-type="QLED" onchange="applyFilters()"> QLED <span class="filter-count">6</span></label>
-            <label class="filter-option"><input type="checkbox" data-type="4K" onchange="applyFilters()"> 4K Ultra HD</label>
-            <label class="filter-option"><input type="checkbox" data-type="Google TV" onchange="applyFilters()"> Google TV</label>
-            <label class="filter-option"><input type="checkbox" data-type="Smart TV" onchange="applyFilters()"> Smart TV</label>
-            <label class="filter-option"><input type="checkbox" data-type="Full HD" onchange="applyFilters()"> Full HD</label>
+          <!-- 3. Screen Size / Capacity Accordion -->
+          <div class="accordion-item open" id="acc-size">
+            <button type="button" class="accordion-trigger" onclick="toggleAccordion('acc-size')">
+              <span id="size-accordion-label">Screen Size</span>
+              <span class="accordion-chevron">▾</span>
+            </button>
+            <div class="accordion-content">
+              <div class="filter-group-body" id="size-options">
+                <label class="filter-option"><input type="checkbox" data-size="32" onchange="applyFilters()"> 32 inch</label>
+                <label class="filter-option"><input type="checkbox" data-size="40" onchange="applyFilters()"> 40 inch</label>
+                <label class="filter-option"><input type="checkbox" data-size="43" onchange="applyFilters()"> 43 inch</label>
+                <label class="filter-option"><input type="checkbox" data-size="50" onchange="applyFilters()"> 50 inch</label>
+                <label class="filter-option"><input type="checkbox" data-size="55" onchange="applyFilters()"> 55 inch</label>
+                <label class="filter-option"><input type="checkbox" data-size="65" onchange="applyFilters()"> 65 inch</label>
+                <label class="filter-option"><input type="checkbox" data-size="75" onchange="applyFilters()"> 75 inch &amp; above</label>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <!-- Stock -->
-        <div class="filter-group">
-          <div class="filter-group-title">Availability</div>
-          <div class="filter-group-body">
-            <label class="filter-option"><input type="checkbox" id="filter-instock" onchange="applyFilters()"> In Stock Only</label>
+          <!-- 4. Display Type / Technology Accordion -->
+          <div class="accordion-item open" id="acc-type">
+            <button type="button" class="accordion-trigger" onclick="toggleAccordion('acc-type')">
+              <span>Display &amp; Features</span>
+              <span class="accordion-chevron">▾</span>
+            </button>
+            <div class="accordion-content">
+              <div class="filter-group-body">
+                <label class="filter-option"><input type="checkbox" data-type="OLED" onchange="applyFilters()"> OLED</label>
+                <label class="filter-option"><input type="checkbox" data-type="QLED" onchange="applyFilters()"> QLED</label>
+                <label class="filter-option"><input type="checkbox" data-type="4K" onchange="applyFilters()"> 4K Ultra HD</label>
+                <label class="filter-option"><input type="checkbox" data-type="Google TV" onchange="applyFilters()"> Google TV</label>
+                <label class="filter-option"><input type="checkbox" data-type="Smart TV" onchange="applyFilters()"> Smart TV</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Finance & Stock Accordion -->
+          <div class="accordion-item open" id="acc-stock">
+            <button type="button" class="accordion-trigger" onclick="toggleAccordion('acc-stock')">
+              <span>Offers &amp; Stock</span>
+              <span class="accordion-chevron">▾</span>
+            </button>
+            <div class="accordion-content">
+              <div class="filter-group-body">
+                <label class="filter-option"><input type="checkbox" id="filter-instock" onchange="applyFilters()"> Ready In Dharashiv Store</label>
+              </div>
+            </div>
           </div>
         </div>
       </aside>
@@ -331,8 +398,26 @@ function toggleBrand(brand) {
   applyFilters();
 }
 
-function toggleGroup(id) {
-  document.getElementById(id).classList.toggle('collapsed');
+function toggleAccordion(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+
+function filterBrandList(query) {
+  const q = (query || '').toLowerCase().trim();
+  const options = document.querySelectorAll('#brand-options .filter-option');
+  options.forEach(opt => {
+    const text = opt.textContent.toLowerCase();
+    opt.style.display = (!q || text.includes(q)) ? '' : 'none';
+  });
+}
+
+function setPriceChip(min, max) {
+  document.getElementById('price-min').value = min || '';
+  document.getElementById('price-max').value = max || '';
+  activePriceMin = min || 0;
+  activePriceMax = max || 0;
+  applyFilters();
 }
 
 function applyPriceFilter() {
@@ -350,6 +435,9 @@ function clearFilters() {
   document.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
   document.getElementById('price-min').value = '';
   document.getElementById('price-max').value = '';
+  const bs = document.getElementById('brand-search');
+  if (bs) bs.value = '';
+  filterBrandList('');
   setSubcat(null);
 }
 
