@@ -1,9 +1,11 @@
 // ============================================================
 // Doordarshan Electronics — Supabase Configuration & Helper Client
+// Key type: Publishable (new Supabase key system — not legacy JWT)
+// Old legacy anon key has been disabled in Supabase dashboard.
 // ============================================================
 
 const SUPABASE_URL = 'https://lodiiprfdimohskhcpyf.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxvZGlpcHJmZGltb2hza2hjcHlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MDUxMzUsImV4cCI6MjEwNjE4MTEzNX0._7vMP2aTEcnM4X7G0Ul1SuzWsERB_xLADoYO9McyDCQ';
+const SUPABASE_ANON_KEY = 'sb_publishable_FdkBuPPvZVRDCSSY6A-cwQ_0coG4MrF';
 
 // Initialize Supabase Client
 let dbClient = null;
