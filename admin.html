@@ -291,11 +291,10 @@
     <div class="logo">Doordarshan <span>Electronics</span></div>
     <p>Store Owner Admin Panel · Maharashtra</p>
     <h2>🔐 Sign In</h2>
-    <input class="login-input" type="text" id="login-user" placeholder="Username" autocomplete="username" />
+    <input class="login-input" type="email" id="login-user" placeholder="Admin Email (e.g. nadimsk786@gmail.com)" autocomplete="email" />
     <input class="login-input" type="password" id="login-pass" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" />
-    <button class="login-btn" onclick="doLogin()">Sign In</button>
-    <div class="login-error" id="login-error">❌ Incorrect username or password</div>
-    <p style="margin-top:16px;font-size:0.72rem;color:#94A3B8;">Default login: admin / admin123</p>
+    <button class="login-btn" id="login-btn" onclick="doLogin()">Sign In</button>
+    <div class="login-error" id="login-error">❌ Incorrect email or password</div>
   </div>
 </div>
 
@@ -717,63 +716,135 @@
 <script src="js/supabase-config.js"></script>
 <script src="js/products-data.js"></script>
 <script>
-const ADMIN_PASS_KEY = 'de_admin_pass';
+// Rate limiting state for admin login
+const loginRateLimit = {
+  attempts: 0,
+  lockedUntil: null
+};
 
-function getPassword() { return localStorage.getItem(ADMIN_PASS_KEY) || 'admin123'; }
-function getUsername()  { return localStorage.getItem('de_admin_user') || 'admin'; }
+function checkRateLimit() {
+  if (loginRateLimit.lockedUntil) {
+    const remainingMs = loginRateLimit.lockedUntil - Date.now();
+    if (remainingMs > 0) {
+      const waitSec = Math.ceil(remainingMs / 1000);
+      return `❌ Too many failed attempts. Locked for ${waitSec}s.`;
+    } else {
+      loginRateLimit.attempts = 0;
+      loginRateLimit.lockedUntil = null;
+    }
+  }
+  return null;
+}
+
+function recordFailedAttempt() {
+  loginRateLimit.attempts++;
+  if (loginRateLimit.attempts >= 5) {
+    loginRateLimit.lockedUntil = Date.now() + 15 * 60 * 1000; // 15 min lock
+  }
+}
+
+// Inactivity timeout (30 minutes)
+let inactivityTimer = null;
+function resetInactivityTimer() {
+  clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(() => {
+    toast('Session expired due to inactivity.', 'error');
+    doLogout();
+  }, 30 * 60 * 1000);
+}
+['click', 'keydown', 'mousemove', 'scroll', 'touchstart'].forEach(evt => {
+  window.addEventListener(evt, resetInactivityTimer, { passive: true });
+});
 
 async function doLogin() {
-  const u = document.getElementById('login-user').value.trim();
-  const p = document.getElementById('login-pass').value;
   const loginErr = document.getElementById('login-error');
+  const loginBtn = document.getElementById('login-btn');
   loginErr.style.display = 'none';
 
-  if (!u || !p) {
-    loginErr.textContent = '❌ Please enter username and password';
+  const lockMsg = checkRateLimit();
+  if (lockMsg) {
+    loginErr.textContent = lockMsg;
     loginErr.style.display = 'block';
     return;
   }
 
-  // 1. Authenticate against Supabase admin_users table (Global login)
-  if (typeof verifyAdminLoginFromDB === 'function') {
-    const isValid = await verifyAdminLoginFromDB(u, p);
-    if (isValid) {
-      sessionStorage.setItem('de_logged_in', 'true');
-      sessionStorage.setItem('de_admin_user', u);
-      document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-      initApp();
-      return;
-    }
+  const email = document.getElementById('login-user').value.trim();
+  const password = document.getElementById('login-pass').value;
+
+  if (!email || !password) {
+    loginErr.textContent = '❌ Please enter email and password';
+    loginErr.style.display = 'block';
+    return;
   }
 
-  // 2. Fallback to local config if db unverified
-  if (u === getUsername() && p === getPassword()) {
-    sessionStorage.setItem('de_logged_in', 'true');
-    sessionStorage.setItem('de_admin_user', u);
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    initApp();
-  } else {
-    loginErr.textContent = '❌ Incorrect username or password';
+  loginBtn.disabled = true;
+  loginBtn.textContent = 'Signing in…';
+
+  try {
+    if (typeof signInAdminWithAuth === 'function' && dbClient) {
+      const { data, error } = await signInAdminWithAuth(email, password);
+      if (error) {
+        recordFailedAttempt();
+        loginErr.textContent = '❌ ' + (error.message || 'Incorrect email or password');
+        loginErr.style.display = 'block';
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Sign In';
+        return;
+      }
+
+      // Success
+      loginRateLimit.attempts = 0;
+      loginRateLimit.lockedUntil = null;
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      resetInactivityTimer();
+      await initApp();
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'Sign In';
+      return;
+    }
+
+    loginErr.textContent = '❌ Database connection not initialized.';
     loginErr.style.display = 'block';
+  } catch (err) {
+    recordFailedAttempt();
+    loginErr.textContent = '❌ ' + (err.message || 'Authentication failed');
+    loginErr.style.display = 'block';
+  } finally {
+    loginBtn.disabled = false;
+    loginBtn.textContent = 'Sign In';
   }
 }
 
-function doLogout() {
-  sessionStorage.removeItem('de_logged_in');
+async function doLogout() {
+  clearTimeout(inactivityTimer);
+  if (typeof signOutAdmin === 'function') {
+    await signOutAdmin();
+  }
   document.getElementById('app').style.display = 'none';
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('login-user').value = '';
   document.getElementById('login-pass').value = '';
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  if (sessionStorage.getItem('de_logged_in') === 'true') {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    initApp();
+document.addEventListener('DOMContentLoaded', async () => {
+  // Check active Supabase Auth session
+  try {
+    const session = typeof getAdminSession === 'function' ? await getAdminSession() : null;
+    if (session) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      resetInactivityTimer();
+      await initApp();
+      return;
+    }
+  } catch (e) {
+    console.warn('Session restoration failed:', e);
   }
+
+  // Not authenticated: show login screen
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
 });
 
 function toggleMobileSidebar() {
@@ -1244,8 +1315,11 @@ async function saveProduct() {
   const isFeat   = document.getElementById('edit-featured').checked;
   const image    = document.getElementById('edit-image-url').value.trim();
 
-  if (!name)  { toast('❌ Product name is required', 'error'); return; }
-  if (!price) { toast('❌ Sale price is required', 'error'); return; }
+  if (!name || name.length < 2) { toast('❌ Product name must be at least 2 characters', 'error'); return; }
+  if (!brand) { toast('❌ Brand is required', 'error'); return; }
+  if (isNaN(price) || price <= 0) { toast('❌ Sale price must be greater than ₹0', 'error'); return; }
+  if (mrp > 0 && mrp < price) { toast('❌ MRP cannot be less than sale price', 'error'); return; }
+  if (isNaN(stock) || stock < 0) { toast('❌ Stock cannot be negative', 'error'); return; }
 
   const type = typeRaw ? typeRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
   const sizeNum = parseInt(sizeVal) || null;
@@ -1519,23 +1593,20 @@ async function importCSVRows(rows) {
 
 async function saveSettings() {
   const pass = document.getElementById('setting-pass').value;
-  const user = getUsername();
-  if (!pass) {
-    toast('❌ Please enter a new password', 'error');
+  if (!pass || pass.length < 6) {
+    toast('❌ Password must be at least 6 characters long', 'error');
     return;
   }
   if (typeof updateAdminPasswordInDB === 'function') {
     try {
-      await updateAdminPasswordInDB(user, pass);
-      localStorage.setItem(ADMIN_PASS_KEY, pass);
-      toast('✅ Global Admin password updated in database!');
+      await updateAdminPasswordInDB(null, pass);
+      toast('✅ Admin password updated securely in Supabase Auth!');
       document.getElementById('setting-pass').value = '';
     } catch (err) {
       toast('❌ Failed to update password: ' + (err.message || 'Error'), 'error');
     }
   } else {
-    localStorage.setItem(ADMIN_PASS_KEY, pass);
-    toast('✅ Settings saved!');
+    toast('❌ Database connection not available.', 'error');
   }
 }
 

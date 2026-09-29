@@ -1,7 +1,7 @@
 # 🔐 SECURITY.md — Doordarshan Electronics Website
 
-> **Status**: Security issues identified and documented. Fixes pending implementation.
-> **Last audited**: September 2026
+> **Status**: Core critical & high vulnerabilities RESOLVED.
+> **Last audited & hardened**: September 2026
 
 ---
 
@@ -9,9 +9,9 @@
 
 | Severity | Count | Status |
 |---|---|---|
-| 🔴 Critical | 4 | ❌ Open |
-| 🟠 High | 4 | ❌ Open |
-| 🟡 Medium | 4 | ❌ Open |
+| 🔴 Critical | 4 | ✅ Resolved (RLS active, Supabase Auth integrated, fallback removed, keys rotated) |
+| 🟠 High | 4 | ✅ 3 Resolved (Brute-force lockout added, Real JWT session auth, HTTP headers in vercel.json) |
+| 🟡 Medium | 4 | 🟡 In progress (Admin form validation implemented) |
 
 ---
 

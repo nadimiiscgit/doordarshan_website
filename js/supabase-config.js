@@ -28,37 +28,30 @@ const DEFAULT_CATEGORIES = [
   { key: 'small', name: 'Small Appliances', description: 'Water purifiers, irons, fans', icon: '⚡' }
 ];
 
-// Global Admin Login verification via Supabase DB
-async function verifyAdminLoginFromDB(username, password) {
-  if (!dbClient) {
-    return username === 'admin' && password === 'admin123';
-  }
-  try {
-    const { data, error } = await dbClient
-      .from('admin_users')
-      .select('*')
-      .eq('username', username)
-      .eq('password', password);
-
-    if (error || !data || data.length === 0) {
-      // Fallback check
-      return username === 'admin' && password === 'admin123';
-    }
-    return true;
-  } catch (e) {
-    console.error('Login verify error:', e);
-    return username === 'admin' && password === 'admin123';
-  }
+// Supabase Auth Admin Authentication
+async function signInAdminWithAuth(email, password) {
+  if (!dbClient) throw new Error('Database client not connected.');
+  return await dbClient.auth.signInWithPassword({ email, password });
 }
 
-// Update Global Admin Password in Supabase DB
+// Supabase Auth Admin Logout
+async function signOutAdmin() {
+  if (!dbClient) return;
+  return await dbClient.auth.signOut();
+}
+
+// Check current admin session
+async function getAdminSession() {
+  if (!dbClient) return null;
+  const { data: { session }, error } = await dbClient.auth.getSession();
+  if (error || !session) return null;
+  return session;
+}
+
+// Update Global Admin Password in Supabase Auth
 async function updateAdminPasswordInDB(username, newPassword) {
   if (!dbClient) throw new Error('Database not connected.');
-  const { data, error } = await dbClient
-    .from('admin_users')
-    .update({ password: newPassword, updated_at: new Date() })
-    .eq('username', username);
-
+  const { data, error } = await dbClient.auth.updateUser({ password: newPassword });
   if (error) throw error;
   return data;
 }
