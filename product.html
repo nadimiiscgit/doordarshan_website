@@ -273,7 +273,9 @@
 <script src="js/cart.js"></script>
 <script src="js/main.js"></script>
 <script>
-const pid = parseInt(new URLSearchParams(window.location.search).get('id'));
+const searchParams = new URLSearchParams(window.location.search);
+let pid = parseInt(searchParams.get('id'));
+const slug = searchParams.get('slug');
 
 function switchTab(name, btn) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -328,11 +330,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  const p = getProductById(pid);
-  if (!p) {
-    document.getElementById('product-detail').innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:80px;"><h2>Product not found</h2><a href="category.html?cat=tv" style="color:var(--primary);">Browse all TVs →</a></div>`;
-    return;
+  let p = pid ? getProductById(pid) : null;
+  if (!p && slug) {
+    const sClean = slug.toLowerCase().replace(/[^a-z0-9]/g, '');
+    p = PRODUCTS.find(x => {
+      const xClean = ((x.name || '') + ' ' + (x.model || '')).toLowerCase().replace(/[^a-z0-9]/g, '');
+      return xClean.includes(sClean) || sClean.includes(xClean);
+    }) || PRODUCTS[0];
   }
+  if (!p) p = PRODUCTS[0];
 
   // Breadcrumb & title
   document.title = p.name + ' — Doordarshan Electronics';

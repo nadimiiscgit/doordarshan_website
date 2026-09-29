@@ -227,11 +227,11 @@
           <!-- 4. Display Type / Technology Accordion -->
           <div class="accordion-item open" id="acc-type">
             <button type="button" class="accordion-trigger" onclick="toggleAccordion('acc-type')">
-              <span>Display &amp; Features</span>
+              <span id="type-accordion-label">Display &amp; Features</span>
               <span class="accordion-chevron">▾</span>
             </button>
             <div class="accordion-content">
-              <div class="filter-group-body">
+              <div class="filter-group-body" id="type-options">
                 <label class="filter-option"><input type="checkbox" data-type="OLED" onchange="applyFilters()"> OLED</label>
                 <label class="filter-option"><input type="checkbox" data-type="QLED" onchange="applyFilters()"> QLED</label>
                 <label class="filter-option"><input type="checkbox" data-type="4K" onchange="applyFilters()"> 4K Ultra HD</label>
@@ -300,7 +300,20 @@
 <script>
 // ── Category page controller ──────────────────────────────
 const params = new URLSearchParams(window.location.search);
-const CAT   = params.get('cat')   || 'tv';
+const rawCat = (params.get('cat') || params.get('category') || 'tv').toLowerCase().trim();
+
+const CAT_MAP = {
+  'televisions': 'tv', 'television': 'tv', 'tv': 'tv', 'tvs': 'tv', 'led-tvs': 'tv', 'smart-tvs': 'tv', '65-inch-tvs': 'tv',
+  'refrigerators': 'refrigerator', 'refrigerator': 'refrigerator', 'fridge': 'refrigerator', 'fridges': 'refrigerator', 'bottom-freezer': 'refrigerator', 'double-door': 'refrigerator', 'triple-door': 'refrigerator',
+  'air-conditioners': 'ac', 'air-conditioner': 'ac', 'ac': 'ac', 'split-ac': 'ac',
+  'washing-machines': 'washing', 'washing-machine': 'washing', 'washing': 'washing', 'appliances': 'washing', 'clothes-dryer': 'washing',
+  'smartphones': 'phones', 'smartphone': 'phones', 'phones': 'phones', 'android-phones': 'phones',
+  'laptops': 'laptop', 'laptop': 'laptop', 'business-laptops': 'laptop',
+  'kitchen': 'kitchen', 'kitchen-appliances': 'kitchen', 'furniture': 'kitchen',
+  'small-appliances': 'small', 'small': 'small',
+};
+
+const CAT   = CAT_MAP[rawCat] || (PRODUCTS.some(p => p.category === rawCat) ? rawCat : 'tv');
 const BRAND = params.get('brand') || null;
 const SUB   = params.get('sub')   || null;
 const TYPE  = params.get('type')  || null;
@@ -308,10 +321,11 @@ const Q     = params.get('q')     || null;
 
 const CAT_NAMES = {
   tv: 'LED Televisions', refrigerator: 'Refrigerators',
-  ac: 'Air Conditioners', washing: 'Washing Machines',
-  kitchen: 'Kitchen Appliances', phones: 'Phones & Tablets',
-  laptop: 'Laptops', small: 'Small Appliances',
+  ac: 'Air Conditioners', washing: 'Washing Machines & Appliances',
+  kitchen: 'Kitchen Appliances', phones: 'Smartphones & Tablets',
+  laptop: 'Laptops & Computers', small: 'Small Appliances',
 };
+
 const TV_SUBCATS = [
   { label: 'All Sizes', key: null },
   { label: '32"', key: '32-inch' },
@@ -324,6 +338,15 @@ const TV_SUBCATS = [
   { label: '75"+', key: '75-inch' },
 ];
 
+const FRIDGE_SUBCATS = [
+  { label: 'All Fridges', key: null },
+  { label: 'Single Door', key: 'single-door' },
+  { label: 'Double Door', key: 'double-door' },
+  { label: 'Up to 200L', key: 'upto-200l' },
+  { label: '201–300L', key: '201-300l' },
+  { label: '301L+', key: '301-400l' },
+];
+
 let activeBrands = BRAND ? [BRAND] : [];
 let activeSizes  = SUB ? [SUB.replace('-inch','')] : [];
 let activeTypes  = TYPE ? [TYPE] : [];
@@ -332,62 +355,133 @@ let activePriceMin = 0;
 let activePriceMax = 0;
 let activeSubcat  = SUB;
 
-async function initPage() {
-  if (typeof fetchProductsFromDB === 'function') {
-    const liveProds = await fetchProductsFromDB();
-    if (liveProds && liveProds.length > 0 && typeof PRODUCTS !== 'undefined') {
-      PRODUCTS.length = 0;
-      PRODUCTS.push(...liveProds);
-    }
-  }
-
+function renderCategoryView() {
   // Update page title
   const title = Q ? `Search: "${Q}"` : (BRAND ? BRAND + ' ' : '') + (CAT_NAMES[CAT] || 'Products');
   document.getElementById('page-title').textContent = title;
   document.getElementById('breadcrumb-current').textContent = title;
   document.title = title + ' — Doordarshan Electronics';
 
-  // Build brand options
-  const brands = [...new Set(PRODUCTS.filter(p => p.category === CAT).map(p => p.brand))].sort();
-  const brandContainer = document.getElementById('brand-options');
-  brandContainer.innerHTML = brands.map(b => {
-    const cnt = PRODUCTS.filter(p => p.category === CAT && p.brand === b).length;
-    const checked = activeBrands.includes(b) ? 'checked' : '';
-    return `<label class="filter-option">
-      <input type="checkbox" data-brand="${b}" ${checked} onchange="toggleBrand('${b}')">
-      ${b} <span class="filter-count">${cnt}</span>
-    </label>`;
-  }).join('');
+  // Customize size & type labels
+  const sizeLabel = document.getElementById('size-accordion-label');
+  const sizeContainer = document.getElementById('size-options');
+  const typeContainer = document.getElementById('type-options');
 
-  // Build subcategory tabs (TV only)
-  if (CAT === 'tv') {
-    const tabsEl = document.getElementById('subcat-tabs');
-    tabsEl.innerHTML = TV_SUBCATS.map(sc => `
-      <button class="subcat-tab ${activeSubcat === sc.key ? 'active' : ''}"
-        onclick="setSubcat(${sc.key ? `'${sc.key}'` : 'null'})">
-        ${sc.label}
-      </button>
-    `).join('');
+  if (CAT === 'refrigerator') {
+    if (sizeLabel) sizeLabel.textContent = 'Capacity & Door Type';
+    if (sizeContainer) {
+      sizeContainer.innerHTML = `
+        <label class="filter-option"><input type="checkbox" data-sub="single-door" onchange="applyFilters()"> Single Door</label>
+        <label class="filter-option"><input type="checkbox" data-sub="double-door" onchange="applyFilters()"> Double Door</label>
+        <label class="filter-option"><input type="checkbox" data-sub="upto-200l" onchange="applyFilters()"> Up to 200 Litres</label>
+        <label class="filter-option"><input type="checkbox" data-sub="201-300l" onchange="applyFilters()"> 201 – 300 Litres</label>
+        <label class="filter-option"><input type="checkbox" data-sub="301-400l" onchange="applyFilters()"> 301+ Litres</label>
+      `;
+    }
+    if (typeContainer) {
+      typeContainer.innerHTML = `
+        <label class="filter-option"><input type="checkbox" data-type="Inverter" onchange="applyFilters()"> Inverter Compressor</label>
+        <label class="filter-option"><input type="checkbox" data-type="Frost Free" onchange="applyFilters()"> Frost Free</label>
+        <label class="filter-option"><input type="checkbox" data-type="Direct Cool" onchange="applyFilters()"> Direct Cool</label>
+      `;
+    }
+  } else if (CAT === 'tv') {
+    if (sizeLabel) sizeLabel.textContent = 'Screen Size';
+    if (sizeContainer) {
+      sizeContainer.innerHTML = `
+        <label class="filter-option"><input type="checkbox" data-size="32" onchange="applyFilters()"> 32 inch</label>
+        <label class="filter-option"><input type="checkbox" data-size="40" onchange="applyFilters()"> 40 inch</label>
+        <label class="filter-option"><input type="checkbox" data-size="43" onchange="applyFilters()"> 43 inch</label>
+        <label class="filter-option"><input type="checkbox" data-size="50" onchange="applyFilters()"> 50 inch</label>
+        <label class="filter-option"><input type="checkbox" data-size="55" onchange="applyFilters()"> 55 inch</label>
+        <label class="filter-option"><input type="checkbox" data-size="65" onchange="applyFilters()"> 65 inch</label>
+        <label class="filter-option"><input type="checkbox" data-size="75" onchange="applyFilters()"> 75 inch &amp; above</label>
+      `;
+    }
+    if (typeContainer) {
+      typeContainer.innerHTML = `
+        <label class="filter-option"><input type="checkbox" data-type="4K" onchange="applyFilters()"> 4K Ultra HD</label>
+        <label class="filter-option"><input type="checkbox" data-type="QLED" onchange="applyFilters()"> QLED</label>
+        <label class="filter-option"><input type="checkbox" data-type="OLED" onchange="applyFilters()"> OLED</label>
+        <label class="filter-option"><input type="checkbox" data-type="Google TV" onchange="applyFilters()"> Google TV</label>
+        <label class="filter-option"><input type="checkbox" data-type="Smart TV" onchange="applyFilters()"> Smart TV</label>
+      `;
+    }
+  }
+
+  // Build brand options for this category
+  const catProds = PRODUCTS.filter(p => p.category === CAT);
+  const brands = [...new Set(catProds.map(p => p.brand))].sort();
+  const brandContainer = document.getElementById('brand-options');
+  if (brandContainer) {
+    brandContainer.innerHTML = brands.map(b => {
+      const cnt = catProds.filter(p => p.brand === b).length;
+      const checked = activeBrands.includes(b) ? 'checked' : '';
+      return `<label class="filter-option">
+        <input type="checkbox" data-brand="${b}" ${checked} onchange="toggleBrand('${b}')">
+        ${b} <span class="filter-count">${cnt}</span>
+      </label>`;
+    }).join('');
+  }
+
+  // Build subcategory tabs
+  const tabsEl = document.getElementById('subcat-tabs');
+  if (tabsEl) {
+    if (CAT === 'tv') {
+      tabsEl.innerHTML = TV_SUBCATS.map(sc => `
+        <button class="subcat-tab ${activeSubcat === sc.key ? 'active' : ''}"
+          onclick="setSubcat(${sc.key ? `'${sc.key}'` : 'null'})">
+          ${sc.label}
+        </button>
+      `).join('');
+    } else if (CAT === 'refrigerator') {
+      tabsEl.innerHTML = FRIDGE_SUBCATS.map(sc => `
+        <button class="subcat-tab ${activeSubcat === sc.key ? 'active' : ''}"
+          onclick="setSubcat(${sc.key ? `'${sc.key}'` : 'null'})">
+          ${sc.label}
+        </button>
+      `).join('');
+    } else {
+      tabsEl.innerHTML = '';
+    }
   }
 
   // Pre-check size filters
   if (SUB) {
     const sizeNum = SUB.replace('-inch', '');
     document.querySelectorAll(`[data-size="${sizeNum}"]`).forEach(el => el.checked = true);
+    document.querySelectorAll(`[data-sub="${SUB}"]`).forEach(el => el.checked = true);
   }
+}
 
+function initPage() {
+  renderCategoryView();
   applyFilters();
+
+  if (typeof fetchProductsFromDB === 'function') {
+    fetchProductsFromDB().then(liveProds => {
+      if (liveProds && liveProds.length > 0 && typeof PRODUCTS !== 'undefined') {
+        PRODUCTS.length = 0;
+        PRODUCTS.push(...liveProds);
+        renderCategoryView();
+        applyFilters();
+      }
+    }).catch(() => {});
+  }
 }
 
 function setSubcat(key) {
   activeSubcat = key;
-  activeSizes  = key ? [key.replace('-inch', '')] : [];
+  const subcats = CAT === 'refrigerator' ? FRIDGE_SUBCATS : TV_SUBCATS;
   document.querySelectorAll('.subcat-tab').forEach((tab, i) => {
-    tab.classList.toggle('active', TV_SUBCATS[i].key === key);
+    tab.classList.toggle('active', subcats[i] && subcats[i].key === key);
   });
-  document.querySelectorAll('[data-size]').forEach(cb => {
-    cb.checked = activeSizes.includes(cb.dataset.size);
-  });
+  if (CAT === 'tv') {
+    activeSizes = key ? [key.replace('-inch', '')] : [];
+    document.querySelectorAll('[data-size]').forEach(cb => {
+      cb.checked = activeSizes.includes(cb.dataset.size);
+    });
+  }
   applyFilters();
 }
 
@@ -453,7 +547,14 @@ function applyFilters() {
     if (Q && !p.name.toLowerCase().includes(Q.toLowerCase()) && !p.brand.toLowerCase().includes(Q.toLowerCase()) && !p.model.toLowerCase().includes(Q.toLowerCase())) return false;
     if (activeBrands.length && !activeBrands.includes(p.brand)) return false;
     if (activeSizes.length && !activeSizes.includes(String(p.size))) return false;
-    if (activeTypes.length && !activeTypes.some(t => p.type.includes(t))) return false;
+    if (activeTypes.length && !activeTypes.some(t => (p.type || []).includes(t))) return false;
+    if (activeSubcat) {
+      if (activeSubcat === 'single-door' && !(p.type || []).includes('Single Door')) return false;
+      if (activeSubcat === 'double-door' && !(p.type || []).includes('Double Door')) return false;
+      if (activeSubcat === 'upto-200l' && p.size > 200) return false;
+      if (activeSubcat === '201-300l' && (p.size <= 200 || p.size > 300)) return false;
+      if (activeSubcat === '301-400l' && p.size <= 300) return false;
+    }
     if (activeInstock && p.stock === 0) return false;
     if (activePriceMin > 0 && p.price < activePriceMin) return false;
     if (activePriceMax > 0 && p.price > activePriceMax) return false;

@@ -1,4 +1,30 @@
 {
+  "rewrites": [
+    { "source": "/category/televisions", "destination": "/category.html?cat=tv" },
+    { "source": "/category/refrigerators", "destination": "/category.html?cat=refrigerator" },
+    { "source": "/category/air-conditioners", "destination": "/category.html?cat=ac" },
+    { "source": "/category/appliances", "destination": "/category.html?cat=washing" },
+    { "source": "/category/washing-machines", "destination": "/category.html?cat=washing" },
+    { "source": "/category/small-appliances", "destination": "/category.html?cat=small" },
+    { "source": "/category/furniture", "destination": "/category.html?cat=kitchen" },
+    { "source": "/category/smartphones", "destination": "/category.html?cat=phones" },
+    { "source": "/category/android-phones", "destination": "/category.html?cat=phones" },
+    { "source": "/category/business-laptops", "destination": "/category.html?cat=laptop" },
+    { "source": "/category/laptops", "destination": "/category.html?cat=laptop" },
+    { "source": "/category/65-inch-tvs", "destination": "/category.html?cat=tv&sub=65-inch" },
+    { "source": "/category/led-tvs", "destination": "/category.html?cat=tv" },
+    { "source": "/category/smart-tvs", "destination": "/category.html?cat=tv" },
+    { "source": "/category/bottom-freezer", "destination": "/category.html?cat=refrigerator" },
+    { "source": "/category/double-door", "destination": "/category.html?cat=refrigerator" },
+    { "source": "/category/triple-door", "destination": "/category.html?cat=refrigerator" },
+    { "source": "/category/split-ac", "destination": "/category.html?cat=ac" },
+    { "source": "/category/:cat", "destination": "/category.html?cat=:cat" },
+    { "source": "/search", "destination": "/category.html" },
+    { "source": "/admin/login", "destination": "/admin.html" },
+    { "source": "/support", "destination": "/contact.html" },
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/product/:slug", "destination": "/product.html?slug=:slug" }
+  ],
   "headers": [
     {
       "source": "/(.*)",

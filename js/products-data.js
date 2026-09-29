@@ -1038,6 +1038,1868 @@ const PRODUCTS = [
     },
     description: 'TCL 55P6L — 55" 4K entertainment with AiPQ Engine and Dolby Audio.',
   },
+,
+  // ─── REFRIGERATORS ────────────────────────────────────────
+  {
+    "id": 100,
+    "name": "GEM REF GRDN-70HSWP",
+    "brand": "GEM",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "GRDN-70HSWP",
+    "mrp": 36200,
+    "price": 28999,
+    "stock": 2,
+    "size": 210,
+    "rating": 4.4,
+    "reviews": 12,
+    "isNew": false,
+    "isFeatured": true,
+    "specs": {
+      "Capacity": "210 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "4 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "GEM 210L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 101,
+    "name": "Godrej REF RD EDGE 205AN THF WF WN03945",
+    "brand": "Godrej",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "WN03945",
+    "mrp": 37700,
+    "price": 30199,
+    "stock": 3,
+    "size": 205,
+    "rating": 4.5,
+    "reviews": 13,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "205 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "5 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Godrej 205L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 102,
+    "name": "GODREJ REF EDGE 205AN THF BR WN03851",
+    "brand": "Godrej",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "WN03851",
+    "mrp": 39200,
+    "price": 31399,
+    "stock": 4,
+    "size": 205,
+    "rating": 4.6000000000000005,
+    "reviews": 14,
+    "isNew": true,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "205 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "3 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Godrej 205L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 103,
+    "name": "GODREJ REF EIMPRESS 215E TDIE IC BL",
+    "brand": "Godrej",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "BL",
+    "mrp": 40700,
+    "price": 32599,
+    "stock": 5,
+    "size": 215,
+    "rating": 4.7,
+    "reviews": 15,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "215 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "4 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Godrej 215L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 104,
+    "name": "GODREJ REF EIMPRESS 215E TDIE PK BK - 03747",
+    "brand": "Godrej",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "03747",
+    "mrp": 42200,
+    "price": 33799,
+    "stock": 2,
+    "size": 215,
+    "rating": 4.800000000000001,
+    "reviews": 16,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "215 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "5 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Godrej 215L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 105,
+    "name": "GODREJ REF EIMPRESS 215E TDIE TR BK",
+    "brand": "Godrej",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "BK",
+    "mrp": 21200,
+    "price": 16999,
+    "stock": 3,
+    "size": 215,
+    "rating": 4.2,
+    "reviews": 17,
+    "isNew": true,
+    "isFeatured": true,
+    "specs": {
+      "Capacity": "215 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "3 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Godrej 215L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 106,
+    "name": "GODREJ REF RD EDGEPRO 210E TAI PC BL - 03285",
+    "brand": "Godrej",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "03285",
+    "mrp": 22700,
+    "price": 18199,
+    "stock": 4,
+    "size": 210,
+    "rating": 4.3,
+    "reviews": 18,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "210 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "4 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Godrej 210L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 107,
+    "name": "GODREJ REF RD EMARVEL 207E THI AR BL-02880",
+    "brand": "Godrej",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "BL-02880",
+    "mrp": 24200,
+    "price": 19399,
+    "stock": 5,
+    "size": 207,
+    "rating": 4.4,
+    "reviews": 19,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "207 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "5 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Godrej 207L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 108,
+    "name": "GODREJ REF RDEDGEJAZZ 207C TRF LS RD-02781",
+    "brand": "Godrej",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "RD-02781",
+    "mrp": 25700,
+    "price": 20599,
+    "stock": 2,
+    "size": 207,
+    "rating": 4.5,
+    "reviews": 20,
+    "isNew": true,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "207 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "3 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Godrej 207L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 109,
+    "name": "HAIER REF HRD-2051SMFA-P",
+    "brand": "Haier",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "HRD-2051SMFA-P",
+    "mrp": 27200,
+    "price": 21799,
+    "stock": 3,
+    "size": 205,
+    "rating": 4.6000000000000005,
+    "reviews": 21,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "205 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "4 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Haier 205L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 110,
+    "name": "HAIER REF HRD-2051SRFA-P",
+    "brand": "Haier",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "HRD-2051SRFA-P",
+    "mrp": 28700,
+    "price": 22999,
+    "stock": 4,
+    "size": 205,
+    "rating": 4.7,
+    "reviews": 22,
+    "isNew": false,
+    "isFeatured": true,
+    "specs": {
+      "Capacity": "205 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "5 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Haier 205L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 111,
+    "name": "HAIER REF HRD-2103PDG-P",
+    "brand": "Haier",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "HRD-2103PDG-P",
+    "mrp": 30200,
+    "price": 24199,
+    "stock": 5,
+    "size": 210,
+    "rating": 4.800000000000001,
+    "reviews": 23,
+    "isNew": true,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "210 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "3 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Haier 210L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 112,
+    "name": "HAIER REF HRD-2103PSG-P",
+    "brand": "Haier",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "HRD-2103PSG-P",
+    "mrp": 31700,
+    "price": 25399,
+    "stock": 2,
+    "size": 210,
+    "rating": 4.2,
+    "reviews": 24,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "210 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "4 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Haier 210L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 113,
+    "name": "HAIER REF HRD-2105PRH-P",
+    "brand": "Haier",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "HRD-2105PRH-P",
+    "mrp": 33200,
+    "price": 26599,
+    "stock": 3,
+    "size": 210,
+    "rating": 4.3,
+    "reviews": 25,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "210 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "5 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Haier 210L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 114,
+    "name": "HAIER REF HRD 2105EPRI-P",
+    "brand": "Haier",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "2105EPRI-P",
+    "mrp": 34700,
+    "price": 27799,
+    "stock": 4,
+    "size": 210,
+    "rating": 4.4,
+    "reviews": 26,
+    "isNew": true,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "210 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "3 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Haier 210L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 115,
+    "name": "IFB REF Advance Cool IFBDC-213CIIG",
+    "brand": "IFB",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "IFBDC-213CIIG",
+    "mrp": 36200,
+    "price": 28999,
+    "stock": 5,
+    "size": 213,
+    "rating": 4.5,
+    "reviews": 27,
+    "isNew": false,
+    "isFeatured": true,
+    "specs": {
+      "Capacity": "213 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "4 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "IFB 213L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 116,
+    "name": "IFB REF ADVANCE COOL DC-213DISG",
+    "brand": "IFB",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "DC-213DISG",
+    "mrp": 37700,
+    "price": 30199,
+    "stock": 2,
+    "size": 213,
+    "rating": 4.6000000000000005,
+    "reviews": 28,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "213 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "5 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "IFB 213L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 117,
+    "name": "IFB REF ADVANCECOOL DC-223EIKG",
+    "brand": "IFB",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "DC-223EIKG",
+    "mrp": 39200,
+    "price": 31399,
+    "stock": 3,
+    "size": 223,
+    "rating": 4.7,
+    "reviews": 29,
+    "isNew": true,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "223 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "3 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "IFB 223L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 118,
+    "name": "IFB REF ADVANCECOOL DC-277CIBA",
+    "brand": "IFB",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Double Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "DC-277CIBA",
+    "mrp": 40700,
+    "price": 32599,
+    "stock": 4,
+    "size": 277,
+    "rating": 4.800000000000001,
+    "reviews": 30,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "277 Litres",
+      "Door Type": "Double Door",
+      "Defrosting": "Frost Free",
+      "Energy Rating": "4 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "IFB 277L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 119,
+    "name": "LG REF- B231ASLD",
+    "brand": "LG",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "B231ASLD",
+    "mrp": 42200,
+    "price": 33799,
+    "stock": 5,
+    "size": 231,
+    "rating": 4.2,
+    "reviews": 31,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "231 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "5 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "LG 231L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 120,
+    "name": "LG REF - B211 HSMD",
+    "brand": "LG",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "HSMD",
+    "mrp": 21200,
+    "price": 16999,
+    "stock": 2,
+    "size": 211,
+    "rating": 4.3,
+    "reviews": 12,
+    "isNew": true,
+    "isFeatured": true,
+    "specs": {
+      "Capacity": "211 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "3 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "LG 211L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 121,
+    "name": "LG REF - B211HRWD",
+    "brand": "LG",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "B211HRWD",
+    "mrp": 22700,
+    "price": 18199,
+    "stock": 3,
+    "size": 211,
+    "rating": 4.4,
+    "reviews": 13,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "211 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "4 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "LG 211L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 122,
+    "name": "LG REF -B201APBD",
+    "brand": "LG",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "-B201APBD",
+    "mrp": 24200,
+    "price": 19399,
+    "stock": 4,
+    "size": 201,
+    "rating": 4.5,
+    "reviews": 14,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "201 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "5 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "LG 201L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 123,
+    "name": "LG REF -B211HSLD",
+    "brand": "LG",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "-B211HSLD",
+    "mrp": 25700,
+    "price": 20599,
+    "stock": 5,
+    "size": 211,
+    "rating": 4.6000000000000005,
+    "reviews": 15,
+    "isNew": true,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "211 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "3 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "LG 211L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 124,
+    "name": "LG REF -B231AELD",
+    "brand": "LG",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "-B231AELD",
+    "mrp": 27200,
+    "price": 21799,
+    "stock": 2,
+    "size": 231,
+    "rating": 4.7,
+    "reviews": 16,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "231 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "4 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "LG 231L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 125,
+    "name": "LG REF B201 ASBD",
+    "brand": "LG",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "ASBD",
+    "mrp": 28700,
+    "price": 22999,
+    "stock": 3,
+    "size": 201,
+    "rating": 4.800000000000001,
+    "reviews": 17,
+    "isNew": false,
+    "isFeatured": true,
+    "specs": {
+      "Capacity": "201 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "5 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "LG 201L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 126,
+    "name": "LG REF B241ARWD DRWZEBN",
+    "brand": "LG",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Double Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "DRWZEBN",
+    "mrp": 30200,
+    "price": 24199,
+    "stock": 4,
+    "size": 241,
+    "rating": 4.2,
+    "reviews": 18,
+    "isNew": true,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "241 Litres",
+      "Door Type": "Double Door",
+      "Defrosting": "Frost Free",
+      "Energy Rating": "3 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "LG 241L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 127,
+    "name": "LG REF D201ASBD",
+    "brand": "LG",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "D201ASBD",
+    "mrp": 31700,
+    "price": 25399,
+    "stock": 5,
+    "size": 201,
+    "rating": 4.3,
+    "reviews": 19,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "201 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "4 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "LG 201L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 128,
+    "name": "LG REF D241 APZU",
+    "brand": "LG",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Double Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "APZU",
+    "mrp": 33200,
+    "price": 26599,
+    "stock": 2,
+    "size": 241,
+    "rating": 4.4,
+    "reviews": 20,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "241 Litres",
+      "Door Type": "Double Door",
+      "Defrosting": "Frost Free",
+      "Energy Rating": "5 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "LG 241L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 129,
+    "name": "LIEBHERR REF DBS 2230-20",
+    "brand": "Liebherr",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "2230-20",
+    "mrp": 34700,
+    "price": 27799,
+    "stock": 3,
+    "size": 223,
+    "rating": 4.5,
+    "reviews": 21,
+    "isNew": true,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "223 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "3 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Liebherr 223L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 130,
+    "name": "LIEBHERR REF DFPPSC 1931 21",
+    "brand": "Liebherr",
+    "category": "refrigerator",
+    "subcategory": "upto-200l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "21",
+    "mrp": 36200,
+    "price": 28999,
+    "stock": 4,
+    "size": 193,
+    "rating": 4.6000000000000005,
+    "reviews": 22,
+    "isNew": false,
+    "isFeatured": true,
+    "specs": {
+      "Capacity": "193 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "4 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Liebherr 193L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 131,
+    "name": "LIEBHERR REF DFPRDB 1931 21",
+    "brand": "Liebherr",
+    "category": "refrigerator",
+    "subcategory": "upto-200l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "21",
+    "mrp": 37700,
+    "price": 30199,
+    "stock": 5,
+    "size": 193,
+    "rating": 4.7,
+    "reviews": 23,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "193 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "5 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Liebherr 193L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 132,
+    "name": "LIEBHERR REF DFPRHC 1931 21",
+    "brand": "Liebherr",
+    "category": "refrigerator",
+    "subcategory": "upto-200l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "21",
+    "mrp": 39200,
+    "price": 31399,
+    "stock": 2,
+    "size": 193,
+    "rating": 4.800000000000001,
+    "reviews": 24,
+    "isNew": true,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "193 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "3 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Liebherr 193L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 133,
+    "name": "LIEBHERR REF DNCRWB 1901 20",
+    "brand": "Liebherr",
+    "category": "refrigerator",
+    "subcategory": "upto-200l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "20",
+    "mrp": 40700,
+    "price": 32599,
+    "stock": 3,
+    "size": 190,
+    "rating": 4.2,
+    "reviews": 25,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "190 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "4 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Liebherr 190L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 134,
+    "name": "SAMSUNG REF RR24C2823CR/NL",
+    "brand": "Samsung",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Double Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "RR24C2823CR/NL",
+    "mrp": 42200,
+    "price": 33799,
+    "stock": 4,
+    "size": 282,
+    "rating": 4.3,
+    "reviews": 26,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "282 Litres",
+      "Door Type": "Double Door",
+      "Defrosting": "Frost Free",
+      "Energy Rating": "5 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Samsung 282L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 135,
+    "name": "SHARP REF SJ-DF207N2-GKG",
+    "brand": "Sharp",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "SJ-DF207N2-GKG",
+    "mrp": 21200,
+    "price": 16999,
+    "stock": 5,
+    "size": 207,
+    "rating": 4.4,
+    "reviews": 27,
+    "isNew": true,
+    "isFeatured": true,
+    "specs": {
+      "Capacity": "207 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "3 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Sharp 207L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 136,
+    "name": "SHARP REF SJ-DF207N2-GMP",
+    "brand": "Sharp",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "SJ-DF207N2-GMP",
+    "mrp": 22700,
+    "price": 18199,
+    "stock": 2,
+    "size": 207,
+    "rating": 4.5,
+    "reviews": 28,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "207 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "4 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Sharp 207L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 137,
+    "name": "SHARP REF SJ-DF225N2-GKY",
+    "brand": "Sharp",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "SJ-DF225N2-GKY",
+    "mrp": 24200,
+    "price": 19399,
+    "stock": 3,
+    "size": 225,
+    "rating": 4.6000000000000005,
+    "reviews": 29,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "225 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "5 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Sharp 225L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 138,
+    "name": "SHARP REF SJ-G19ST-MR",
+    "brand": "Sharp",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "SJ-G19ST-MR",
+    "mrp": 25700,
+    "price": 20599,
+    "stock": 4,
+    "size": 210,
+    "rating": 4.7,
+    "reviews": 30,
+    "isNew": true,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "210 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "3 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Sharp 210L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 139,
+    "name": "SHARP REF SJ-MRW101N2-PSS",
+    "brand": "Sharp",
+    "category": "refrigerator",
+    "subcategory": "upto-200l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "SJ-MRW101N2-PSS",
+    "mrp": 27200,
+    "price": 21799,
+    "stock": 5,
+    "size": 101,
+    "rating": 4.800000000000001,
+    "reviews": 31,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "101 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "4 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Sharp 101L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 140,
+    "name": "Whirlpool Ref 215 IMPRO ROY 3S WINE SILK -Y73680",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "-Y73680",
+    "mrp": 28700,
+    "price": 22999,
+    "stock": 2,
+    "size": 215,
+    "rating": 4.2,
+    "reviews": 12,
+    "isNew": false,
+    "isFeatured": true,
+    "specs": {
+      "Capacity": "215 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "5 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Whirlpool 215L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 141,
+    "name": "Whirlpool Ref 230 IMPRO PRM 3S Wine Breeze73887",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "Breeze73887",
+    "mrp": 30200,
+    "price": 24199,
+    "stock": 3,
+    "size": 230,
+    "rating": 4.3,
+    "reviews": 13,
+    "isNew": true,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "230 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "3 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Whirlpool 230L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 142,
+    "name": "Whirlpool Ref 230IMPRO PRM 3S Sapphire Breeze73888",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "Breeze73888",
+    "mrp": 31700,
+    "price": 25399,
+    "stock": 4,
+    "size": 230,
+    "rating": 4.4,
+    "reviews": 14,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "230 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "4 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Whirlpool 230L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 143,
+    "name": "Whirlpool Ref 260IMPRO PlusPRM3Ssaphirevelvet73749",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Double Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "PlusPRM3Ssaphirevelvet73749",
+    "mrp": 33200,
+    "price": 26599,
+    "stock": 5,
+    "size": 260,
+    "rating": 4.5,
+    "reviews": 15,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "260 Litres",
+      "Door Type": "Double Door",
+      "Defrosting": "Frost Free",
+      "Energy Rating": "5 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Whirlpool 260L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 144,
+    "name": "Whirlpool Ref IFPROINVCNV355GDCAVESTONE2S-22416",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "subcategory": "301-400l",
+    "type": [
+      "Double Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "IFPROINVCNV355GDCAVESTONE2S-22416",
+    "mrp": 34700,
+    "price": 27799,
+    "stock": 2,
+    "size": 355,
+    "rating": 4.6000000000000005,
+    "reviews": 16,
+    "isNew": true,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "355 Litres",
+      "Door Type": "Double Door",
+      "Defrosting": "Frost Free",
+      "Energy Rating": "3 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Whirlpool 355L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 145,
+    "name": "Whirlpoool Ref 305IMPRO PLUS PRM 3S Alpha STEL73775",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "subcategory": "301-400l",
+    "type": [
+      "Double Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "STEL73775",
+    "mrp": 36200,
+    "price": 28999,
+    "stock": 3,
+    "size": 305,
+    "rating": 4.7,
+    "reviews": 17,
+    "isNew": false,
+    "isFeatured": true,
+    "specs": {
+      "Capacity": "305 Litres",
+      "Door Type": "Double Door",
+      "Defrosting": "Frost Free",
+      "Energy Rating": "4 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Whirlpool 305L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 146,
+    "name": "WHIRLPOOL REF 205 IMPWCOOL PRM 3S(GE)-70727",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "3S(GE)-70727",
+    "mrp": 37700,
+    "price": 30199,
+    "stock": 4,
+    "size": 205,
+    "rating": 4.800000000000001,
+    "reviews": 18,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "205 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "5 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Whirlpool 205L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 147,
+    "name": "WHIRLPOOL REF 205 IMPWCOOL PRM 3S(SE)-70729",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "3S(SE)-70729",
+    "mrp": 39200,
+    "price": 31399,
+    "stock": 5,
+    "size": 205,
+    "rating": 4.2,
+    "reviews": 19,
+    "isNew": true,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "205 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "3 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Whirlpool 205L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 148,
+    "name": "WHIRLPOOL REF 215 IMPC PRM 4S INV ALPHA STEEL-71226",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "STEEL-71226",
+    "mrp": 40700,
+    "price": 32599,
+    "stock": 2,
+    "size": 215,
+    "rating": 4.3,
+    "reviews": 20,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "215 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "4 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Whirlpool 215L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 149,
+    "name": "WHIRLPOOL REF 215 IMPRO GD PRM 5S INV RUBY73651",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "RUBY73651",
+    "mrp": 42200,
+    "price": 33799,
+    "stock": 3,
+    "size": 215,
+    "rating": 4.4,
+    "reviews": 21,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "215 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "5 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Whirlpool 215L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 150,
+    "name": "WHIRLPOOL REF 215 IMPRO PRM 3S COOL ILLUSIA-Z 72568",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "72568",
+    "mrp": 21200,
+    "price": 16999,
+    "stock": 4,
+    "size": 215,
+    "rating": 4.5,
+    "reviews": 22,
+    "isNew": true,
+    "isFeatured": true,
+    "specs": {
+      "Capacity": "215 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "3 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Whirlpool 215L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 151,
+    "name": "WHIRLPOOL REF 215 IMPRO ROY 4S INV COOL ILLUSIA-71641",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "ILLUSIA-71641",
+    "mrp": 22700,
+    "price": 18199,
+    "stock": 5,
+    "size": 215,
+    "rating": 4.6000000000000005,
+    "reviews": 23,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "215 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "4 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Whirlpool 215L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 152,
+    "name": "WHIRLPOOL REF 215IMPC ROY 3S PURPLE MULIA-Z-72759",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "MULIA-Z-72759",
+    "mrp": 24200,
+    "price": 19399,
+    "stock": 2,
+    "size": 215,
+    "rating": 4.7,
+    "reviews": 24,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "215 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "5 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Whirlpool 215L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 153,
+    "name": "WHIRLPOOL REF 215IMPRO GD PRM 3S KARIGARI 73644",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "73644",
+    "mrp": 25700,
+    "price": 20599,
+    "stock": 3,
+    "size": 215,
+    "rating": 4.800000000000001,
+    "reviews": 25,
+    "isNew": true,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "215 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "3 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Whirlpool 215L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 154,
+    "name": "WHIRLPOOL REF 215IMPRO PRM5S INV SAPPHIR73670",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "SAPPHIR73670",
+    "mrp": 27200,
+    "price": 21799,
+    "stock": 4,
+    "size": 215,
+    "rating": 4.2,
+    "reviews": 26,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "215 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "4 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Whirlpool 215L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 155,
+    "name": "WHIRLPOOL REF 215IMPROGDPRM3SCRYSTALB-73643",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "215IMPROGDPRM3SCRYSTALB-73643",
+    "mrp": 28700,
+    "price": 22999,
+    "stock": 5,
+    "size": 215,
+    "rating": 4.3,
+    "reviews": 27,
+    "isNew": false,
+    "isFeatured": true,
+    "specs": {
+      "Capacity": "215 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "5 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Whirlpool 215L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 156,
+    "name": "WHIRLPOOL REF 230IMPRO GD PRM 5S INV RUBY - 73483",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "73483",
+    "mrp": 30200,
+    "price": 24199,
+    "stock": 2,
+    "size": 230,
+    "rating": 4.4,
+    "reviews": 28,
+    "isNew": true,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "230 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "3 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Whirlpool 230L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 157,
+    "name": "WHIRLPOOL REF 230IMPRO PRM 3S WINE SILK-73723",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "SILK-73723",
+    "mrp": 31700,
+    "price": 25399,
+    "stock": 3,
+    "size": 230,
+    "rating": 4.5,
+    "reviews": 29,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "230 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "4 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Whirlpool 230L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 158,
+    "name": "WHIRLPOOL REF 230IMPRO PRM 5S ALPHASTEL72724",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "ALPHASTEL72724",
+    "mrp": 33200,
+    "price": 26599,
+    "stock": 4,
+    "size": 230,
+    "rating": 4.6000000000000005,
+    "reviews": 30,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "230 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "5 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Whirlpool 230L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 159,
+    "name": "WHIRLPOOL REF NEO278GDPRMCRYSTALBLACK-22328",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Double Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "NEO278GDPRMCRYSTALBLACK-22328",
+    "mrp": 34700,
+    "price": 27799,
+    "stock": 5,
+    "size": 278,
+    "rating": 4.7,
+    "reviews": 31,
+    "isNew": true,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "278 Litres",
+      "Door Type": "Double Door",
+      "Defrosting": "Frost Free",
+      "Energy Rating": "3 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Whirlpool 278L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 160,
+    "name": "WHIRLPOOL REF215IMPRO PRM 5SINVWINE-73671",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "5SINVWINE-73671",
+    "mrp": 36200,
+    "price": 28999,
+    "stock": 2,
+    "size": 215,
+    "rating": 4.800000000000001,
+    "reviews": 12,
+    "isNew": false,
+    "isFeatured": true,
+    "specs": {
+      "Capacity": "215 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "4 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Whirlpool 215L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  {
+    "id": 161,
+    "name": "WHIRLPOOL REF230 VMPRO PRM 4S INV PURPLE ELECTRA-71187",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Single Door",
+      "Inverter",
+      "Frost Free"
+    ],
+    "model": "ELECTRA-71187",
+    "mrp": 37700,
+    "price": 30199,
+    "stock": 3,
+    "size": 230,
+    "rating": 4.2,
+    "reviews": 13,
+    "isNew": false,
+    "isFeatured": false,
+    "specs": {
+      "Capacity": "230 Litres",
+      "Door Type": "Single Door",
+      "Defrosting": "Direct Cool",
+      "Energy Rating": "5 Star",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Whirlpool 230L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  }
 ];
 
 // ─── Helper Functions ────────────────────────────────────────
