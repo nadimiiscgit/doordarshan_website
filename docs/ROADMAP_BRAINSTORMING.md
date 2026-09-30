@@ -1,190 +1,195 @@
-# 🚀 Doordarshan Electronics — Growth, UI & Feature Brainstorming Blueprint
+# Doordarshan Electronics — Remediation Plan
 
-> **Status**: Strategic Discussion Document (Do Not Implement Yet)  
-> **Target**: Transform Doordarshan Electronics into Dharashiv's #1 digital-first omnichannel electronics destination (inspired by modern retail leaders like Vijay Sales & Croma).
+> Updated 30 September 2026. This plan consolidates the review with the first implementation pass. Checkboxes reflect repository changes only; deployed Supabase/Vercel state and real product data remain unverified.
 
----
+## Scope and assumptions
 
-## 📌 Executive Summary of Ideas
+The agreed near-term model is a product catalogue with call/WhatsApp-assisted sales; there is no online checkout. The admin account holder manages catalog data, subject to production authorization policy. The deployed Supabase policies, Vercel project settings, real inventory, and business policies cannot be confirmed from this repository alone; verify those directly before relying on them.
 
-| Pillar | Proposed Feature | Impact | Effort | Priority |
-|---|---|---|---|---|
-| **🎨 UI & Design** | Vijay Sales format & aesthetic upgrade | 🟢 High Conversion | 🟡 Medium | Phase 1 (Quick Win) |
-| **🎛️ Navigation** | Expandable/Collapsible Accordion Filters | 🟢 UX Improvement | 🟢 Low | Phase 1 (Quick Win) |
-| **🛡️ Trust Building** | 30+ Years Trust, Authorized Dealer & Bajaj EMI Badges | 🟢 High Credibility | 🟢 Low | Phase 1 (Quick Win) |
-| **⭐ Social Proof** | Google Reviews Showcase & Review Acquisition Funnel | 🟢 High Local SEO | 🟢 Low | Phase 1 (Quick Win) |
-| **📊 Analytics** | Google Analytics 4 (GA4) + Microsoft Clarity | 🟢 Data Visibility | 🟢 Low | Phase 1 (Quick Win) |
-| **📍 Local SEO** | Dedicated Dharashiv & Tuljapur Landing Pages | 🟢 Massive Organic Footfall | 🟡 Medium | Phase 2 |
-| **⚖️ Decision Tools**| Side-by-Side Product Comparison Engine | 🟡 High Engagement | 🟡 Medium | Phase 2 |
-| **🏪 Store Branding**| Showroom & Storefront Gallery with Tour | 🟢 Local Authenticity | 🟢 Low | Phase 2 |
-| **👤 User System** | Customer Accounts (Wishlist, Saved Addresses) | 🟡 Retention | 🔴 High | Phase 3 |
-| **📝 Content / Blog**| Buying Guides & Appliance Care Articles | 🟡 Long-term SEO | 🟡 Medium | Phase 3 |
+Keep the call/WhatsApp model, make catalog/admin information trustworthy, and treat full checkout as a separate project. Do not advertise a browser-side cart or a WhatsApp message as a completed order or payment. Other phases remain parked until the P0 data/security questions are reviewed.
 
----
+## Priority summary
 
-## 1. 🎨 Vijay Sales Retail UI Aesthetic
+1. **P0 — Release safety:** homepage selector/asset defects, not-found behavior, strict admin data loading, verified mutation responses, and CI checks have received a first code pass; browser/device and deployed checks remain.
+2. **P0 — Customer/data trust:** rate-bearing CSV and production Supabase data still need deliberate reconciliation; the two current stock CSVs contain no prices.
+3. **P1 — Security:** close broad write policies, prevent stored/reflected HTML execution, harden uploads/imports, then tighten the Content Security Policy.
+4. **P2 — Sustainable architecture:** choose one active frontend/data path, consolidate duplicated page logic, and add test/build/release checks.
+5. **P2 — Growth:** accessibility, performance, local SEO, and conversion measurement.
+6. **Separate scope — Full ecommerce:** server-authoritative orders, payments, inventory transactions, refunds, and fulfillment.
 
-### What Vijay Sales & Modern Electronics Retailers Do Well:
-1. **Urgency & Value Strip (Top Utility Bar)**:
-   - Strip at top: *"📞 Call Dharashiv Showroom: +91-XXXXX | ⚡ Same Day Delivery in Dharashiv | 0% EMI Available"*
-2. **Prominent Brand Marquee / Ribbons**:
-   - Authorized Brand Logos: Sony, Samsung, LG, Whirlpool, Haier, Daikin, Vivo, Oppo, Realme, etc.
-   - Customers buying electronics look for authorized brands first.
-3. **Category Icons Ribbon with Visual Thumbnails**:
-   - Instead of standard text dropdowns, circular or card-based pills: `[📺 TVs]` `[❄️ Split ACs]` `[🧊 Refrigerators]` `[🧺 Washing Machines]` `[📱 Smartphones]`.
-4. **Deal Zones & "Best Under ₹X" Buckets**:
-   - *"Top 43-inch Smart TVs Under ₹25,000"*
-   - *"5-Star Inverter ACs for Summer"*
-   - *"Double Door Refrigerators with Exchange Bonus"*
+## Phase 0 — Decide the operating model and establish a baseline
 
-### 💡 Discussion Points:
-- Should we adopt the clean red/dark-navy retail accent style or maintain our brand colors with more retail contrast?
-- Do you want an interactive "EMI Calculator widget" on product pages (e.g., *"Starting at ₹1,499/mo with Bajaj Finance"* )?
+**Priority: immediate; before feature work.**
 
----
+- [x] Confirm call/WhatsApp-assisted sales are the near-term contact path; no website checkout is planned in this pass. Treat full ecommerce as a separately scoped future project.
+- [x] Record the operational catalog editor as the admin account holder. This describes operational ownership, not verified database authorization; avoid shared admin credentials and verify the deployed role policy.
+- [ ] Reconcile the production Supabase catalogue against a timestamped snapshot and the static fallback. Resolve mismatched names, stale stock, missing prices, and category differences before publishing current data.
+- [ ] Capture a baseline: deployed routes, browser console/network errors, broken images, mobile screenshots, current Vercel headers, and a read-only export/snapshot of relevant Supabase schema and policies (using authorized access).
+- [ ] Mark production-only facts as **unverified** until checked. In particular, repository policy examples do not prove that the same policies are active in Supabase.
 
-## 2. 🎛️ Expandable & Collapsible Filters (Catalog)
+**Done when:** the selected sales model and data owners are written down; known production state is recorded without exposing credentials or customer data.
 
-### Current Limitation:
-- Filters are in a fixed vertical block, forcing users to scroll heavily on desktop and mobile.
+## Phase 1 — Fix release-blocking behavior and admin correctness
 
-### Proposed Solution:
-- **Accordion Design**:
-  - `[+] Category (TV, Fridge, AC...)`
-  - `[+] Brand (Sony, Samsung, LG...)`
-  - `[+] Price Range (Slider + quick checkboxes: Under ₹15k, ₹15k–₹30k, ₹30k+)`
-  - `[+] Screen Size / Capacity (32", 43", 55", 65"+)`
-  - `[+] Star Rating / Energy Efficiency (3 Star, 5 Star)`
-- **Mobile Drawer**: Slide-out filter panel with "Clear All" and "Apply (XX items found)" button sticky at bottom.
+**Priority: P0. Do before visual polish or growth features.**
 
----
+### Homepage and route integrity
 
-## 3. 🛡️ Homepage Trust Pillars (30+ Years Heritage)
+- [x] Fix malformed homepage selectors and add a JavaScript syntax check for inline and external scripts.
+- [x] Add the missing HTML doctype and correct broken local brand/arrow asset paths.
+- [x] Add a local asset/config checker. Manual desktop/mobile and deployed nested-route smoke tests remain open.
+- [ ] Confirm homepage search, hero controls, navigation, category filters, product links, and mobile menu all work on desktop and mobile.
+- [ ] Parse and honor supported query parameters consistently (including category, subcategory, search, and brand where shown); provide an empty-results state and pagination or progressive loading for larger catalogues.
+- [x] Show a not-found UI for unknown product IDs/slugs rather than falling back to the first product. An HTTP 404 response still needs hosting support/configuration.
 
-Local customers choose local retail over Amazon/Flipkart for **trust, immediate delivery, and after-sales service**. We should make this unmissable above the fold:
+### Product page and availability behavior
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│  🏆 30+ Years of Trust in Dharashiv  │  ⭐ 100% Genuine & Sealed Pack   │
-│  🏷️ Authorized Dealer for Top Brands │  💳 0% EMI (Bajaj / TVS / HDB)   │
-│  🚚 Same-Day Delivery to Your Door   │  🛠️ Expert Demo & Installation  │
-└────────────────────────────────────────────────────────────────────────┘
-```
+- [x] Read either `description` or legacy `desc`; use the primary `image` when the image array is missing or empty and reject unsafe image URL schemes.
+- [ ] Normalize the product schema at one boundary and verify selected images are real product photos rather than logos/unrelated products.
+- [ ] Bound quantity by available stock, handle zero/unknown stock explicitly, and disable or replace purchase/enquiry actions when unavailable. Do not imply that a WhatsApp enquiry reserves stock.
+- [ ] Remove fabricated/default review counts and ratings (for example, a fallback rating when no review data exists). Display ratings only when they are real, attributable, and maintained.
+- [ ] Reconcile category names and available categories between navigation, filters, static data, and the live catalogue.
 
-### Partners & Finance Showcase:
-- Partner Logos: **Bajaj Finserv**, **HDB Financial Services**, **TVS Credit**, **Credit/Debit Card No-Cost EMIs**.
-- Explainer pill: *"No Credit Card? Get instant approval with Aadhaar Card & PAN Card at our store."*
+### Admin write-path correctness
 
----
+- [x] Make product saves/deletes, bulk image updates, and CSV writes require loaded live data and an active admin session; verify returned database rows before reporting success.
+- [ ] Audit category changes, image upload, and every remaining admin mutation for the same fail-closed/session/response guarantees.
+- [ ] Exercise all admin operations against authorized test data with no network, expired session, RLS rejection, duplicates, partial failure, and successful persistence. No production writes were run in this pass.
+- [ ] Add an audit trail for meaningful admin changes in the trusted backend/database layer, including actor, operation, record, and timestamp; do not rely on browser-only logs.
 
-## 4. ⭐ Google Reviews Integration & Review Acquisition Funnel
+**Done when:** no console parse errors or broken primary assets; product routes fail correctly; stock and image states are truthful; every admin mutation either persists or reports failure without a false success.
 
-### A. On the Website:
-- **Google Rating Badge**: *"4.8 ★★★★★ based on 450+ reviews on Google"* in the navbar & footer.
-- **Customer Testimonials Carousel**: Showing verified local reviews with reviewer names from Dharashiv, Tuljapur, and surrounding areas.
-- Direct link: *"View all reviews on Google Maps"*.
+### Price/stock CSV and reconciliation decision
 
-### B. The Review Collection Engine (To rank #1 on Google Maps):
-1. **WhatsApp Post-Purchase Automation / Template**:
-   - When a TV/Fridge/Phone is delivered or bought: send a polite WhatsApp message:
-     > *"Namaskar [Customer Name]! Thank you for purchasing [Product] from Doordarshan Electronics. How was your experience? If you loved our service, please leave us a 5-star review on Google: [Short Direct Review Link]. It takes only 10 seconds!"*
-2. **Showroom Billing Counter QR Standee**:
-   - A desktop acrylic standee at billing: *"Scan to Rate Us on Google & Get ₹100 Off on Accessories / Next Purchase"*.
+The checked-in stock-summary CSVs contain item names and quantities only; there is no `Rate`, `Selling Price`, `Price`, or `MRP` column to recover. `js/csv-import.js` accepts common rate/price headers and shows a row-level preview. Stock-only imports do not change price/MRP and require a unique exact existing product name/model. Do not infer database IDs from spreadsheet serial numbers or use fuzzy matching. A rate-bearing CSV is needed to update prices.
 
----
+Recommended cadence: run an automated snapshot diff weekly, and require admin review before every bulk catalogue import/publication. Put parsing/diff logic in a Node script under `scripts/`, invoked from GitHub Actions alongside the existing weekly snapshot; keep HTML presentation-only. The repository currently has the weekly snapshot workflow but no comparison script/job. Before implementing it, confirm snapshot visibility/retention and the matching key (database ID/model), and avoid exposing private supplier/customer data in a public repository.
 
-## 5. 🏪 Storefront & Showroom Gallery (The Local Power)
+## Phase 2 — Secure Supabase authorization and admin access
 
-Unlike anonymous e-commerce websites, Doordarshan Electronics has a **real physical showroom**. Highlighting this builds 10x trust for high-ticket items (₹50k+ TVs, Refrigerators).
+**Priority: P0 before allowing production writes.**
 
-### Ideas:
-- **"Visit Our Showroom" Section**:
-  - High-res photo of the store front (signboard, entrance).
-  - Inside photos: The TV wall display, Refrigerator section, AC lineup, Mobile counters.
-  - Interactive Google Maps embed with 1-click **"Get Directions"** button.
-  - Store hours: *Open 7 Days a week, 9:30 AM to 9:30 PM*.
+- [ ] Inspect the actual deployed schema, grants, RLS state, table policies, Storage policies, and Auth settings using authorized Supabase access. Reconcile them with checked-in SQL/docs; do not assume documentation or a local SQL file matches production.
+- [ ] Enable and test RLS on every table reachable through the public API. Define least-privilege policies for anonymous reads, authenticated users, and administrators according to the chosen product model.
+- [ ] Replace broad `TO authenticated` write access with a real server-controlled admin authorization check. Authenticated is not synonymous with administrator. Use a trusted claim/role or a server-side function; never authorize from user-editable metadata or a client-side flag.
+- [ ] Review the current use of `auth.role()` and policy examples; use current supported Supabase/Postgres policy patterns when implementing. Ensure `UPDATE` access has the corresponding read policy and validates both old-row access and new-row values.
+- [ ] Apply equivalent least-privilege controls to Storage: approved bucket and path, admin-only writes/deletes, file constraints, and only the reads the storefront needs.
+- [ ] Verify signup policy, allowed redirect URLs, password reset, session lifetime, admin recovery, and account offboarding. Remove public admin creation if it is not an intended flow.
+- [ ] Check whether the legacy `admin_users` table still exists or contains data. If obsolete, plan a verified backup/migration and removal or lock-down; do not delete it until its use and data are confirmed.
+- [ ] Confirm that no service-role/secret key is shipped to browser code, build artifacts, or public repository history. The publishable/anon key can be public only with correct RLS and grants.
+- [ ] Test access as anonymous, authenticated non-admin, and admin for every read/write/upload path. Include direct API calls, not only the UI, and prove that unauthorized writes are rejected.
 
----
+**Done when:** a recorded policy matrix matches deployed policies and automated/manual tests prove non-admin callers cannot mutate catalog or Storage data.
 
-## 6. 📍 Local SEO Landing Pages (Dharashiv & Tuljapur Domination)
+## Phase 3 — Prevent injection and harden file/data handling
 
-When people in the district search on Google:
-- *"best mobile shop in dharashiv"*
-- *"sony tv authorized showroom dharashiv"*
-- *"refrigerator shop near tuljapur"*
-- *"bajaj finance electronics store osmanabad / dharashiv"*
+**Priority: P1; start after or in parallel with Phase 2.**
 
-Currently, generic e-commerce sites don't answer local questions. Dedicated local pages rank on Google Page 1 very quickly.
+- [ ] Inventory all database/import/user-controlled values rendered through `innerHTML`, template strings, or inline event handlers in storefront and admin code. Replace with DOM APIs and `textContent`; where rich text is truly needed, sanitize with a maintained allowlist sanitizer.
+- [ ] Validate URL schemes and hosts before using data-driven image/link URLs; reject `javascript:` and other unsafe schemes. Add `rel="noopener noreferrer"` to external links opened in a new tab.
+- [ ] Move inline scripts, inline handlers, and styles toward external same-origin assets. The enforced CSP now adds explicit base/object/frame/form policies and pins Supabase connect-src; a source-restricted report-only candidate is present. Remove `unsafe-inline`, pin/self-host the SDK, inventory dynamic image hosts, and verify deployed headers before further enforcement.
+- [ ] For image uploads, allowlist formats, verify actual content/MIME (not just extension), cap byte size and dimensions, generate safe storage paths, and handle upload/DB rollback or orphan cleanup.
+- [x] Make the import UI truthful: accept CSV only. The quote-aware parser handles quoted delimiters, escaped quotes, multiline values, BOM, CRLF, and comma/semicolon/tab delimiters.
+- [x] Validate required fields, numeric ranges, category/brand membership, duplicate targets, row count, and image URL schemes. Show a row preview/error report; never default missing prices or stock.
+- [x] Quote CSV export fields and neutralize spreadsheet formula-leading values. Automated tests cover quotes, Indian currency, alternate delimiters, actual stock reports, exact matching, and malformed quotes.
+- [ ] Pin third-party runtime versions and add dependency integrity controls where applicable; avoid an unbounded `@2` CDN reference.
 
-### Proposed Page Structure:
-1. `/stores/best-mobile-store-in-dharashiv`
-2. `/stores/best-tv-store-in-dharashiv`
-3. `/stores/electronics-store-near-tuljapur`
-4. `/stores/ac-refrigerator-showroom-dharashiv`
+**Done when:** adversarial product/import strings render as inert text; upload/import limits and failures are tested; CSP is restrictive without breaking required flows.
 
-### Elements on each Local Page:
-- Local H1 & H2 targeting the exact search intent.
-- List of available brands in stock with live pricing.
-- Store address, parking details, phone number with 1-click WhatsApp chat.
-- Structured Data: `LocalBusiness` schema with exact Geo-coordinates, opening hours, phone, and rating.
+## Phase 4 — Make the catalogue a reliable source of truth
 
----
+**Priority: P1 after immediate safety fixes.**
 
-## 7. ⚖️ Product Comparison Tool
+- [ ] Define and document one product contract: stable ID/slug, title, brand, category, model, description, price/MRP, stock/availability, images, specifications, offer fields, and timestamps. Normalize legacy field names once at the data boundary.
+- [ ] Choose a source-of-truth model. Recommended: Supabase for maintained catalogue data; retain the static dataset only as a clearly versioned emergency snapshot, never as an indistinguishable source of current price/stock.
+- [x] Suppress fallback prices/stock on category/product pages and remove snapshot prices/stock from homepage product tiles; ask customers to confirm current price and availability.
+- [ ] Replace `select('*')` with the explicitly required public columns; add server-side category/brand/search filters, stable ordering, pagination, and an appropriate cache/revalidation strategy.
+- [ ] Add request timeouts, retry/backoff where safe, loading/error/empty states, and a visible degraded/offline state. Avoid showing an empty catalogue as if the store has no products when a request failed.
+- [ ] Validate prices, MRP, stock, required attributes, category, and image references at the database boundary. Define who reconciles online stock against physical-store inventory and what “in stock” means.
+- [ ] Reconcile the static catalogue’s all-positive stock snapshot, placeholder price note, incomplete category set, and inconsistent images against current store records.
+- [ ] Replace brand-logo-as-product-photo and category-mismatched image fallbacks with actual, licensed product photography. Add dimensions, responsive sizes, compression, and descriptive alt text.
+- [ ] Clean up orphaned/replaced Storage objects through a safe, auditable process after confirming references; do not delete files solely based on a local scan.
 
-Customers frequently hesitate between two models (e.g., *"Samsung 43-inch 4K vs LG 43-inch 4K"* or *"Whirlpool 240L vs Samsung 236L"*).
+**Done when:** each product has one traceable source and schema; stale fallback cannot masquerade as live inventory; filters and large catalogues do not require downloading every record.
 
-### Proposed Feature:
-- A "Compare" checkbox on each product card (Select up to 3 products).
-- Floating bar at bottom: *"2 products selected [Compare Now]"*.
-- Side-by-side comparison modal/page:
-  - Price & EMI comparison
-  - Display technology / Capacity
-  - Warranty details
-  - Energy rating
-  - Direct "Inquire via WhatsApp for Best Local Deal" button
+## Phase 5 — Simplify the frontend and raise engineering quality
 
----
+**Priority: P2; avoid a risky rewrite before Phase 1–4 requirements are clear.**
 
-## 8. 📊 Analytics: Google Analytics 4 (GA4) + Microsoft Clarity
+- [ ] Decide which runtime is active. The checked-in site is primarily static HTML with inline/embedded page code; `main.js`, `cart.js`, `i18n.js`, and `css/style.css` are not consistently wired into current pages. Either integrate and test them deliberately or retire dead code and document the chosen path.
+- [ ] Break the oversized homepage and admin scripts into testable modules. Extract shared header/footer, catalog access, formatting, validation, and UI primitives instead of copying near-identical implementations across pages.
+- [ ] Choose one styling strategy and remove unused/duplicated CSS after verifying visual parity. Avoid a broad framework migration unless there is a clear maintenance or SEO benefit.
+- [ ] Add a package manifest and reproducible lockfile/build/test commands if dependencies or compilation are introduced. Pin dependency versions and define supported browser targets.
+- [ ] Expand `scripts/validate-architecture.js` and `scripts/validate-assets.js` with route/link, policy/docs drift, and broader schema checks.
+- [x] Add initial Node tests for CSV parsing/validation and CI checks for inline/external JS syntax, local assets/Vercel config, architecture, secrets, and CSV tests. Product routing, stock/quantity behavior, and admin mutation failure-mode coverage remain.
+- [ ] Add a production build if a build step is introduced, and a preview/staging browser smoke test before deploy. GitHub branch protection must require the CI status before a failed run can block merges.
+- [ ] Add runtime error reporting and privacy-conscious monitoring for page errors, failed catalogue loads, broken images, admin failures, and conversion events. Document rollback and incident ownership.
+- [ ] Document backup scope, retention, restore procedure, and perform a restore exercise for business-critical catalogue/order data.
 
-### Why Both?
-1. **Google Analytics 4 (GA4)**:
-   - Tracks: How many daily visitors, where they come from (Google search, WhatsApp links, Instagram), which products get viewed the most, and bounce rates.
-2. **Microsoft Clarity (100% Free, Unlimited)**:
-   - **Heatmaps**: Shows exactly where visitors click on mobile and desktop.
-   - **Session Recordings**: Watch real anonymous visitor replays to see if they get confused by filters, where they drop off, and which banners they tap.
-   - Zero performance penalty when loaded asynchronously.
+**Done when:** a fresh checkout can run the documented checks; CI catches the classes of defects found in this review; a staged release can be verified and rolled back.
 
----
+## Phase 6 — Customer trust, accessibility, performance, and local SEO
 
-## 9. 👤 User Accounts & Customer Login
+**Priority: P2, after product facts and purchase behavior are reliable.**
 
-### Considerations:
-- **Pros**:
-  - Saved wishlist (customers can save TVs they want to buy later).
-  - Saved addresses for delivery.
-  - Price drop notifications.
-- **Cons & Reality for Local Retail**:
-  - For local retail stores in tier 2/3 cities, **forcing login causes high drop-offs**. 90% of buyers prefer browsing freely and clicking "Inquire on WhatsApp" or walking into the store.
-- **Recommendation**:
-  - Keep browsing, cart, and WhatsApp checkout 100% frictionless (no mandatory login).
-  - Offer optional "Save to Wishlist" or "Track My Order" via phone OTP or Supabase Auth.
+### Trust and conversion
 
----
+- [ ] Publish accurate address, hours, service area, delivery/installation terms, GST/invoice information, and verified contact details.
+- [ ] Create real privacy, terms, warranty, returns/replacement, and delivery pages. Replace policy links currently pointing to the contact page.
+- [x] Remove unverified live-price/discount/stock, return-window, generic warranty, authenticity, EMI, and delivery promises from the current customer-facing pages; direct customers to confirm product-specific terms with the store. Any affirmative policy claims require business-owner verification before being reintroduced.
+- [ ] Replace generic social-platform root links with verified business profiles; use the actual store map/location listing.
+- [x] Explain that phone/WhatsApp are enquiry channels, price/availability require confirmation, and a WhatsApp message is not a placed order.
+- [ ] Add privacy-aware analytics for product views, calls, WhatsApp clicks, directions, and confirmed sales where measurement is operationally possible. Avoid collecting unnecessary personal data.
 
-## 10. 📝 Product Buying Guides & Articles
+### Accessibility and performance
 
-### Topics that Rank Locally and Guide Buyers:
-1. *"Best 5-Star Split ACs for Dharashiv Summers (Power Saving Guide)"*
-2. *"QLED vs OLED vs LED: Which TV is Right for Your Living Room?"*
-3. *"Single Door vs Double Door Refrigerator: Complete Buying Checklist"*
-4. *"How to Avail 0% Interest Bajaj Finance at Doordarshan Electronics"*
+- [ ] Replace placeholder alt text such as `alt="."`; use useful alt for informative images and empty alt for decorative images.
+- [ ] Give icon-only controls accessible names; ensure keyboard operation, visible focus, sensible dialog/drawer focus handling, labels/errors for forms, sufficient contrast, and reduced-motion support.
+- [ ] Test key journeys with keyboard and screen reader on mobile and desktop. Verify page language and any English/Marathi content switching; `i18n.js` is currently unwired.
+- [ ] Set image dimensions/aspect ratios, serve appropriately sized compressed images, lazy-load below-the-fold media, and avoid loading the full catalogue before it is needed.
+- [ ] Measure Core Web Vitals and real-device load behavior before selecting further optimization work.
 
----
+### SEO
 
-## 💬 Next Steps for Our Discussion
+- [ ] Provide unique product/category titles and descriptions, canonical URLs, Open Graph metadata, sitemap, robots rules, and a true 404 page.
+- [ ] Add accurate Product/LocalBusiness structured data only from verified fields; do not mark up fictional ratings, prices, or availability.
+- [ ] Prefer pre-rendered/static product pages or another crawlable server-rendered approach if search visibility is a priority; client-only product rendering may not reliably expose every product to crawlers.
+- [ ] Validate Vercel rewrites and product slugs against actual product records; avoid fuzzy matching that routes a wrong URL to an unrelated item.
+- [ ] Create local landing pages only for real service locations and unique helpful content.
 
-1. **Which 2–3 items do you want to tackle first?** (Recommended: Trust Badges on homepage + Expandable Filters + GA4/Clarity).
-2. **Do you already have photos of the shop exterior & interior?**
-3. **Do you have a Google Business Profile link for reviews?**
+**Done when:** a shopper can verify the store and terms, complete the intended enquiry flow accessibly, and crawlers receive accurate metadata for valid pages and a not-found response for invalid routes.
+
+## Phase 7 — Full ecommerce (only if explicitly selected)
+
+Treat this as a new backend capability, not a frontend-only extension.
+
+- [ ] Define checkout, customer, address, order, line-item, payment, refund, shipment, tax/invoice, cancellation, return, and installation requirements.
+- [ ] Create server-authoritative order and price/stock snapshots. Never trust price, discount, stock, or order totals supplied by browser code.
+- [ ] Implement concurrency-safe stock reservation/decrement and idempotent order creation.
+- [ ] Integrate a payment provider through server-side APIs and verify signed webhooks; handle retries, duplicate events, failures, refunds, and reconciliation.
+- [ ] Implement delivery eligibility and slot/installation operations, order status, customer notifications, invoices, cancellations, replacements, returns, and refunds.
+- [ ] Add role-based staff workflows, audit logs, monitoring/alerts, backup/restore, and operational runbooks before launch.
+- [ ] Test abuse cases, race conditions, payment webhook replay, abandoned checkout, partial fulfillment, and end-to-end mobile checkout in staging.
+
+## Growth ideas after the fundamentals
+
+- Verified Google reviews and a consent-based review-request workflow.
+- Showroom gallery and directions; buying guides for TVs, ACs, refrigerators, and washing machines.
+- Product comparison backed by normalized specifications.
+- Seasonal landing pages and Marathi content for useful local journeys.
+- Finance/EMI calculator backed by current, verified partner terms.
+- Wishlist only if it serves a measurable business goal and has a defined privacy/retention model.
+
+## Release gates
+
+Do not consider the next release ready until all applicable items are true:
+
+- [ ] Homepage, search, navigation, catalogue, and product routes pass desktop/mobile smoke checks with no uncaught console errors or broken primary assets.
+- [ ] Unknown product URLs return not found; product details, prices, images, and stock do not silently fall back to unrelated or placeholder values.
+- [ ] Admin mutations are verified against the database and never report success without persistence.
+- [ ] Deployed RLS and Storage policies are verified; anonymous and non-admin direct API writes are denied.
+- [ ] Stored/imported content is rendered safely; upload/import/export validation and limits pass security tests.
+- [ ] Delivery, stock, price, offers, warranty, and returns claims are accurate and have an accountable owner.
+- [ ] The chosen WhatsApp or checkout process has a clear operational owner and customer-facing explanation.
+- [ ] Automated checks pass in CI and the staging deployment has a documented rollback path.
+- [ ] Relevant documentation is updated in the same change as code/schema/config changes, including limitations and verification performed.

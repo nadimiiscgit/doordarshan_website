@@ -1321,8 +1321,8 @@
           <div
             style="background:var(--surface);border-radius:14px;padding:28px;border:1px solid var(--border);max-width:800px;">
             <h2 style="margin-bottom:8px;">📂 Bulk Product CSV Upload</h2>
-            <p style="color:var(--muted);font-size:0.88rem;margin-bottom:24px;">Upload a CSV or Excel file to add/update
-              multiple products directly into database.</p>
+            <p style="color:var(--muted);font-size:0.88rem;margin-bottom:24px;">Upload a CSV to add/update products or
+              update stock from an inventory report. Excel workbooks are not supported; save them as CSV first.</p>
 
             <div style="margin-bottom:20px;">
               <button class="btn btn-outline" onclick="downloadTemplate()">📋 Download Sample CSV Template</button>
@@ -1334,7 +1334,7 @@
               <div class="icon">📄</div>
               <p><strong>Click to upload</strong> or drag &amp; drop your CSV file here</p>
             </div>
-            <input type="file" id="csv-file" accept=".csv,.xlsx,.xls" style="display:none;"
+            <input type="file" id="csv-file" accept=".csv,text/csv" style="display:none;"
               onchange="handleFileUpload(this.files[0])" />
 
             <div id="csv-preview"></div>
@@ -1536,6 +1536,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-config.js"></script>
   <script src="js/products-data.js"></script>
+  <script src="js/csv-import.js"></script>
   <script>
     // Rate limiting state for admin login
     const loginRateLimit = {
@@ -1678,6 +1679,8 @@
     let liveProducts = [];
     let liveCategories = [];
     let currentBulkImageUrl = '';
+    let adminProductsLoadedFromDB = false;
+    let currentCsvImportPlan = null;
 
     async function initApp() {
       await loadCategoriesData();
@@ -1707,21 +1710,42 @@
     }
 
     async function loadAdminData() {
-      if (typeof fetchProductsFromDB === 'function') {
-        const data = await fetchProductsFromDB();
-        if (data && data.length > 0) {
-          liveProducts = data;
-        } else {
-          liveProducts = [...PRODUCTS];
+      adminProductsLoadedFromDB = false;
+      try {
+        if (!dbClient || typeof fetchProductsFromDB !== 'function') {
+          throw new Error('Supabase is not connected.');
         }
-      } else {
-        liveProducts = [...PRODUCTS];
+        liveProducts = await fetchProductsFromDB({ allowFallback: false });
+        adminProductsLoadedFromDB = true;
+      } catch (error) {
+        liveProducts = [];
+        console.error('Could not load live admin catalogue:', error);
+        toast('❌ Live products could not be loaded. Database changes are disabled until the connection is restored.', 'error');
       }
       updateStats();
       renderTable();
       renderBrandSummary();
       populateBrandFilter();
       renderBulkProductList();
+    }
+
+    async function ensureAdminWriteReady() {
+      if (!dbClient || !adminProductsLoadedFromDB || typeof getAdminSession !== 'function') {
+        toast('❌ Live database is not ready. No changes were saved.', 'error');
+        return false;
+      }
+      try {
+        const session = await getAdminSession();
+        if (!session) {
+          adminProductsLoadedFromDB = false;
+          toast('❌ Admin session expired. Sign in again; no changes were saved.', 'error');
+          return false;
+        }
+        return true;
+      } catch (error) {
+        toast('❌ Could not verify the admin session. No changes were saved.', 'error');
+        return false;
+      }
     }
 
     function getMergedProducts() {
@@ -2015,17 +2039,13 @@
       }
       const selectedIds = Array.from(selectedBoxes).map(b => parseInt(b.value));
 
-      if (dbClient) {
-        const { error } = await dbClient
-          .from('products')
-          .update({ image: currentBulkImageUrl })
-          .in('id', selectedIds);
-
-        if (error) {
-          console.error('Bulk update error:', error);
-          toast('❌ Database update failed: ' + error.message, 'error');
-          return;
-        }
+      if (!await ensureAdminWriteReady()) return;
+      try {
+        await updateProductImagesInDB(selectedIds, currentBulkImageUrl);
+      } catch (error) {
+        console.error('Bulk update error:', error);
+        toast('❌ Database update failed: ' + error.message, 'error');
+        return;
       }
 
       liveProducts.forEach(p => {
@@ -2163,13 +2183,13 @@
         image: image
       };
 
-      if (dbClient) {
-        const { error } = await dbClient.from('products').upsert(record);
-        if (error) {
-          console.error('Supabase save error:', error);
-          toast('❌ DB save error: ' + error.message, 'error');
-          return;
-        }
+      if (!await ensureAdminWriteReady()) return;
+      try {
+        await upsertProductsToDB([record]);
+      } catch (error) {
+        console.error('Supabase save error:', error);
+        toast('❌ DB save error: ' + error.message, 'error');
+        return;
       }
 
       const idx = liveProducts.findIndex(p => p.id === id);
@@ -2195,12 +2215,12 @@
     async function deleteProduct(id) {
       if (!confirm('Delete this product from Supabase database? This cannot be undone.')) return;
 
-      if (dbClient) {
-        const { error } = await dbClient.from('products').delete().eq('id', id);
-        if (error) {
-          toast('❌ Delete failed: ' + error.message, 'error');
-          return;
-        }
+      if (!await ensureAdminWriteReady()) return;
+      try {
+        await deleteProductFromDB(id);
+      } catch (error) {
+        toast('❌ Delete failed: ' + error.message, 'error');
+        return;
       }
 
       liveProducts = liveProducts.filter(p => p.id !== id);
@@ -2211,12 +2231,17 @@
     }
 
     // ── Export CSV ────────────────────────────────────────────────
+    function csvCell(value) {
+      let text = value == null ? '' : String(value);
+      if (typeof value === 'string' && /^[\t\r ]*[=+@-]/.test(text)) text = `'${text}`;
+      return `"${text.replace(/"/g, '""')}"`;
+    }
+
     function exportData() {
-      const header = 'id,name,category,brand,model,subcategory,mrp,price,stock,image,description\n';
-      const rows = liveProducts.map(p =>
-        [p.id, `"${p.name}"`, p.category || 'tv', p.brand, p.model || '', p.subcategory || '', p.mrp, p.price, p.stock, `"${p.image || ''}"`, `"${(p.description || '').replace(/"/g, '""')}"`].join(',')
-      ).join('\n');
-      const blob = new Blob([header + rows], { type: 'text/csv' });
+      const columns = ['id', 'name', 'category', 'brand', 'model', 'subcategory', 'mrp', 'price', 'stock', 'image', 'description'];
+      const rows = [columns, ...liveProducts.map(product => columns.map(column => product[column] ?? ''))]
+        .map(row => row.map(csvCell).join(',')).join('\r\n');
+      const blob = new Blob(['\uFEFF', rows], { type: 'text/csv;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a'); a.href = url; a.download = 'doordarshan_products_live.csv'; a.click();
       URL.revokeObjectURL(url);
@@ -2224,9 +2249,11 @@
     }
 
     function downloadTemplate() {
-      const header = 'id,name,category,brand,model,subcategory,mrp,price,stock,description\n';
-      const sample = ',"Sony Bravia 50 inch 4K Smart TV",tv,Sony,K-50NEW,50-inch,69999,54999,3,"Great 50 inch 4K TV"\n';
-      const blob = new Blob([header + sample], { type: 'text/csv' });
+      const rows = [
+        ['id', 'name', 'category', 'brand', 'model', 'subcategory', 'mrp', 'price', 'stock', 'description'],
+        ['', 'Sony Bravia 50 inch 4K Smart TV', 'tv', 'Sony', 'K-50NEW', '50-inch', '69999', '54999', '3', 'Great 50 inch 4K TV']
+      ].map(row => row.map(csvCell).join(',')).join('\r\n');
+      const blob = new Blob(['\uFEFF', rows], { type: 'text/csv;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a'); a.href = url; a.download = 'doordarshan_template.csv'; a.click();
       URL.revokeObjectURL(url);
@@ -2240,12 +2267,13 @@
       if (f) handleFileUpload(f);
     }
 
-    function handleFileUpload(file) {
+    // Legacy parser retained temporarily for reference; active handlers live in js/admin-csv-ui.js.
+    function legacyHandleFileUpload(file) {
       if (!file) return;
       const reader = new FileReader();
       reader.onload = e => {
         const text = e.target.result;
-        parseAndPreviewCSV(text);
+        legacyParseAndPreviewCSV(text);
       };
       reader.readAsText(file);
     }
@@ -2287,7 +2315,7 @@
       return 'tv';
     }
 
-    function parseAndPreviewCSV(text) {
+    function legacyParseAndPreviewCSV(text) {
       const lines = text.trim().split(/\r?\n/).map(l => l.trim()).filter(l => l && !l.match(/^,+$|^\"\"/));
       if (lines.length < 1) { toast('❌ CSV appears empty', 'error'); return; }
 
@@ -2384,7 +2412,7 @@
       document.getElementById('confirm-upload-btn').onclick = () => importCSVRows(rows);
     }
 
-    async function importCSVRows(rows) {
+    async function legacyImportCSVRows(rows) {
       const records = rows.map((r, i) => ({
         id: parseInt(r.id) || (2000 + i),
         name: r.name,
@@ -2442,6 +2470,7 @@
 
     document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeCategoryModal(); } });
   </script>
+  <script src="js/admin-csv-ui.js"></script>
 </body>
 
 </html>

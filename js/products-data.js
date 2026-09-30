@@ -3506,3 +3506,6 @@ const PRODUCTS = [
     "description": "Even cooling across all shelves with Door Cooling+ and smart inverter energy savings."
   }
 ];
+
+// This checked-in catalogue is a fallback snapshot, not live pricing or stock.
+PRODUCTS.forEach(product => { product._catalogSource = 'static-fallback'; });

@@ -3,6 +3,8 @@
 > **Scope**: System architecture, data access patterns, caching laws, and state management.  
 > **Hard Ceiling**: < 500 lines. Refactor existing lines on updates; never blindly append.
 
+For documentation synchronization, follow the repository `AGENTS.md`: when a code change changes documented behavior, architecture, data flow/schema, security, setup, dependencies, deployment, or an agreed roadmap, update the relevant Markdown file in the same change.
+
 ---
 
 ## 1. The Repository Isolation Pattern (Mandatory)
@@ -116,4 +118,3 @@ Scripts must always be loaded in this strict sequential order at the closing of 
 ## 3. Directory Cleanliness & Asset Architecture
 - Every tool, file, asset, or documentation piece added to this repository MUST strictly align with the layout map declared in the root 'README.md'.
 - FORBIDDEN: Saving loose asset media, log dumps, temporary spreadsheets, or markdown documentation directly in the root directory is strictly prohibited. The root must remain clean to preserve context budgets.
-

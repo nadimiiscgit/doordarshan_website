@@ -7,6 +7,24 @@
 const SUPABASE_URL = 'https://lodiiprfdimohskhcpyf.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_FdkBuPPvZVRDCSSY6A-cwQ_0coG4MrF';
 
+function escapeHtml(value) {
+  return String(value == null ? '' : value).replace(/[&<>"']/g, character => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[character]);
+}
+
+function safeImageUrl(value) {
+  const raw = String(value || '').trim();
+  if (!raw || raw.startsWith('//')) return '';
+  if (/^\/assets\/[a-z0-9/_-]+(?:\.[a-z0-9]+)?(?:\?[a-z0-9=&_-]*)?$/i.test(raw)) return raw;
+  try {
+    const url = new URL(raw);
+    return url.protocol === 'https:' && !url.username && !url.password ? url.href : '';
+  } catch (error) {
+    return '';
+  }
+}
+
 // Initialize Supabase Client
 let dbClient = null;
 
@@ -86,11 +104,45 @@ async function saveCategoryToDB(categoryObj) {
   return data;
 }
 
-// Fetch products from Supabase DB (with fallback to PRODUCTS array if offline/loading)
-async function fetchProductsFromDB() {
+function getStaticFallbackProducts() {
+  return typeof PRODUCTS !== 'undefined'
+    ? PRODUCTS.map(product => ({ ...product, _catalogSource: 'static-fallback' }))
+    : [];
+}
+
+function mapSupabaseProductRows(rows) {
+  return rows.map(item => ({
+    id: item.id,
+    name: item.name,
+    brand: item.brand,
+    category: item.category || 'tv',
+    subcategory: item.subcategory,
+    type: item.type || [],
+    model: item.model,
+    mrp: parseFloat(item.mrp || 0),
+    price: parseFloat(item.price || 0),
+    stock: parseInt(item.stock || 0, 10),
+    size: item.size,
+    rating: item.rating == null ? null : parseFloat(item.rating),
+    reviews: item.reviews == null ? 0 : parseInt(item.reviews, 10),
+    isNew: item.is_new,
+    isFeatured: item.is_featured,
+    specs: item.specs || {},
+    description: item.description,
+    image: item.image || '',
+    images: item.images || [],
+    _catalogSource: 'supabase'
+  }));
+}
+
+// Public pages may use a clearly marked static fallback. Admin callers pass
+// { allowFallback: false } so an offline snapshot can never be edited as live data.
+async function fetchProductsFromDB(options = {}) {
+  const allowFallback = options.allowFallback !== false;
   if (!dbClient) {
-    console.log('Using static fallback products catalog.');
-    return typeof PRODUCTS !== 'undefined' ? PRODUCTS : [];
+    if (!allowFallback) throw new Error('Supabase is not connected; live products were not loaded.');
+    console.warn('Using static fallback products catalog; prices and stock need confirmation.');
+    return getStaticFallbackProducts();
   }
   try {
     const { data, error } = await dbClient
@@ -100,37 +152,77 @@ async function fetchProductsFromDB() {
 
     if (error) {
       console.error('Error fetching products from Supabase:', error);
-      return typeof PRODUCTS !== 'undefined' ? PRODUCTS : [];
+      if (!allowFallback) throw error;
+      return getStaticFallbackProducts();
     }
 
     if (data && data.length > 0) {
-      // Format Supabase rows to match frontend schema
-      return data.map(item => ({
-        id: item.id,
-        name: item.name,
-        brand: item.brand,
-        category: item.category || 'tv',
-        subcategory: item.subcategory,
-        type: item.type || [],
-        model: item.model,
-        mrp: parseFloat(item.mrp || 0),
-        price: parseFloat(item.price || 0),
-        stock: parseInt(item.stock || 0),
-        size: item.size,
-        rating: parseFloat(item.rating || 4.0),
-        reviews: parseInt(item.reviews || 0),
-        isNew: item.is_new,
-        isFeatured: item.is_featured,
-        specs: item.specs || {},
-        description: item.description,
-        image: item.image || '',
-        images: item.images || []
-      }));
+      return mapSupabaseProductRows(data);
     }
+    return allowFallback ? getStaticFallbackProducts() : [];
   } catch (err) {
     console.error('Supabase fetch exception:', err);
+    if (!allowFallback) throw err;
   }
-  return typeof PRODUCTS !== 'undefined' ? PRODUCTS : [];
+  return getStaticFallbackProducts();
+}
+
+async function upsertProductsToDB(records) {
+  if (!dbClient) throw new Error('Database is not connected.');
+  if (!Array.isArray(records) || !records.length) throw new Error('No validated product rows were provided.');
+
+  const { data, error } = await dbClient.from('products').upsert(records).select('id');
+  if (error) throw error;
+  if (!Array.isArray(data) || data.length !== records.length) {
+    throw new Error(`Database confirmed ${data ? data.length : 0} of ${records.length} imported products.`);
+  }
+  return data;
+}
+
+async function updateProductStocksInDB(updates) {
+  if (!dbClient) throw new Error('Database is not connected.');
+  if (!Array.isArray(updates) || !updates.length) throw new Error('No validated stock rows were provided.');
+
+  const completed = [];
+  for (const update of updates) {
+    const { data, error } = await dbClient
+      .from('products')
+      .update({ stock: update.stock })
+      .eq('id', update.id)
+      .select('id');
+    if (error || !Array.isArray(data) || data.length !== 1) {
+      const failure = new Error(error ? error.message : `No database row was updated for product ID ${update.id}.`);
+      failure.completed = completed.length;
+      failure.total = updates.length;
+      throw failure;
+    }
+    completed.push(data[0].id);
+  }
+  return completed;
+}
+
+async function updateProductImagesInDB(ids, imageUrl) {
+  if (!dbClient) throw new Error('Database is not connected.');
+  if (!Array.isArray(ids) || !ids.length) throw new Error('No products were selected.');
+
+  const { data, error } = await dbClient
+    .from('products')
+    .update({ image: imageUrl })
+    .in('id', ids)
+    .select('id');
+  if (error) throw error;
+  if (!Array.isArray(data) || data.length !== ids.length) {
+    throw new Error(`Database confirmed ${data ? data.length : 0} of ${ids.length} product image updates.`);
+  }
+  return data;
+}
+
+async function deleteProductFromDB(id) {
+  if (!dbClient) throw new Error('Database is not connected.');
+  const { data, error } = await dbClient.from('products').delete().eq('id', id).select('id');
+  if (error) throw error;
+  if (!Array.isArray(data) || data.length !== 1) throw new Error(`No database product was deleted for ID ${id}.`);
+  return data[0];
 }
 
 // Upload Image file to Supabase Storage bucket ('product-images')

@@ -1,5 +1,6 @@
 # Universal Agent Instructions
 Analyze and obey these constraints before proposing or editing code:
+- `AGENTS.md` (repository workflow, including documentation synchronization)
 - `.antigravity/rules/01_architecture.md` (Data Isolation & Caching)
 - `.antigravity/rules/02_security.md` (Image Pipelines & Security boundaries)
 Core Absolute Directive: Do not pollute UI/HTML views with direct database client logic. Keep all data connections encapsulated inside `js/supabase-config.js`.

@@ -12,6 +12,9 @@ on:
       - master
       - vijay-sales-theme
 
+permissions:
+  contents: read
+
 jobs:
   validate-and-gate:
     name: Security, Linting & Architecture Guardrails
@@ -35,6 +38,15 @@ jobs:
 
       - name: Architectural Linting Gate (Single Point of Data Access)
         run: node scripts/validate-architecture.js
+
+      - name: Check inline and external JavaScript syntax
+        run: node scripts/check-js-syntax.js
+
+      - name: Validate local HTML assets and Vercel configuration
+        run: node scripts/validate-assets.js
+
+      - name: Run CSV import tests
+        run: node --test tests/*.test.js
 
       - name: Physical Existence Sanity Check (Core Assets)
         run: |

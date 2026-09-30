@@ -1,193 +1,115 @@
-# Doordarshan Electronics — Website
+# Doordarshan Electronics Website
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed-Vercel-black)](https://vercel.com)
-[![Stack](https://img.shields.io/badge/Stack-HTML%20%2F%20CSS%20%2F%20JS-blue)]()
-[![DB](https://img.shields.io/badge/Database-Supabase-green)](https://supabase.com)
+Static catalogue and showroom website for Doordarshan Electronics in Dharashiv, Maharashtra. The current site lets visitors browse products, filter the catalogue, view product details, and contact the store through WhatsApp.
 
-Official website for **Doordarshan Electronics**, a consumer electronics retail store in Maharashtra, India. The site allows customers to browse products, view deals, and place orders via WhatsApp.
+> Documentation status: updated 30 September 2026 from the files currently in this directory. The homepage and catalogue are currently implemented as separate browser runtimes; see [ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
----
+## Current stack
 
-## 🌐 Live Site
+| Layer | Current implementation |
+|---|---|
+| Pages | Static HTML: `index.html`, `category.html`, `product.html`, `contact.html`, `about.html`, `admin.html` |
+| Styling | `css/v2-tailwind.css`, inline page styles, and admin-only embedded CSS; `css/style.css` is legacy and is not referenced by the current HTML pages |
+| Browser logic | Inline page scripts plus `js/supabase-config.js`, `js/products-data.js`, `js/csv-import.js`, and `js/admin-csv-ui.js` |
+| Backend | Supabase Postgres, Supabase Auth, and Supabase Storage |
+| Hosting | Vercel static hosting and CDN via `vercel.json` |
+| External services | Supabase CDN client, Google Fonts, Unsplash and other remote image hosts, WhatsApp deep links |
+| Payments/orders | No online checkout; enquiries use WhatsApp or phone and any order is handled manually outside the site |
+| Build/test tooling | No package manifest, lockfile, bundler, or production build; Node.js scripts and built-in `node:test` cover syntax, local assets/config, and CSV import behavior |
 
-Deployed via Vercel. Auto-deploys on every push to `main`.
+## Important current-state notes
 
----
+- `index.html` is a generated/static homepage snapshot. It does not load the shared `main.js`, `cart.js`, or `i18n.js` runtime.
+- `category.html` and `product.html` render their own inline UI and load Supabase plus the static product catalogue.
+- `admin.html` contains a large inline admin application and uses Supabase Auth for sign-in.
+- `js/main.js`, `js/cart.js`, and `js/i18n.js` are present but currently unwired from the active HTML entry points. They should be treated as legacy/partially implemented code until the runtime is consolidated.
+- The Supabase publishable key is embedded in browser code. This is expected for a public client, but database RLS and Storage policies must enforce all write permissions.
+- The static catalogue is explicitly marked as a fallback, not a reliable inventory guarantee. Category/product pages suppress fallback prices and stock; homepage product tiles contain contact prompts rather than snapshot prices/stock.
+- The checked-in inventory CSVs are stock summaries, not price lists: they contain item descriptions and quantities, but no MRP or selling-rate columns. Their serial numbers are not database product IDs.
 
-## 📂 Repository Directory Map & File Discovery
-For both human developers and AI Agents (Cursor, Claude Code, Antigravity): Use this layout map to locate project files reliably. Do not create loose files outside this structure.
+## Directory map
 
-- `/` (Root): Core frontend presentation views (`index.html`, `category.html`, `product.html`, `admin.html`, `contact.html`, `about.html`) and global deployment configuration (`vercel.json`, `.cursorrules`).
-- `/.antigravity/rules/`: Core agent behavioral constraints and guardrail configurations.
-- `/assets/`: All active web UI assets.
-  - `/assets/brand_images/`: ALL logos, SVGs, brand vectors, and UI arrow assets.
-  - `/assets/css/` & `/assets/js/`: Standard global styles and UI layouts.
-- `/js/`: Unified Data Access Layer. Contains `supabase-config.js` (ALL database infrastructure connections) and `products-data.js` (local static fallback dataset).
-- `/docs/`: Secondary project markdown documentation (`ARCHITECTURE.md`, `SECURITY.md`, `ROADMAP_BRAINSTORMING.md`).
-- `/data/`: Raw store inventories and spreadsheet datasets (`Fridge stock.csv`).
-- `/scripts/`: Automated CI/CD guardrail and quality gates.
+```text
+/
+├── index.html, category.html, product.html, about.html, contact.html, admin.html
+├── vercel.json
+├── AGENTS.md                   Repository workflow and documentation maintenance rules
+├── assets/brand_images/        Brand logos and arrow assets
+├── css/                        Shared/generated styles and CSS documentation
+├── js/                         Supabase client, CSV import modules, static catalogue, and legacy browser modules
+├── data/                       Source stock CSV files
+├── docs/                       Architecture, security, and roadmap documentation
+├── scripts/                    Architecture, syntax, and local asset/config checks
+└── tests/                      Node built-in CSV import tests
+```
 
----
+## Run locally
 
-## 🛠️ Tech Stack
-
-| Layer | Technology | Why |
-|---|---|---|
-| **Structure** | HTML5 | No framework needed for a small catalogue site |
-| **Styling** | Vanilla CSS | Maximum control, zero dependencies |
-| **Logic** | Vanilla JavaScript (ES6+) | No build step, loads instantly |
-| **Database** | Supabase (Postgres) | Managed DB with REST API, free tier |
-| **Hosting** | Vercel | Free static hosting, global CDN, instant deploys |
-| **Fonts** | Google Fonts (Outfit) | Modern, readable, free |
-| **Orders** | WhatsApp | No payment gateway needed at current scale |
-
-**No Node.js. No npm. No build step.** The site can be opened directly in a browser with `index.html`.
-
----
-
-## 🚀 Running Locally
+Use an HTTP server; opening the files directly with `file://` can break relative assets and browser APIs.
 
 ```bash
-# Clone the repo
-git clone https://github.com/nadimiiscgit/doordarshan_website.git
 cd doordarshan_website
-
-# Start a local server (required — browser blocks some features on file:// protocol)
 python3 -m http.server 8080
-
-# Open in browser
-open http://localhost:8080
 ```
 
-No `.env` file needed. The Supabase anon key is embedded in `js/supabase-config.js` (it's a public read key — see SECURITY.md for caveats).
+Open `http://localhost:8080`. The browser will attempt to reach the configured Supabase project when the relevant page loads.
 
----
+There is currently no `.env` workflow. The Supabase URL and publishable key are in `js/supabase-config.js`; do not place a service-role key or any private credential in browser code.
 
-## ⚙️ How Deployment Works
+## Supabase integration
 
-```
-git push origin main
-        ↓
-GitHub webhook triggers Vercel
-        ↓
-Vercel copies files to CDN (no build step)
-        ↓
-Live in ~30 seconds
-```
+The code currently uses:
 
-Every commit to `main` is automatically deployed. There is no staging environment currently.
+- `products` for catalogue records, pricing, stock, specifications, and image URLs.
+- `categories` for admin-managed category definitions and fallback category labels.
+- Supabase Auth for the admin sign-in session.
+- `product-images` Storage bucket for product image uploads.
 
----
+The `admin_users` table is still described in older documentation, but the current browser code does not authenticate against it. Verify whether that table is still needed and remove or lock it down if it is obsolete.
 
-## 🗄️ Database (Supabase)
+The public category/product pages query the products table and may fall back to `js/products-data.js` when the client is unavailable, the query fails, or the result is empty. Fallback rows are tagged as `static-fallback`; the public catalogue does not present their price or stock as current. The homepage itself is a generated snapshot and has no live catalogue query.
 
-**Project**: `lodiiprfdimohskhcpyf.supabase.co`
+## Admin panel
 
-### Tables
+`admin.html` provides:
 
-| Table | Purpose |
-|---|---|
-| `products` | All product listings with price, stock, specs |
-| `categories` | Category definitions (key, name, icon) |
-| `admin_users` | Admin login credentials |
+- Supabase Auth sign-in and session restoration.
+- Product create/edit/delete operations.
+- Category management.
+- Image upload and bulk image assignment.
+- CSV-only import and correctly quoted CSV export. The importer previews and validates rows, distinguishes price/catalog files from stock-only summaries, requires safe product matches, and never invents rates or database IDs.
+- Password update for the currently authenticated Supabase user.
 
-### Supabase Storage
+The UI has client-side validation, a per-tab login lockout, and an inactivity timer. These are usability controls, not substitutes for server-side authorization. Verify the deployed RLS and Storage policies before allowing production writes; the policy blueprint currently grants writes to the broad `authenticated` role and needs a true admin-role restriction.
 
-Bucket: `product-images`  
-Path: `uploads/{timestamp}_{random}.{ext}`
+## Order flow
 
-Images are uploaded from the admin panel and their public URLs are stored in the `products.image` column.
+The current customer flow is a call/WhatsApp enquiry, not checkout:
 
-### Fallback Behaviour
+1. The visitor views a product.
+2. The visitor calls or opens a WhatsApp enquiry; the site asks the store to confirm current price and availability.
+3. The store handles any order, payment, delivery, installation, and warranty details outside the website.
 
-If Supabase is unreachable (paused, down, or slow), the site falls back to the static `js/products-data.js` file, which contains the full product catalogue as a JavaScript array. The customer-facing site continues to work. Only the admin panel fails.
+There is no checkout procedure, server-side order record, payment capture, stock reservation, invoice generation, or order tracking. A WhatsApp message is not an order confirmation.
 
----
+## Documentation
 
-## 🔐 Admin Panel
+- [ARCHITECTURE.md](docs/ARCHITECTURE.md) — active page/runtime boundaries and data flows.
+- [SECURITY.md](docs/SECURITY.md) — current security posture and remediation plan.
+- [ROADMAP_BRAINSTORMING.md](docs/ROADMAP_BRAINSTORMING.md) — prioritized implementation roadmap.
+- [js/README.md](js/README.md) — JavaScript file inventory, including currently unwired modules.
+- [css/README.md](css/README.md) — active versus legacy stylesheet inventory.
 
-Access: `/admin.html` (direct URL only — link removed from public footer)
+## Known issues
 
-The admin panel allows:
-- Viewing and editing all products
-- Updating stock quantities
-- Uploading product images
-- Importing products via CSV
-- Changing the global admin password
-- Managing categories
-
-**Login**: Uses the `admin_users` Supabase table. See `SECURITY.md` for known issues with the current auth implementation.
-
----
-
-## 🌐 Bilingual Support (EN / मराठी)
-
-The site supports English and Marathi. Language preference is stored in `localStorage` (`de_website_lang`).
-
-Switching is instant — no page reload. All static text uses `data-i18n` attributes. Dynamically rendered UI (product cards, category grid) re-renders when language changes via the `window.updateDynamicLanguageText()` hook.
-
-Translation dictionary lives in `js/i18n.js`.
-
----
-
-## 🛒 Order Flow
-
-The site does not have online payments. Orders are placed via WhatsApp:
-
-1. Customer adds items to cart (stored in `localStorage`)
-2. Customer clicks "Order on WhatsApp"
-3. A pre-filled WhatsApp message is generated with product names, model numbers, prices, and total
-4. Customer sends the message to `+91 70202 09281`
-5. Store confirms availability and arranges delivery
-
----
-
-## 📊 Product Data
-
-Products are stored in two places:
-1. **Supabase DB** — live data, updated by admin panel
-2. **`js/products-data.js`** — static fallback, seeded from the 2017–2026 stock CSV
-
-When both are available, Supabase data takes priority (loaded at runtime, replaces the static array in memory).
-
-To add a product: use the admin panel at `/admin.html`.
-
----
-
-## 📚 Documentation
-
-| File | Contents |
-|---|---|
-| [`SECURITY.md`](./SECURITY.md) | Vulnerability audit, attack surface analysis, and 4-layer fix plan |
-| [`ARCHITECTURE.md`](./ARCHITECTURE.md) | Full data flow diagrams, script dependency graph, DB schema |
-| [`css/README.md`](./css/README.md) | Design system, CSS variables, all 19 stylesheet sections explained |
-| [`js/README.md`](./js/README.md) | Every JS file and every function documented |
-
----
-
-## 📝 Recent Changes
-
-| Date | Change |
-|---|---|
-| Sep 2026 | Fixed frozen countdown timer (rolling daily target) |
-| Sep 2026 | Removed admin panel link from public footer |
-| Sep 2026 | Replaced exaggerated claims with authentic store promises |
-| Sep 2026 | Updated copyright year to 2026 dynamically |
-| Sep 2026 | Added Marathi (मराठी) bilingual support |
-| Sep 2026 | Removed "Osmanabad" from all page titles |
-| Sep 2026 | Implemented horizontal scrollable navigation bars |
-| Sep 2026 | Added Supabase admin authentication (global login) |
-| Sep 2026 | Seeded fridge stock from 2017–2026 CSV |
-
----
-
-## ⚠️ Known Issues / TODO
-
-- [ ] Supabase RLS not enabled — anyone with the anon key can write to DB (see SECURITY.md)
-- [ ] Admin password stored as plaintext in DB
-- [ ] Hardcoded fallback credentials in supabase-config.js
-- [ ] No online payment integration (Razorpay — planned)
-- [ ] No order tracking system
-- [ ] Product images mostly from Unsplash (not real store photos)
-- [ ] No pagination on category page
-- [ ] Supabase free tier may pause after 7 days of no traffic
+- Homepage, category, product, and admin pages are not built from one shared component/runtime system.
+- Some admin/data-rendering and legacy scripts still need a complete XSS audit; catalogue cards and the active CSV preview now escape/render imported values safely.
+- Database write policies must be verified and restricted to real admins.
+- Product detail now shows a not-found state for unknown IDs/slugs, but static hosting may still return HTTP 200 for that page.
+- The cart and translation modules are not wired into the current active pages.
+- Catalogue queries load all products with `select('*')`; there is no pagination, caching, or server-side filtering.
+- CSV import accepts `.csv` only; the repository's current stock CSVs have no prices, so an authorized admin must supply a rate-bearing file to update prices.
+- CI runs on pull requests, but merge blocking is not configured in GitHub: no branch protection or rulesets currently require its checks.
+- The weekly Supabase snapshot workflow does not yet compare the snapshot with the static catalogue; comparison logic is planned as a Node/GitHub Actions task, not browser HTML.
+- There is no online checkout, payment integration, order tracking, or inventory reservation.
+- Product/category pages have limited SEO metadata and no product JSON-LD, canonical strategy, sitemap, or robots file.

@@ -401,10 +401,10 @@
   </div>
   <div class="border-t border-white/10">
     <div class="mx-auto max-w-7xl px-4 py-5 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
-      <span class="text-xs font-semibold uppercase tracking-wide text-white/70 flex items-center gap-1.5"><span class="h-1.5 w-1.5 rounded-full bg-[#e60023]"></span>Genuine Products</span>
-      <span class="text-xs font-semibold uppercase tracking-wide text-white/70 flex items-center gap-1.5"><span class="h-1.5 w-1.5 rounded-full bg-[#e60023]"></span>Manufacturer Warranty</span>
-      <span class="text-xs font-semibold uppercase tracking-wide text-white/70 flex items-center gap-1.5"><span class="h-1.5 w-1.5 rounded-full bg-[#e60023]"></span>WhatsApp Support</span>
-      <span class="text-xs font-semibold uppercase tracking-wide text-white/70 flex items-center gap-1.5"><span class="h-1.5 w-1.5 rounded-full bg-[#e60023]"></span>Local Delivery</span>
+      <span class="text-xs font-semibold uppercase tracking-wide text-white/70 flex items-center gap-1.5"><span class="h-1.5 w-1.5 rounded-full bg-[#e60023]"></span>Product enquiries</span>
+      <span class="text-xs font-semibold uppercase tracking-wide text-white/70 flex items-center gap-1.5"><span class="h-1.5 w-1.5 rounded-full bg-[#e60023]"></span>Confirm warranty terms</span>
+      <span class="text-xs font-semibold uppercase tracking-wide text-white/70 flex items-center gap-1.5"><span class="h-1.5 w-1.5 rounded-full bg-[#e60023]"></span>WhatsApp &amp; phone support</span>
+      <span class="text-xs font-semibold uppercase tracking-wide text-white/70 flex items-center gap-1.5"><span class="h-1.5 w-1.5 rounded-full bg-[#e60023]"></span>Confirm delivery area</span>
     </div>
   </div>
   <div class="border-t border-white/10">
@@ -415,7 +415,7 @@
 </footer>
 
 <!-- WhatsApp FAB -->
-<a href="https://wa.me/917020209281?text=Hello%2C%20I%20would%20like%20to%20place%20an%20order." target="_blank" rel="noopener noreferrer" aria-label="Order on WhatsApp" class="fixed bottom-6 right-6 z-50 hidden h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition hover:scale-105 hover:bg-[#1fb855] md:flex">
+<a href="https://wa.me/917020209281?text=Hello%2C%20I%20am%20enquiring%20about%20a%20product.%20Please%20confirm%20current%20price%20and%20availability." target="_blank" rel="noopener noreferrer" aria-label="Enquire on WhatsApp" class="fixed bottom-6 right-6 z-50 hidden h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition hover:scale-105 hover:bg-[#1fb855] md:flex">
   <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
 </a>
 
@@ -730,18 +730,21 @@ function matchesFilters(p) {
     }
   }
 
-  if (activeInstock && p.stock === 0) return false;
-  if (activeOffer && (!p.mrp || p.mrp <= p.price)) return false;
-  if (activePriceMin > 0 && p.price < activePriceMin) return false;
-  if (activePriceMax > 0 && p.price > activePriceMax) return false;
+  const hasCurrentPrice = p._catalogSource === 'supabase' && Number.isFinite(Number(p.price)) && Number(p.price) > 0;
+  const hasCurrentStock = p._catalogSource === 'supabase' && Number.isInteger(Number(p.stock));
+  if (activeInstock && (!hasCurrentStock || Number(p.stock) <= 0)) return false;
+  if (activeOffer && (!hasCurrentPrice || !p.mrp || p.mrp <= p.price)) return false;
+  if (activePriceMin > 0 && (!hasCurrentPrice || p.price < activePriceMin)) return false;
+  if (activePriceMax > 0 && (!hasCurrentPrice || p.price > activePriceMax)) return false;
   return true;
 }
 
 function sortProducts(prods) {
   const arr = [...prods];
-  if (sortMode === 'price-asc') arr.sort((a,b) => a.price - b.price);
-  else if (sortMode === 'price-desc') arr.sort((a,b) => b.price - a.price);
-  else if (sortMode === 'discount') arr.sort((a,b) => ((b.mrp-b.price)/b.mrp||0) - ((a.mrp-a.price)/a.mrp||0));
+  const livePricesAvailable = arr.every(product => product._catalogSource === 'supabase' && Number(product.price) > 0);
+  if (livePricesAvailable && sortMode === 'price-asc') arr.sort((a,b) => a.price - b.price);
+  else if (livePricesAvailable && sortMode === 'price-desc') arr.sort((a,b) => b.price - a.price);
+  else if (livePricesAvailable && sortMode === 'discount') arr.sort((a,b) => ((b.mrp-b.price)/b.mrp||0) - ((a.mrp-a.price)/a.mrp||0));
   else if (sortMode === 'name-asc') arr.sort((a,b) => a.name.localeCompare(b.name));
   return arr;
 }
@@ -792,36 +795,43 @@ function renderProducts() {
   }
 
   grid.innerHTML = filtered.map(p => {
-    const disc = p.mrp && p.mrp > p.price ? Math.round((p.mrp - p.price) / p.mrp * 100) : 0;
-    const inStock = p.stock !== 0;
-    const price = `₹${p.price.toLocaleString('en-IN')}`;
-    const mrp = p.mrp ? `₹${p.mrp.toLocaleString('en-IN')}` : '';
-    const catLink = `category.html?cat=${p.category}`;
+    const safeName = escapeHtml(p.name);
+    const safeBrand = escapeHtml(p.brand);
+    const safeDescription = escapeHtml(p.description || p.desc || '');
+    const imageUrl = escapeHtml(safeImageUrl(p.image));
+    const hasCurrentPrice = p._catalogSource === 'supabase' && Number.isFinite(Number(p.price)) && Number(p.price) > 0;
+    const hasCurrentStock = p._catalogSource === 'supabase' && Number.isInteger(Number(p.stock));
+    const disc = hasCurrentPrice && p.mrp && p.mrp > p.price ? Math.round((p.mrp - p.price) / p.mrp * 100) : 0;
+    const inStock = hasCurrentStock && Number(p.stock) > 0;
+    const price = hasCurrentPrice ? `₹${Number(p.price).toLocaleString('en-IN')}` : 'Call / WhatsApp for current price';
+    const mrp = hasCurrentPrice && p.mrp > 0 ? `₹${Number(p.mrp).toLocaleString('en-IN')}` : '';
+    const availability = hasCurrentStock ? (inStock ? 'In stock' : 'Out of stock') : 'Call to confirm availability';
+    const productHref = `product.html?id=${encodeURIComponent(p.id)}`;
 
     if (isListView) {
-      return `<a href="product.html?id=${p.id}" class="product-card flex gap-4 bg-white rounded-xl p-3 sm:p-4 border border-[#e5e7eb]/60 hover:border-[#d1d5dc] transition-all">
+      return `<a href="${productHref}" class="product-card flex gap-4 bg-white rounded-xl p-3 sm:p-4 border border-[#e5e7eb]/60 hover:border-[#d1d5dc] transition-all">
         <div class="w-24 h-24 sm:w-32 sm:h-32 shrink-0 bg-[#f5f5f5] rounded-lg flex items-center justify-center overflow-hidden">
-          ${p.image ? `<img src="${p.image}" alt="${p.name}" class="w-full h-full object-contain">` :
+          ${imageUrl ? `<img src="${imageUrl}" alt="${safeName}" class="w-full h-full object-contain">` :
             `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-[#d1d5dc]"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>`}
         </div>
         <div class="flex-1 min-w-0">
-          <p class="text-[10px] text-[#6b7280] uppercase tracking-wide font-medium">${p.brand}</p>
-          <h3 class="text-sm font-semibold text-[#1a1a1a] leading-snug mt-0.5 line-clamp-2">${p.name}</h3>
-          ${p.desc ? `<p class="text-xs text-[#6b7280] mt-1 line-clamp-1">${p.desc}</p>` : ''}
+          <p class="text-[10px] text-[#6b7280] uppercase tracking-wide font-medium">${safeBrand}</p>
+          <h3 class="text-sm font-semibold text-[#1a1a1a] leading-snug mt-0.5 line-clamp-2">${safeName}</h3>
+          ${safeDescription ? `<p class="text-xs text-[#6b7280] mt-1 line-clamp-1">${safeDescription}</p>` : ''}
           <div class="flex items-center gap-2 mt-2 flex-wrap">
             <span class="text-base font-bold text-[#1a1a1a]">${price}</span>
             ${mrp ? `<span class="text-xs text-[#6b7280] line-through">${mrp}</span>` : ''}
             ${disc > 0 ? `<span class="text-xs font-semibold text-[#e60023] bg-[#fef2f2] px-1.5 py-0.5 rounded-full">${disc}% OFF</span>` : ''}
           </div>
-          <span class="mt-1 inline-block text-[11px] font-medium ${inStock ? 'text-[#008138]' : 'text-[#e60023]'}">${inStock ? 'In stock' : 'Out of stock'}</span>
+          <span class="mt-1 inline-block text-[11px] font-medium ${hasCurrentStock ? (inStock ? 'text-[#008138]' : 'text-[#e60023]') : 'text-[#6b7280]'}">${availability}</span>
         </div>
       </a>`;
     }
 
-    return `<a href="product.html?id=${p.id}" class="product-card group flex flex-col rounded-xl bg-white border border-[#e5e7eb]/60 hover:border-[#d1d5dc] overflow-hidden transition-all p-2 sm:p-3">
+    return `<a href="${productHref}" class="product-card group flex flex-col rounded-xl bg-white border border-[#e5e7eb]/60 hover:border-[#d1d5dc] overflow-hidden transition-all p-2 sm:p-3">
       <div class="aspect-square w-full bg-[#f5f5f5] rounded-lg mb-3 flex items-center justify-center overflow-hidden relative">
-        ${p.image
-          ? `<img src="${p.image}" alt="${p.name}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" loading="lazy">`
+        ${imageUrl
+          ? `<img src="${imageUrl}" alt="${safeName}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" loading="lazy">`
           : `<div class="flex flex-col items-center gap-1 text-[#d1d5dc]">
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
               <span class="text-[10px]">No image</span>
@@ -829,15 +839,15 @@ function renderProducts() {
         ${disc > 0 ? `<span class="absolute top-2 left-2 text-[10px] font-bold text-white bg-[#e60023] px-1.5 py-0.5 rounded-full">${disc}% OFF</span>` : ''}
         ${p.badge ? `<span class="absolute top-2 ${disc>0?'left-14':'left-2'} text-[10px] font-bold text-white bg-[#1a1a1a] px-1.5 py-0.5 rounded-full">${p.badge}</span>` : ''}
       </div>
-      <p class="text-[10px] text-[#6b7280] uppercase tracking-wide font-medium mb-0.5">${p.brand}</p>
-      <h3 class="text-xs sm:text-sm font-semibold text-[#1a1a1a] leading-snug line-clamp-2 mb-1">${p.name}</h3>
-      ${p.desc ? `<p class="text-[11px] text-[#6b7280] line-clamp-2 mb-2">${p.desc}</p>` : '<div class="mb-2"></div>'}
+      <p class="text-[10px] text-[#6b7280] uppercase tracking-wide font-medium mb-0.5">${safeBrand}</p>
+      <h3 class="text-xs sm:text-sm font-semibold text-[#1a1a1a] leading-snug line-clamp-2 mb-1">${safeName}</h3>
+      ${safeDescription ? `<p class="text-[11px] text-[#6b7280] line-clamp-2 mb-2">${safeDescription}</p>` : '<div class="mb-2"></div>'}
       <div class="mt-auto">
         <div class="flex items-center gap-1.5 flex-wrap">
           <span class="text-sm sm:text-base font-bold text-[#1a1a1a]">${price}</span>
           ${mrp ? `<span class="text-[11px] text-[#6b7280] line-through">${mrp}</span>` : ''}
         </div>
-        <span class="text-[11px] font-medium ${inStock ? 'text-[#008138]' : 'text-[#e60023]'}">${inStock ? 'In stock' : 'Out of stock'}</span>
+        <span class="text-[11px] font-medium ${hasCurrentStock ? (inStock ? 'text-[#008138]' : 'text-[#e60023]') : 'text-[#6b7280]'}">${availability}</span>
       </div>
     </a>`;
   }).join('');

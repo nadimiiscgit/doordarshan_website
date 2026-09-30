@@ -1,297 +1,180 @@
-# 🔐 SECURITY.md — Doordarshan Electronics Website
+# SECURITY.md — Current Security Posture
 
-> **Status**: Core critical & high vulnerabilities RESOLVED.
-> **Last audited & hardened**: September 2026
+> Updated 30 September 2026. This is a repository-level review of the browser code and policy blueprint. It cannot prove the current remote Supabase dashboard state; verify deployed RLS, Auth settings, Storage policies, and exposed data before treating the site as production-safe.
 
----
+## Executive summary
 
-## Current Vulnerability Summary
+Some important improvements are present:
 
-| Severity | Count | Status |
+- Admin login now uses Supabase Auth rather than the old plaintext-table login flow.
+- Admin session restoration uses `getAdminSession()`.
+- The admin UI includes a per-tab failed-login lockout and inactivity timeout.
+- Vercel security headers are present in `vercel.json`.
+- The browser uses a Supabase publishable key, not a service-role key.
+
+Important gaps remain:
+
+- The checked-in policy guidance includes broad `authenticated` access patterns, and deployed RLS has not been verified to restrict writes to administrators.
+- Active catalogue cards and CSV preview use escaping/text-only DOM insertion, but admin and legacy renderers still need a complete XSS audit.
+- File/image uploads have weak validation.
+- CSP still permits `unsafe-inline`, because the pages use inline scripts and handlers.
+- The public catalogue queries `select('*')`, exposing every product column that exists.
+- There is no server-side order, payment, or stock-reservation boundary.
+
+## Severity summary
+
+| Area | Current status | Priority |
 |---|---|---|
-| 🔴 Critical | 4 | ✅ Resolved (RLS active, Supabase Auth integrated, fallback removed, keys rotated) |
-| 🟠 High | 4 | ✅ 3 Resolved (Brute-force lockout added, Real JWT session auth, HTTP headers in vercel.json) |
-| 🟡 Medium | 4 | 🟡 In progress (Admin form validation implemented) |
+| Supabase write authorization | Auth exists, but the policy blueprint is broad | Critical |
+| XSS/data rendering | Active catalogue/CSV preview hardened; admin and legacy sinks remain to audit | High |
+| Upload validation | Extension/URL trust is weak | High |
+| Session controls | Supabase Auth plus browser-only lockout/timeout | Medium |
+| HTTP headers | Present, but CSP is weakened by inline allowances | Medium |
+| Data exposure | Public `select('*')` and public image URLs | Medium |
+| Ecommerce integrity | No server-side order or inventory transaction | Business-critical |
 
----
+## Authentication and authorization
 
-## 🔴 Critical Vulnerabilities
+### Current login implementation
 
-### C1 — No Row Level Security (RLS) on Supabase Tables
-**Where**: Supabase dashboard — `products`, `categories`, `admin_users` tables
-**Risk**: Anyone who inspects the page source, copies the public anon key, and calls the Supabase REST API directly can **read, write, update, and delete all data** without logging in.
+`admin.html` calls `signInAdminWithAuth(email, password)` from `js/supabase-config.js`, restores an Auth session on page load, and signs out through Supabase Auth.
 
-```bash
-# Example: Anyone can do this right now without a login
-curl -X DELETE \
-  'https://lodiiprfdimohskhcpyf.supabase.co/rest/v1/products?id=gt.0' \
-  -H 'apikey: <anon_key_from_source>' \
-  -H 'Authorization: Bearer <anon_key_from_source>'
-# Result: ALL products deleted
-```
+The client-side login lockout and inactivity timer are useful UX controls but are not security boundaries:
 
-**Fix**: Enable RLS on all tables (see Layer 1 below).
+- The lockout exists only in the current browser tab and can be reset by refreshing.
+- The inactivity timer can be bypassed by a user who controls the browser.
+- The actual protection must come from Supabase Auth rate limits, short-lived/rotated sessions where appropriate, RLS, and Storage policies.
 
----
+### Admin role problem
 
-### C2 — Plaintext Passwords Stored in Database
-**Where**: `admin_users` table in Supabase
-**Risk**: Passwords are visible as plain text strings in the database.
-
-**Fix**: Use Supabase Auth (built-in bcrypt hashing).
-
----
-
-### C3 — Hardcoded Fallback Credentials in Client-Side JavaScript
-**Where**: `js/supabase-config.js` lines 32, 43, 48
-
-```javascript
-// Currently in supabase-config.js — visible to all:
-return username === 'admin' && password === 'admin123';
-```
-
-**Fix**: Remove these fallback lines entirely. Fail closed.
-
----
-
-### C4 — Anon Key Allows Unauthenticated Writes (No RLS)
-**Where**: `js/supabase-config.js` line 6
-**Risk**: The anon key is public by design — but **only safe when RLS is active**. Without RLS, the anon key grants full database access to anyone.
-
----
-
-## 🟠 High Vulnerabilities
-
-### H1 — No Brute-Force Protection on Admin Login
-**Where**: `admin.html` — `doLogin()` function
-**Risk**: Unlimited login attempts with no lockout.
-
----
-
-### H2 — Login Session via `sessionStorage` Flag (Bypassable)
-**Where**: `admin.html` line 741
-
-```javascript
-// Anyone can type in the browser console to bypass login:
-sessionStorage.setItem('de_logged_in', 'true');
-location.reload();
-```
-
-**Fix**: Replace with Supabase Auth session check.
-
----
-
-### H3 — XSS Risk via `innerHTML` with Database-Supplied Data
-**Where**: `category.html:399`, `product.html:337`, `admin.html:869`
-**Risk**: DB-fetched product names/descriptions rendered via `innerHTML` — a compromised DB entry could inject scripts.
-
-**Fix**: Use `textContent` for DB-supplied strings.
-
----
-
-### H4 — No HTTP Security Headers
-**Where**: No `vercel.json` exists
-**Risk**: No clickjacking protection, no HTTPS enforcement, no CSP.
-
----
-
-## 🟡 Medium Vulnerabilities
-
-### M1 — No Input Validation on Admin Product Form
-**Risk**: Negative stock, ₹0 price, MRP < sale price can be saved with no error.
-
-### M2 — No File Type Validation on CSV Upload
-**Risk**: Any file can be submitted as a CSV.
-
-### M3 — No CORS Restriction on Supabase Project
-**Risk**: Any website can call your Supabase API using your anon key.
-
-### M4 — Supabase Free Tier 7-Day Inactivity Pause
-**Risk**: DB pauses after 7 days of inactivity. Admin panel stops working.
-**Fix**: Supabase dashboard → Settings → General → Disable pausing.
-
----
-
-## Why SQL Injection Is NOT the Main Risk
-
-The Supabase JS SDK generates **parameterized queries** internally:
-
-```javascript
-dbClient.from('products').select('*').eq('brand', userInput)
-// Internally: SELECT * FROM products WHERE brand = $1
-```
-
-Classic SQL injection is not possible through the SDK. Real risks are unauthenticated API access, weak sessions, and XSS.
-
----
-
-## Fix Plan — 4 Layers of Defense
-
-```
-┌─────────────────────────────────────────┐
-│  Layer 4: HTTP Headers (Vercel)         │
-├─────────────────────────────────────────┤
-│  Layer 3: Input Validation (Frontend)   │
-├─────────────────────────────────────────┤
-│  Layer 2: Auth & Session (Admin)        │
-├─────────────────────────────────────────┤
-│  Layer 1: Supabase RLS + DB (Backend)   │  ← Start here
-└─────────────────────────────────────────┘
-```
-
----
-
-## Layer 1: Supabase RLS Policies
-
-> Run in Supabase Dashboard → SQL Editor
+The policy blueprint currently uses:
 
 ```sql
--- Products: public read, admin-only write
-ALTER TABLE products ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Public read products" ON products FOR SELECT USING (true);
-CREATE POLICY "Admin write products" ON products FOR ALL
-  USING (auth.role() = 'authenticated')
-  WITH CHECK (auth.role() = 'authenticated');
-
--- Categories: same pattern
-ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Public read categories" ON categories FOR SELECT USING (true);
-CREATE POLICY "Admin write categories" ON categories FOR ALL
-  USING (auth.role() = 'authenticated')
-  WITH CHECK (auth.role() = 'authenticated');
-
--- Admin users: no public access at all
-ALTER TABLE admin_users ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "No public access" ON admin_users FOR ALL USING (false);
+TO authenticated
+USING (auth.role() = 'authenticated')
+WITH CHECK (auth.role() = 'authenticated')
 ```
 
----
+That means any authenticated Supabase user can potentially write products, categories, and Storage objects. It is not an admin-only policy.
 
-## Layer 2: Admin Auth Fixes
+Use a server-controlled claim such as `app_metadata.role = 'admin'`, or move mutations behind a protected Edge Function. A browser-provided user field must not be trusted for authorization.
 
-### Remove hardcoded fallback (js/supabase-config.js)
-```javascript
-// DELETE these lines:
-return username === 'admin' && password === 'admin123';
-// REPLACE with:
-return false;
+Example policy shape:
+
+```sql
+CREATE POLICY "admin can manage products"
+ON public.products
+FOR ALL
+TO authenticated
+USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
+WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
 ```
 
-### Migrate to Supabase Auth
-```javascript
-// New login
-const { data, error } = await dbClient.auth.signInWithPassword({ email, password });
-if (error) { showLoginError(); return; }
-showApp();
+Apply the same principle to `categories` and `storage.objects`, and test anonymous, ordinary-authenticated, and admin users separately.
 
-// Check session on load
-const { data: { session } } = await dbClient.auth.getSession();
-if (session) showApp(); else showLoginScreen();
-```
+### Legacy `admin_users` table
 
-### Add login rate limiting
-```javascript
-const attempts = { count: 0, lockedUntil: null };
+The current browser login code does not query `admin_users`; it uses Supabase Auth. Older documentation still describes plaintext credentials in that table. Verify whether the table exists and contains credentials. If it is no longer required, migrate any needed data and remove or lock it down.
 
-function checkLock() {
-  if (attempts.lockedUntil && Date.now() < attempts.lockedUntil) {
-    const s = Math.ceil((attempts.lockedUntil - Date.now()) / 1000);
-    showError(`Locked. Try again in ${s}s`);
-    return false;
-  }
-  return true;
-}
+## XSS and unsafe HTML construction
 
-function recordFail() {
-  if (++attempts.count >= 5) {
-    attempts.lockedUntil = Date.now() + 15 * 60 * 1000;
-    attempts.count = 0;
-  }
-}
-```
+Data-to-HTML handling is improved in active catalogue cards/product details and the CSV preview, but is not consistently safe across the repository. Review every remaining dynamic `innerHTML` assignment before considering stored XSS addressed.
 
-### Add session timeout (30 minutes)
-```javascript
-let timer;
-const reset = () => {
-  clearTimeout(timer);
-  timer = setTimeout(async () => {
-    await dbClient.auth.signOut();
-    showLoginScreen();
-  }, 30 * 60 * 1000);
-};
-['click','keypress','mousemove','touchstart'].forEach(e => document.addEventListener(e, reset));
-reset();
-```
+Paths to continue reviewing include:
 
----
+- `admin.html` product/category tables and other inline renderers (the active CSV preview now uses DOM nodes and `textContent`).
+- `js/main.js`, `js/cart.js`, and `js/i18n.js` legacy renderers.
+- `js/cart.js` toast messages.
 
-## Layer 3: Input Validation
+This risk is reduced only if write access is genuinely restricted and all stored content is trusted. It should still be fixed:
 
-```javascript
-// Sanitize text before DB writes
-function sanitizeText(str) {
-  return String(str || '')
-    .replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#x27;').trim();
-}
+1. Prefer `textContent`, `setAttribute`, and DOM node creation for user/data strings.
+2. Use a single HTML escaping helper for unavoidable templates.
+3. Validate image URLs against an allowlist of `https:` origins or trusted Storage paths.
+4. Remove inline event handlers and use delegated event listeners.
+5. Move toward a strict CSP without `unsafe-inline`.
 
-// Validate product form
-function validateProductForm(data) {
-  const errors = [];
-  if (!data.name || data.name.length < 2) errors.push('Name too short');
-  if (!data.brand) errors.push('Brand required');
-  if (data.price <= 0) errors.push('Price must be > 0');
-  if (data.mrp > 0 && data.mrp < data.price) errors.push('MRP < sale price');
-  if (data.stock < 0) errors.push('Stock cannot be negative');
-  if (errors.length) throw new Error(errors.join('; '));
-}
+Do not “sanitize” stored text into HTML entities before saving it. Store canonical text and escape at render time.
 
-// Validate CSV file
-function validateCSV(file) {
-  if (!file.name.endsWith('.csv')) throw new Error('Only .csv files allowed');
-  if (file.size > 2 * 1024 * 1024) throw new Error('Max 2MB');
-}
+## Supabase key and database exposure
 
-// Use textContent for DB data (not innerHTML)
-const el = document.createElement('span');
-el.textContent = product.name; // safe
-```
+The publishable/anon key is visible in browser code by design. It is not a secret. Safety depends on:
 
----
+- RLS enabled on every exposed table.
+- Explicit public `SELECT` policies only for fields intended for public display.
+- Admin-only mutation policies.
+- No service-role key in the browser.
+- No sensitive supplier, margin, credential, or customer data in public tables/views.
 
-## Layer 4: HTTP Headers (vercel.json)
+The current client uses `select('*')`. Prefer a public catalogue view or explicit column list so future internal columns are not automatically exposed.
 
-```json
-{
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
-        { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" },
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://*.supabase.co; connect-src 'self' https://*.supabase.co; font-src 'self' https://fonts.gstatic.com" }
-      ]
-    }
-  ]
-}
-```
+## Upload and import risks
 
----
+`uploadProductImageToStorage(file)` currently derives a path from the filename extension and uploads directly. Add:
 
-## Implementation Priority Table
+- MIME and magic-byte validation.
+- Maximum file size and pixel dimensions.
+- Allowed image formats only.
+- Server-side Storage policy checks.
+- Safe generated filenames that do not depend on user input.
+- Cleanup of replaced/orphaned images.
 
-| Priority | Fix | Effort |
-|---|---|---|
-| 🔴 **Do now** | Enable Supabase RLS on all tables | 30 min |
-| 🔴 **Do now** | Remove hardcoded `admin123` fallback | 5 min |
-| 🟠 **This week** | Migrate to Supabase Auth | 2 hrs |
-| 🟠 **This week** | Add `vercel.json` HTTP headers | 15 min |
-| 🟠 **This week** | Login rate limiting + session timeout | 30 min |
-| 🟡 **Later** | Input validation on admin forms | 2 hrs |
-| 🟡 **Later** | Replace `innerHTML` with `textContent` for DB data | 1–2 hrs |
-| 🟡 **Later** | Restrict Supabase CORS to your domain | 10 min |
-| 🟡 **Later** | Disable Supabase project auto-pause | 10 min |
+The admin accepts `.csv` only (not Excel workbooks), caps input at 5 MB and 1,000 data rows, shows a text-only preview, and blocks imports with row errors or ambiguous matches. It distinguishes catalog/rate imports from stock-only reports, does not turn row serials into product IDs, and does not fabricate default prices or quantities. Current stock-summary files do not include MRP/rates, so they cannot update prices. Stock-only imports are applied row-by-row and may partially complete; the UI reports the completed count and asks the admin to review before retrying. A server-side atomic import remains future work.
+
+## HTTP headers and third-party scripts
+
+`vercel.json` supplies `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, HSTS, and an enforced CSP. It pins `connect-src` to the configured Supabase project and adds `base-uri`, `object-src`, `frame-ancestors`, and `form-action`. A candidate source-restricted policy is also sent as `Content-Security-Policy-Report-Only` for browser-console observation before tightening the enforced image list.
+
+The CSP is weakened by:
+
+- `script-src 'unsafe-inline'`.
+- `style-src 'unsafe-inline'`.
+- The Supabase CDN dependency is still floating at `@supabase/supabase-js@2`.
+- The enforced `img-src https:` remains broad until dynamic database image hosts have been inventoried; the report-only candidate uses observed repository hosts and may flag legitimate remote catalogue images.
+
+Recommended improvements:
+
+- Self-host or pin the Supabase client version and use integrity protection where feasible.
+- Move inline scripts/styles into versioned files.
+- Remove `unsafe-inline` after the migration.
+- Remove `unsafe-inline` after inline code migration and restrict image sources after all live catalogue image hosts are inventoried.
+- Verify both policies in deployed response headers and inspect browser console reports; report-only violations are not centrally collected.
+
+## Link and window safety
+
+Static external links generally use `rel="noopener noreferrer"`, but JavaScript `window.open(..., '_blank')` calls do not consistently provide an equivalent opener restriction. Use a safe feature string such as `noopener,noreferrer` or navigate through an explicit anchor.
+
+## Ecommerce integrity risks
+
+WhatsApp messages contain client-generated product details. The product page now omits fallback prices and asks the store to confirm current price/availability. A customer can still modify local state or page JavaScript; therefore:
+
+- Treat WhatsApp details as an enquiry, not an authoritative order.
+- Reconfirm price and stock at the store.
+- If real checkout is introduced, create the order and price snapshot server-side.
+- Reserve/decrement stock transactionally.
+- Validate payment webhooks server-side.
+- Generate invoices and audit events from trusted backend data.
+
+## Verification checklist
+
+Before production use, verify:
+
+- [ ] Anonymous users can read only intended catalogue fields.
+- [ ] Authenticated non-admin users cannot write products/categories/storage.
+- [ ] Admin writes are allowed and auditable.
+- [ ] Storage uploads are limited by bucket, path, size, and content type.
+- [ ] Supabase Auth public sign-up is disabled unless intentionally required.
+- [ ] Password reset and recovery settings use the real production domain.
+- [ ] No service-role key or private credential appears in repository files.
+- [ ] Product/import text cannot execute as HTML or script.
+- [ ] Header/CSP checks pass on the deployed domain.
+- [ ] The live database and static fallback are reconciled before publishing prices.
+
+## Remediation order
+
+1. Verify and correct RLS/Storage authorization with a real admin role.
+2. Fix the homepage/runtime split and broken JavaScript/assets.
+3. Remove unsafe HTML interpolation and inline handlers.
+4. Add strict upload/import validation.
+5. Restrict public database columns and add monitoring.
+6. Retain the agreed call/WhatsApp enquiry model; any future online checkout is a separate project and needs server-authoritative order/payment/inventory controls.
