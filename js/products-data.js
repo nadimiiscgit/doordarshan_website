@@ -3094,60 +3094,415 @@ const PRODUCTS = [
       "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
     },
     "description": "Whirlpool 230L Refrigerator with high-efficiency inverter cooling. Official brand warranty at Doordarshan Electronics."
+  },
+  // ─── AIR CONDITIONERS & FEATURED APPLIANCES ────────
+  {
+    "id": 201,
+    "name": "Blue Star 1.0 Ton 3 Star Fixed Speed Split AC (IA312QXU-IDU)",
+    "brand": "Blue Star",
+    "image": "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/banners/laptops-desktop.webp",
+    "images": [
+      "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/banners/laptops-desktop.webp"
+    ],
+    "category": "ac",
+    "subcategory": "split-ac",
+    "type": [
+      "Split AC",
+      "3 Star",
+      "Fixed Speed",
+      "Copper Condenser"
+    ],
+    "model": "IA312QXU-IDU",
+    "mrp": 39990,
+    "price": 30990,
+    "stock": 3,
+    "size": 1,
+    "rating": 4.3,
+    "reviews": 14,
+    "isNew": true,
+    "isFeatured": true,
+    "slug": "blue-star-1-0-ton-3-star-fixed-speed-split-ac-indoor-unit-ia312qxu-idu",
+    "specs": {
+      "Capacity": "1.0 Ton",
+      "Energy Rating": "3 Star",
+      "Compressor": "Fixed Speed Rotary",
+      "Condenser": "100% Copper",
+      "Refrigerant": "R32 Eco-Friendly",
+      "Warranty": "1 Year on Product, 5 Years on Compressor"
+    },
+    "description": "Blue Star 1.0 Ton 3 Star Split AC delivers fast, uniform cooling with turbo mode and anti-corrosive blue fins."
+  },
+  {
+    "id": 202,
+    "name": "Carrier Xpert Edge FXI 1.5 Ton 3 Star Inverter Split AC",
+    "brand": "Carrier",
+    "image": "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/banners/laptops-desktop.webp",
+    "images": [
+      "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/banners/laptops-desktop.webp"
+    ],
+    "category": "ac",
+    "subcategory": "split-ac",
+    "type": [
+      "Inverter AC",
+      "3 Star",
+      "Dual Filtration",
+      "Copper"
+    ],
+    "model": "CAI19PE3R35F0",
+    "mrp": 54990,
+    "price": 36990,
+    "stock": 2,
+    "size": 1.5,
+    "rating": 4.4,
+    "reviews": 19,
+    "isNew": false,
+    "isFeatured": true,
+    "slug": "carrier-xpert-edge-fxi-1-5-ton-3-star-inverter-split-air-conditioner-cai19pe3r35f0",
+    "specs": {
+      "Capacity": "1.5 Ton",
+      "Energy Rating": "3 Star Inverter",
+      "Filtration": "Dual PM 2.5 Filter",
+      "Condenser": "100% Copper",
+      "Warranty": "1 Year on Unit, 10 Years on Inverter Compressor"
+    },
+    "description": "Carrier 1.5 Ton Flexicool Inverter Split AC with multi-mode convertible tonnage."
+  },
+  {
+    "id": 203,
+    "name": "Voltas Vectra Zen Silver 1.5 Ton 3 Star Inverter Split AC",
+    "brand": "Voltas",
+    "image": "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/product-images/brands/voltas.png",
+    "images": [
+      "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/product-images/brands/voltas.png"
+    ],
+    "category": "ac",
+    "subcategory": "split-ac",
+    "type": [
+      "Inverter AC",
+      "3 Star",
+      "Copper Condenser",
+      "Turbo Cool"
+    ],
+    "model": "183INV Zen Silver",
+    "mrp": 58990,
+    "price": 37490,
+    "stock": 4,
+    "size": 1.5,
+    "rating": 4.5,
+    "reviews": 28,
+    "isNew": true,
+    "isFeatured": true,
+    "slug": "voltas-vectra-zen-silver-1-5-ton-3-star-inverter-split-ac-outdoor-unit-183inv-zen-silver-odu",
+    "specs": {
+      "Capacity": "1.5 Ton",
+      "Energy Rating": "3 Star",
+      "Cooling Technology": "High Ambient Cooling up to 52°C",
+      "Condenser": "Copper Coil",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Voltas Vectra Zen Silver Inverter AC engineered for extreme Indian summers with anti-dust protection."
+  },
+  {
+    "id": 204,
+    "name": "Voltas Vertis Emerald 1.5 Ton 5 Star Inverter Split AC",
+    "brand": "Voltas",
+    "image": "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/product-images/brands/voltas.png",
+    "images": [
+      "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/product-images/brands/voltas.png"
+    ],
+    "category": "ac",
+    "subcategory": "split-ac",
+    "type": [
+      "Inverter AC",
+      "5 Star",
+      "Superdry Mode",
+      "Copper"
+    ],
+    "model": "185V Vertis Emerald",
+    "mrp": 67990,
+    "price": 43990,
+    "stock": 3,
+    "size": 1.5,
+    "rating": 4.6,
+    "reviews": 31,
+    "isNew": false,
+    "isFeatured": true,
+    "slug": "voltas-vertis-emerald-1-5-ton-5-star-inverter-split-ac-outdoor-unit-185v-vertis-emerald-odu",
+    "specs": {
+      "Capacity": "1.5 Ton",
+      "Energy Rating": "5 Star Inverter",
+      "Modes": "4-in-1 Adjustable Cooling",
+      "Warranty": "1 Year Comprehensive, 10 Years on Inverter Compressor"
+    },
+    "description": "Maximum energy efficiency and silent cooling with 5-star rating from Voltas."
+  },
+  {
+    "id": 205,
+    "name": "Voltas Vectra Prime 1.5 Ton 3 Star Inverter Split AC",
+    "brand": "Voltas",
+    "image": "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/product-images/brands/voltas.png",
+    "images": [
+      "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/product-images/brands/voltas.png"
+    ],
+    "category": "ac",
+    "subcategory": "split-ac",
+    "type": [
+      "Inverter AC",
+      "3 Star",
+      "Copper Condenser"
+    ],
+    "model": "183V Vectra Prime",
+    "mrp": 56990,
+    "price": 35990,
+    "stock": 2,
+    "size": 1.5,
+    "rating": 4.4,
+    "reviews": 22,
+    "isNew": false,
+    "isFeatured": true,
+    "slug": "voltas-vectra-prime-1-5-ton-3-star-inverter-split-air-conditioner-183v-vectra-prime-4503447",
+    "specs": {
+      "Capacity": "1.5 Ton",
+      "Energy Rating": "3 Star",
+      "Condenser": "100% Inner Grooved Copper",
+      "Warranty": "1 Year Unit, 10 Years Compressor"
+    },
+    "description": "Durable all-weather comfort with Voltas Vectra Prime split cooling."
+  },
+  {
+    "id": 206,
+    "name": "Voltas Vectra Elegant 1.0 Ton 3 Star Inverter Split AC",
+    "brand": "Voltas",
+    "image": "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/product-images/brands/voltas.png",
+    "images": [
+      "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/product-images/brands/voltas.png"
+    ],
+    "category": "ac",
+    "subcategory": "split-ac",
+    "type": [
+      "Inverter AC",
+      "3 Star",
+      "Anti Dust Filter"
+    ],
+    "model": "123V Vectra Elegant",
+    "mrp": 49990,
+    "price": 31990,
+    "stock": 2,
+    "size": 1,
+    "rating": 4.3,
+    "reviews": 16,
+    "isNew": false,
+    "isFeatured": true,
+    "slug": "voltas-vectra-elegant-1-0-ton-3-star-inverter-split-ac-outdoor-unit-123v-vectra-elegant-odu",
+    "specs": {
+      "Capacity": "1.0 Ton",
+      "Energy Rating": "3 Star",
+      "Warranty": "1 Year Comprehensive, 10 Years Compressor"
+    },
+    "description": "Compact and whisper quiet split AC for bedrooms and home offices."
+  },
+  {
+    "id": 207,
+    "name": "LG 1.5 Ton 5 Star AI DUAL Inverter Split AC",
+    "brand": "LG",
+    "image": "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/product-images/brands/lg.png",
+    "images": [
+      "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/product-images/brands/lg.png"
+    ],
+    "category": "ac",
+    "subcategory": "split-ac",
+    "type": [
+      "Inverter AC",
+      "5 Star",
+      "AI Dual Inverter",
+      "Copper"
+    ],
+    "model": "TSUQ19BNZE1",
+    "mrp": 75990,
+    "price": 46990,
+    "stock": 3,
+    "size": 1.5,
+    "rating": 4.7,
+    "reviews": 45,
+    "isNew": true,
+    "isFeatured": true,
+    "slug": "lg-1-5-ton-5-star-ai-dual-inverter-split-ac-outdoor-unit-tsuq19bnze1-odu",
+    "specs": {
+      "Capacity": "1.5 Ton",
+      "Energy Rating": "5 Star",
+      "AI Technology": "AI Dual Inverter with 6-in-1 Cooling",
+      "Warranty": "1 Year Unit, 5 Years PCB, 10 Years Compressor"
+    },
+    "description": "AI-assisted cooling senses room conditions and automatically optimizes fan speed and cooling load."
+  },
+  {
+    "id": 208,
+    "name": "LG 1.5 Ton 3 Star AI DUAL Inverter Split AC",
+    "brand": "LG",
+    "image": "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/product-images/brands/lg.png",
+    "images": [
+      "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/product-images/brands/lg.png"
+    ],
+    "category": "ac",
+    "subcategory": "split-ac",
+    "type": [
+      "Inverter AC",
+      "3 Star",
+      "AI Dual Inverter",
+      "Ocean Black"
+    ],
+    "model": "TSUQ18RNXE1",
+    "mrp": 64990,
+    "price": 38990,
+    "stock": 4,
+    "size": 1.5,
+    "rating": 4.5,
+    "reviews": 38,
+    "isNew": false,
+    "isFeatured": true,
+    "slug": "lg-1-5-ton-3-star-ai-dual-inverter-split-ac-outdoor-unit-tsuq18rnxe1-odu",
+    "specs": {
+      "Capacity": "1.5 Ton",
+      "Energy Rating": "3 Star",
+      "Protection": "Ocean Black Fin Anti-Corrosion",
+      "Warranty": "1 Year Unit, 10 Years Compressor"
+    },
+    "description": "Reliable long-lasting cooling protected against rust and dust with Ocean Black fin technology."
+  },
+  {
+    "id": 209,
+    "name": "Samsung Galaxy S24 FE 5G (8GB RAM, 128GB Storage)",
+    "brand": "Samsung",
+    "image": "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/product-images/brands/samsung.png",
+    "images": [
+      "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/product-images/brands/samsung.png"
+    ],
+    "category": "phones",
+    "subcategory": "android-phones",
+    "type": [
+      "5G",
+      "Flagship",
+      "AMOLED",
+      "Galaxy AI"
+    ],
+    "model": "SM-S721B",
+    "mrp": 64999,
+    "price": 54999,
+    "stock": 3,
+    "size": 6.7,
+    "rating": 4.6,
+    "reviews": 52,
+    "isNew": true,
+    "isFeatured": true,
+    "slug": "samsung-galaxy-s24-fe-5g",
+    "specs": {
+      "Display": "6.7\" Dynamic AMOLED 2X, 120Hz",
+      "Processor": "Exynos 2400e (4nm)",
+      "Camera": "50MP Triple OIS ProVisual Engine",
+      "Battery": "4700mAh with Super Fast Charging"
+    },
+    "description": "Experience premium Galaxy AI features, flagship cameras, and vivid AMOLED 120Hz display."
+  },
+  {
+    "id": 210,
+    "name": "Samsung Galaxy Watch7 44mm Bluetooth",
+    "brand": "Samsung",
+    "image": "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/product-images/brands/samsung.png",
+    "images": [
+      "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/product-images/brands/samsung.png"
+    ],
+    "category": "phones",
+    "subcategory": "wearables",
+    "type": [
+      "Smartwatch",
+      "BioActive Sensor",
+      "Dual GPS"
+    ],
+    "model": "SM-L310",
+    "mrp": 32999,
+    "price": 27999,
+    "stock": 2,
+    "size": 44,
+    "rating": 4.5,
+    "reviews": 29,
+    "isNew": true,
+    "isFeatured": true,
+    "slug": "samsung-galaxy-watch7-44mm-bluetooth",
+    "specs": {
+      "Case Size": "44mm Armor Aluminum",
+      "Sensors": "BioActive Sensor, Sleep Apnea Detection, ECG, Heart Rate",
+      "Battery": "Up to 40 hours"
+    },
+    "description": "Next-gen wellness tracking powered by 3nm processor and dual-frequency GPS."
+  },
+  {
+    "id": 211,
+    "name": "HP Pavilion Plus 14 OLED (Intel Core Ultra 5, 16GB, 512GB SSD)",
+    "brand": "HP",
+    "image": "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/banners/laptops-desktop.webp",
+    "images": [
+      "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/banners/laptops-desktop.webp"
+    ],
+    "category": "laptop",
+    "subcategory": "laptops",
+    "type": [
+      "OLED Display",
+      "Intel Core Ultra",
+      "Intel Evo",
+      "Backlit Keyboard"
+    ],
+    "model": "14-ew1001TU",
+    "mrp": 89999,
+    "price": 74990,
+    "stock": 2,
+    "size": 14,
+    "rating": 4.6,
+    "reviews": 33,
+    "isNew": true,
+    "isFeatured": true,
+    "slug": "hp-pavilion-plus-14-oled-core-ultra-5",
+    "specs": {
+      "Display": "14\" 2.8K (2880 x 1800) OLED 120Hz 500 nits HDR",
+      "Processor": "Intel Core Ultra 5 125H with Intel AI Boost",
+      "Memory": "16 GB LPDDR5x RAM",
+      "Storage": "512 GB PCIe Gen4 NVMe M.2 SSD"
+    },
+    "description": "Stunning 2.8K OLED screen paired with next-generation Intel AI acceleration for creators and professionals."
+  },
+  {
+    "id": 212,
+    "name": "LG 242L 3 Star Smart Inverter Double Door Refrigerator",
+    "brand": "LG",
+    "image": "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/product-images/brands/lg.png",
+    "images": [
+      "https://lodiiprfdimohskhcpyf.supabase.co/storage/v1/object/public/product-images/brands/lg.png"
+    ],
+    "category": "refrigerator",
+    "subcategory": "201-300l",
+    "type": [
+      "Double Door",
+      "Smart Inverter",
+      "Frost Free",
+      "Multi Air Flow"
+    ],
+    "model": "GL-I292RPZX",
+    "mrp": 31990,
+    "price": 25990,
+    "stock": 3,
+    "size": 242,
+    "rating": 4.5,
+    "reviews": 41,
+    "isNew": true,
+    "isFeatured": true,
+    "slug": "lg-242l-3-star-double-door-refrigerator",
+    "specs": {
+      "Capacity": "242 Litres",
+      "Door Type": "Double Door",
+      "Energy Rating": "3 Star",
+      "Cooling Technology": "Door Cooling+ with Multi Air Flow",
+      "Compressor": "Smart Inverter Compressor",
+      "Warranty": "1 Year Comprehensive, 10 Years on Compressor"
+    },
+    "description": "Even cooling across all shelves with Door Cooling+ and smart inverter energy savings."
   }
 ];
-
-// ─── Helper Functions ────────────────────────────────────────
-
-function getProductById(id) {
-  return PRODUCTS.find(p => p.id === id) || null;
-}
-
-function getProductsByCategory(category, filters = {}) {
-  return PRODUCTS.filter(p => {
-    if (p.category !== category) return false;
-    if (filters.brand && p.brand !== filters.brand) return false;
-    if (filters.subcategory && p.subcategory !== filters.subcategory) return false;
-    if (filters.type && !p.type.includes(filters.type)) return false;
-    if (filters.maxPrice && p.price > filters.maxPrice) return false;
-    if (filters.minPrice && p.price < filters.minPrice) return false;
-    return true;
-  });
-}
-
-function getFeaturedProducts(limit = 8) {
-  return PRODUCTS.filter(p => p.isFeatured).slice(0, limit);
-}
-
-function getNewArrivals(limit = 8) {
-  return PRODUCTS.filter(p => p.isNew).slice(0, limit);
-}
-
-function formatPrice(num) {
-  if (num <= 1) return 'Call for Price';
-  return '₹' + num.toLocaleString('en-IN');
-}
-
-function getDiscount(mrp, price) {
-  if (mrp <= 1) return null;
-  const pct = Math.round(((mrp - price) / mrp) * 100);
-  return pct > 0 ? pct : null;
-}
-
-// Brand colours for image placeholders
-const BRAND_COLORS = {
-  Sony:    { bg: '#0033A0', text: '#ffffff' },
-  Samsung: { bg: '#1428A0', text: '#ffffff' },
-  LG:      { bg: '#A50034', text: '#ffffff' },
-  Hisense: { bg: '#E4002B', text: '#ffffff' },
-  TCL:     { bg: '#D52B1E', text: '#ffffff' },
-  Metz:    { bg: '#2C2C2C', text: '#ffffff' },
-  Bush:    { bg: '#005EB8', text: '#ffffff' },
-  OnePlus: { bg: '#F5010C', text: '#ffffff' },
-  Skyworth:{ bg: '#00529B', text: '#ffffff' },
-  PHX:     { bg: '#444444', text: '#ffffff' },
-};
-
-function getBrandColor(brand) {
-  return BRAND_COLORS[brand] || { bg: '#0B2C6E', text: '#ffffff' };
-}

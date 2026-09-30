@@ -420,6 +420,8 @@
 </a>
 
 <!-- ══════════════════ SCRIPTS ══════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
 <script src="js/products-data.js"></script>
 <script>
 // ── Category map ──
@@ -436,13 +438,17 @@ const CAT_MAP = {
 
 const CAT_NAMES = {
   tv:'TV & Entertainment', refrigerator:'Refrigerators', ac:'Air Conditioners',
-  washing:'Appliances', small:'Small Appliances', kitchen:'Furniture', phones:'Smartphones', laptop:'Laptops'
+  washing:'Appliances', small:'Small Appliances', kitchen:'Furniture', phones:'Smartphones & Wearables', laptop:'Laptops'
 };
 
 // Parse URL params
 const SP = new URLSearchParams(location.search);
 let CAT = CAT_MAP[SP.get('cat')?.toLowerCase()] || null;
-let SUB = SP.get('sub') || null;
+let rawSub = SP.get('sub') || null;
+if (rawSub && rawSub.endsWith('-inch')) {
+  rawSub = rawSub.replace('-inch', '');
+}
+let SUB = rawSub;
 let SEARCH_Q = SP.get('q') || '';
 
 // Filter state
@@ -457,7 +463,7 @@ let activeSubcat = SUB;
 let sortMode = 'popular';
 let viewMode = 'grid';
 
-// TV subcats
+// Subcats per category
 const TV_SUBCATS = [
   { key: null, label: 'All TVs' },
   { key: '32', label: '32 inch' },
@@ -476,6 +482,19 @@ const FRIDGE_SUBCATS = [
   { key: 'upto-200l', label: 'Up to 200L' },
   { key: '201-300l', label: '201–300L' },
   { key: '301l+', label: '301L+' },
+];
+
+const AC_SUBCATS = [
+  { key: null, label: 'All ACs' },
+  { key: 'split-ac', label: 'Split AC' },
+  { key: '3-star', label: '3 Star' },
+  { key: '5-star', label: '5 Star' },
+];
+
+const PHONES_SUBCATS = [
+  { key: null, label: 'All Mobile & Wearables' },
+  { key: 'android-phones', label: 'Smartphones' },
+  { key: 'wearables', label: 'Smartwatches' },
 ];
 
 // ── Init ──
@@ -499,6 +518,8 @@ function init() {
   // Subcategory tabs
   if (CAT === 'tv') buildSubcatTabs(TV_SUBCATS);
   else if (CAT === 'refrigerator') buildSubcatTabs(FRIDGE_SUBCATS);
+  else if (CAT === 'ac') buildSubcatTabs(AC_SUBCATS);
+  else if (CAT === 'phones') buildSubcatTabs(PHONES_SUBCATS);
 
   // Highlight active nav link
   document.querySelectorAll('header nav a').forEach(a => {
@@ -581,6 +602,40 @@ function buildSpecFilters() {
         <span class="text-[#1a1a1a] group-hover:text-[#e60023] transition-colors">${l}</span>
       </label>`
     ).join('');
+  } else if (CAT === 'ac') {
+    specLabel = 'AC Type & Star Rating';
+    specHtml =
+    `<p class="text-[11px] text-[#6b7280] font-semibold uppercase tracking-wide mb-1.5">Type</p>` +
+    ['Split AC','Inverter AC','Fixed Speed'].map(t =>
+      `<label class="flex items-center gap-2.5 text-xs cursor-pointer group select-none">
+        <input type="checkbox" class="v2-checkbox type-cb" data-type="${t}" onchange="toggleType('${t}')">
+        <span class="text-[#1a1a1a] group-hover:text-[#e60023] transition-colors">${t}</span>
+      </label>`
+    ).join('') +
+    `<hr class="border-[#e5e7eb] my-2">
+    <p class="text-[11px] text-[#6b7280] font-semibold uppercase tracking-wide mb-1.5">Energy Rating</p>` +
+    ['3 Star','5 Star'].map(t =>
+      `<label class="flex items-center gap-2.5 text-xs cursor-pointer group select-none">
+        <input type="checkbox" class="v2-checkbox type-cb" data-type="${t}" onchange="toggleType('${t}')">
+        <span class="text-[#1a1a1a] group-hover:text-[#e60023] transition-colors">${t}</span>
+      </label>`
+    ).join('');
+  } else if (CAT === 'phones') {
+    specLabel = 'Device Features';
+    specHtml = ['5G','AMOLED','Smartwatch','Galaxy AI'].map(t =>
+      `<label class="flex items-center gap-2.5 text-xs cursor-pointer group select-none">
+        <input type="checkbox" class="v2-checkbox type-cb" data-type="${t}" onchange="toggleType('${t}')">
+        <span class="text-[#1a1a1a] group-hover:text-[#e60023] transition-colors">${t}</span>
+      </label>`
+    ).join('');
+  } else if (CAT === 'laptop') {
+    specLabel = 'Specifications';
+    specHtml = ['OLED Display','Intel Core Ultra','Intel Evo','16GB'].map(t =>
+      `<label class="flex items-center gap-2.5 text-xs cursor-pointer group select-none">
+        <input type="checkbox" class="v2-checkbox type-cb" data-type="${t}" onchange="toggleType('${t}')">
+        <span class="text-[#1a1a1a] group-hover:text-[#e60023] transition-colors">${t}</span>
+      </label>`
+    ).join('');
   } else if (!CAT) {
     specHtml = '<p class="text-[11px] text-[#6b7280]">Browse a category for specific filters.</p>';
   } else {
@@ -606,8 +661,12 @@ function buildSubcatTabs(subcats) {
 
 function setSubcat(key) {
   activeSubcat = key === 'null' || key === '' ? null : key;
-  const subcats = CAT === 'refrigerator' ? FRIDGE_SUBCATS : TV_SUBCATS;
-  buildSubcatTabs(subcats);
+  let subcats = null;
+  if (CAT === 'refrigerator') subcats = FRIDGE_SUBCATS;
+  else if (CAT === 'tv') subcats = TV_SUBCATS;
+  else if (CAT === 'ac') subcats = AC_SUBCATS;
+  else if (CAT === 'phones') subcats = PHONES_SUBCATS;
+  if (subcats) buildSubcatTabs(subcats);
   renderProducts();
 }
 
@@ -647,15 +706,27 @@ function matchesFilters(p) {
     } else if (activeSubcat === 'single-door') {
       const t = Array.isArray(p.type) ? p.type : [p.type||''];
       if (!t.some(x => x.toLowerCase().includes('single'))) return false;
-    } else if (activeSubcat === 'double-door') {
+    } else if (activeSubcat === 'double-door' || activeSubcat === 'bottom-freezer') {
       const t = Array.isArray(p.type) ? p.type : [p.type||''];
-      if (!t.some(x => x.toLowerCase().includes('double'))) return false;
+      if (!t.some(x => x.toLowerCase().includes('double') || x.toLowerCase().includes('bottom'))) return false;
     } else if (activeSubcat === 'upto-200l') {
       if (p.size > 200) return false;
     } else if (activeSubcat === '201-300l') {
       if (p.size <= 200 || p.size > 300) return false;
     } else if (activeSubcat === '301l+') {
       if (p.size <= 300) return false;
+    } else if (activeSubcat === 'split-ac') {
+      if (p.subcategory !== 'split-ac' && !p.type?.some(t => t.toLowerCase().includes('split'))) return false;
+    } else if (activeSubcat === '3-star') {
+      if (!p.type?.some(t => t.toLowerCase().includes('3 star'))) return false;
+    } else if (activeSubcat === '5-star') {
+      if (!p.type?.some(t => t.toLowerCase().includes('5 star'))) return false;
+    } else if (activeSubcat === 'android-phones' || activeSubcat === 'smartphones') {
+      if (p.subcategory !== 'android-phones' && !p.type?.some(t => t.toLowerCase().includes('5g') || t.toLowerCase().includes('phone'))) return false;
+    } else if (activeSubcat === 'wearables' || activeSubcat === 'smartwatches') {
+      if (p.subcategory !== 'wearables' && !p.type?.some(t => t.toLowerCase().includes('smartwatch') || t.toLowerCase().includes('watch'))) return false;
+    } else if (p.subcategory && p.subcategory !== activeSubcat) {
+      return false;
     }
   }
 
@@ -688,6 +759,27 @@ function renderProducts() {
     grid.innerHTML = '';
     noRes.classList.remove('hidden');
     document.getElementById('clear-filters').classList.remove('hidden');
+    const catName = CAT ? (CAT_NAMES[CAT] || CAT) : '';
+    if (catName && PRODUCTS.filter(p => p.category === CAT).length === 0) {
+      noRes.innerHTML = `
+        <div class="max-w-md mx-auto py-8 px-4 text-center">
+          <div class="h-16 w-16 mx-auto mb-4 rounded-full bg-[#fef2f2] flex items-center justify-center text-[#e60023]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4h-4z"/></svg>
+          </div>
+          <h3 class="text-lg font-bold text-[#1a1a1a] mb-2">${catName} Department Updating</h3>
+          <p class="text-sm text-[#6b7280] mb-5">We are currently stocking new arrivals for ${catName}. Contact our Dharashiv showroom directly on WhatsApp for offline stock availability, dealer quotes, or pre-orders.</p>
+          <div class="flex flex-col sm:flex-row gap-2.5 justify-center">
+            <a href="https://wa.me/917020209281?text=${encodeURIComponent(`Hello, I would like to inquire about availability of ${catName}.`)}" target="_blank" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#25D366] text-white text-xs font-semibold hover:bg-[#1fb855] transition-all shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+              Enquire on WhatsApp
+            </a>
+            <a href="category.html" class="inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-[#1a1a1a] text-white text-xs font-semibold hover:bg-[#333] transition-all">
+              Browse All Products
+            </a>
+          </div>
+        </div>
+      `;
+    }
     return;
   }
   noRes.classList.add('hidden');
@@ -867,12 +959,24 @@ document.getElementById('clear-filters').addEventListener('click', clearAllFilte
 
 // Pre-set subcat from URL
 if (SUB) {
+  activeSubcat = SUB;
   if (!isNaN(SUB)) { activeSizes = [SUB]; }
-  else { activeSubcat = SUB; }
 }
 
 // ── Run ──
 init();
+
+// Background SWR revalidation from live DB
+if (typeof fetchProductsFromDB === 'function') {
+  fetchProductsFromDB().then(dbProds => {
+    if (dbProds && dbProds.length > 0 && typeof PRODUCTS !== 'undefined') {
+      PRODUCTS.length = 0;
+      PRODUCTS.push(...dbProds);
+      buildFilters();
+      renderProducts();
+    }
+  }).catch(err => console.warn('Supabase product sync error:', err));
+}
 </script>
 </body>
 </html>

@@ -344,6 +344,8 @@
 </a>
 
 <!-- ══════════════════ SCRIPTS ══════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
 <script src="js/products-data.js"></script>
 <script>
 const CAT_NAMES = {
@@ -524,6 +526,40 @@ document.getElementById('header-search').addEventListener('keydown', e => {
   if (e.key === 'Enter') location.href = `category.html?q=${encodeURIComponent(e.target.value)}`;
 });
 
+// ── Smart slug matcher ──
+function findProductBySlug(slug) {
+  if (!slug) return null;
+  // 1. Direct slug property match if present
+  let p = PRODUCTS.find(x => x.slug === slug);
+  if (p) return p;
+
+  // 2. Clean alphanumeric match
+  const clean = slug.toLowerCase().replace(/[^a-z0-9]/g, '');
+  p = PRODUCTS.find(x => {
+    const xc = `${x.slug || ''}${x.name}${x.brand}${x.model || ''}`.toLowerCase().replace(/[^a-z0-9]/g, '');
+    return xc.includes(clean) || clean.includes(xc);
+  });
+  if (p) return p;
+
+  // 3. Keyword scoring match
+  const slugWords = slug.toLowerCase().split(/[^a-z0-9]+/).filter(w => w.length > 1);
+  let bestScore = 0;
+  let bestProd = null;
+  PRODUCTS.forEach(prod => {
+    const target = `${prod.slug || ''} ${prod.name} ${prod.brand} ${prod.model || ''}`.toLowerCase();
+    let score = 0;
+    slugWords.forEach(w => {
+      if (target.includes(w)) score++;
+    });
+    if (score > bestScore) {
+      bestScore = score;
+      bestProd = prod;
+    }
+  });
+
+  return bestScore >= Math.min(3, slugWords.length) ? bestProd : null;
+}
+
 // ── Load product ──
 function loadProduct() {
   const pid = parseInt(SP.get('id'));
@@ -531,13 +567,7 @@ function loadProduct() {
 
   let p = null;
   if (pid) p = PRODUCTS.find(x => x.id === pid);
-  if (!p && slug) {
-    const clean = slug.toLowerCase().replace(/[^a-z0-9]/g, '');
-    p = PRODUCTS.find(x => {
-      const xc = `${x.name}${x.brand}${x.model||''}`.toLowerCase().replace(/[^a-z0-9]/g, '');
-      return xc.includes(clean) || clean.includes(xc.substring(0, 20));
-    });
-  }
+  if (!p && slug) p = findProductBySlug(slug);
   if (!p) p = PRODUCTS[0]; // fallback
 
   currentProduct = p;
@@ -545,6 +575,17 @@ function loadProduct() {
 }
 
 loadProduct();
+
+// Background SWR revalidation from live DB
+if (typeof fetchProductsFromDB === 'function') {
+  fetchProductsFromDB().then(dbProds => {
+    if (dbProds && dbProds.length > 0 && typeof PRODUCTS !== 'undefined') {
+      PRODUCTS.length = 0;
+      PRODUCTS.push(...dbProds);
+      loadProduct();
+    }
+  }).catch(err => console.warn('Supabase product sync error:', err));
+}
 </script>
 </body>
 </html>
