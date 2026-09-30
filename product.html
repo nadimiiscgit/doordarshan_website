@@ -1,483 +1,550 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light" style="color-scheme:light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Product Details — Doordarshan Electronics</title>
-  <meta name="description" content="Product details — Doordarshan Electronics, Maharashtra." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Product — Doordarshan Electronics</title>
+  <meta name="description" content="Product details — Doordarshan Electronics, Dharashiv.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/v2-tailwind.css">
   <style>
-    /* ── Product Detail Layout ── */
-    .product-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding: 32px 0 60px; align-items: start; }
-    /* ── Image Gallery ── */
-    .gallery { position: sticky; top: 90px; }
-    .main-img-wrap {
-      aspect-ratio: 4/3; border-radius: var(--radius-lg); overflow: hidden; background: var(--surface-2);
-      border: 1.5px solid var(--border); position: relative; margin-bottom: 12px;
-    }
-    .main-img-wrap img { width:100%; height:100%; object-fit:cover; }
-    .main-img-placeholder {
-      width:100%; height:100%; display:flex; flex-direction:column; align-items:center;
-      justify-content:center; gap:12px; padding:32px;
-    }
-    .thumb-strip { display: flex; gap: 10px; flex-wrap: wrap; }
-    .thumb {
-      width: 72px; height: 56px; border-radius: var(--radius-sm); overflow: hidden;
-      border: 2px solid var(--border); cursor: pointer; transition: border-color 0.2s;
-      background: var(--surface-2);
-    }
-    .thumb.active, .thumb:hover { border-color: var(--primary); }
-    .thumb img { width:100%; height:100%; object-fit:cover; }
-    /* ── Product Info ── */
-    .product-detail-info { display: flex; flex-direction: column; gap: 18px; }
-    .detail-brand { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--primary); }
-    .detail-name { font-size: clamp(1.2rem, 2.5vw, 1.7rem); font-weight: 800; line-height: 1.25; }
-    .detail-model { font-size: 0.82rem; color: var(--text-muted); }
-    .detail-rating { display: flex; align-items: center; gap: 10px; font-size: 0.88rem; }
-    .detail-rating .stars { color: var(--warning); font-size: 1.1rem; }
-    /* ── Price Box ── */
-    .price-box {
-      background: var(--bg); border-radius: var(--radius-md); padding: 20px;
-      border: 1.5px solid var(--border);
-    }
-    .price-box-main { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
-    .price-big { font-size: 2rem; font-weight: 900; color: var(--text); }
-    .price-mrp-big { font-size: 1rem; color: var(--text-muted); text-decoration: line-through; }
-    .price-badge {
-      background: linear-gradient(135deg, #DC2626, #EF4444);
-      color: #fff; padding: 6px 14px; border-radius: 999px;
-      font-size: 0.9rem; font-weight: 800; letter-spacing: 0.02em;
-    }
-    .price-saving { font-size: 0.9rem; color: var(--success); font-weight: 600; }
-    .price-call { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
-    /* ── EMI Strip ── */
-    .emi-strip {
-      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-      background: linear-gradient(135deg,#EFF6FF,#DBEAFE); padding: 12px 16px;
-      border-radius: var(--radius-sm); border: 1px solid #BFDBFE;
-    }
-    .emi-strip span { font-size: 0.85rem; color: #1E40AF; font-weight: 600; }
-    /* ── Action Buttons ── */
-    .action-btns { display: flex; flex-direction: column; gap: 10px; }
-    .btn-primary {
-      background: var(--primary); color: #fff; border: none; border-radius: var(--radius-md);
-      padding: 16px 28px; font-size: 1rem; font-weight: 700; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-      transition: background 0.2s, transform 0.15s; font-family: inherit;
-    }
-    .btn-primary:hover { background: var(--primary-light); transform: translateY(-1px); }
-    .btn-whatsapp {
-      background: #25D366; color: #fff; border: none; border-radius: var(--radius-md);
-      padding: 16px 28px; font-size: 1rem; font-weight: 700; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-      transition: background 0.2s, transform 0.15s; font-family: inherit;
-      box-shadow: 0 4px 16px rgba(37,211,102,0.35);
-    }
-    .btn-whatsapp:hover { background: #1DA851; transform: translateY(-1px); }
-    .btn-outline {
-      background: transparent; color: var(--primary); border: 2px solid var(--primary);
-      border-radius: var(--radius-md); padding: 14px 28px; font-size: 0.95rem; font-weight: 700;
-      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-      transition: all 0.2s; font-family: inherit;
-    }
-    .btn-outline:hover { background: var(--primary); color: #fff; }
-    /* ── Highlights ── */
-    .highlights { display: flex; flex-direction: column; gap: 10px; }
-    .highlight { display: flex; align-items: flex-start; gap: 12px; font-size: 0.87rem; }
-    .highlight .icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
-    .highlight strong { display: block; font-weight: 700; }
-    .highlight span { color: var(--text-muted); }
-    /* ── Tabs ── */
-    .detail-tabs { margin-top: 48px; }
-    .tab-nav { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 24px; gap: 0; flex-wrap: wrap; }
-    .tab-btn {
-      padding: 12px 24px; font-size: 0.9rem; font-weight: 600; cursor: pointer;
-      border-bottom: 3px solid transparent; margin-bottom: -2px; color: var(--text-muted);
-      background: none; border-top:none; border-left:none; border-right:none;
-      font-family: inherit; transition: color 0.2s, border-color 0.2s;
-    }
-    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+    body { font-family: 'Inter', 'Roboto', ui-sans-serif, system-ui, sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .thumb-active { border-color: #1a1a1a !important; }
+    .tab-active { border-color: #1a1a1a; color: #1a1a1a; font-weight: 600; }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
-    /* ── Specs Table ── */
-    .specs-table { width: 100%; border-collapse: collapse; }
-    .specs-table tr:nth-child(even) td { background: var(--bg); }
-    .specs-table td { padding: 12px 16px; font-size: 0.88rem; border-bottom: 1px solid var(--border); }
-    .specs-table td:first-child { font-weight: 600; color: var(--text-muted); width: 200px; }
-    /* ── Breadcrumb ── */
-    .breadcrumb { display: flex; align-items: center; gap: 8px; padding: 16px 0 8px; font-size: 0.82rem; color: var(--text-muted); flex-wrap: wrap; }
-    .breadcrumb a { color: var(--text-muted); transition: color 0.2s; } .breadcrumb a:hover { color: var(--primary); }
-    .breadcrumb .sep { opacity: 0.4; } .breadcrumb .current { color: var(--text); font-weight: 600; }
-    /* ── Similar Products ── */
-    .similar-section { padding: 48px 0; background: var(--surface); }
-    /* Responsive */
-    @media (max-width: 900px) { .product-detail { grid-template-columns: 1fr; } .gallery { position: static; } }
   </style>
 </head>
-<body>
+<body class="font-sans antialiased bg-[#F8F9FA] text-foreground">
 
-<!-- TOPBAR -->
-<div class="topbar">
-  <div class="topbar-inner container">
-    <div class="topbar-scroll">
-      <div class="topbar-scroll-track">
-        <span><span class="dot"></span> Safe Doorstep Delivery</span>
-        <span><span class="dot"></span> Order on WhatsApp: 7020209281</span>
-        <span><span class="dot"></span> EMI Available</span>
-        <span><span class="dot"></span> Safe Doorstep Delivery</span>
-        <span><span class="dot"></span> Order on WhatsApp: 7020209281</span>
-        <span><span class="dot"></span> EMI Available</span>
+<!-- ══════════════════ HEADER ══════════════════ -->
+<header class="sticky top-0 z-40 w-full bg-white shadow-xs">
+  <div class="border-b border-[#e5e7eb]">
+    <div class="mx-auto max-w-7xl px-3 sm:px-4">
+      <!-- Desktop -->
+      <div class="hidden md:flex items-center gap-6 py-3">
+        <a class="flex items-center gap-1.5 text-xl font-extrabold tracking-tight shrink-0 text-[#1a1a1a]" href="index.html">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5 text-[#e60023]"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+          Doordarshan <span class="text-sm font-medium text-[#6b7280]">Electronics</span>
+        </a>
+        <div class="flex-1 min-w-0 max-w-2xl mx-auto">
+          <div class="flex items-center gap-2 w-full rounded-full bg-white border border-[#e5e7eb] px-4 h-11 focus-within:border-[#e60023] transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 text-[#6b7280]"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+            <input id="header-search" placeholder="Search phones, TV, appliances..." class="flex-1 bg-transparent outline-none text-sm placeholder:text-[#6b7280] min-w-0" aria-label="Search products">
+          </div>
+        </div>
+        <div class="flex items-center gap-5 shrink-0">
+          <a class="flex items-center gap-1.5 text-sm text-[#1a1a1a] hover:text-[#e60023] transition-colors" href="contact.html">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+            Help Center
+          </a>
+          <a class="flex items-center gap-1 text-sm font-medium text-[#1a1a1a] hover:text-[#e60023] transition-colors" href="admin.html">Admin Login</a>
+        </div>
       </div>
-    </div>
-    <div class="topbar-right">
-      <div class="lang-switcher" aria-label="Language selection">
-        <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
-        <span style="opacity:0.4;color:#fff;">|</span>
-        <button class="lang-btn" data-lang="mr" onclick="setLanguage('mr')">मराठी</button>
+      <!-- Mobile -->
+      <div class="md:hidden flex items-center justify-between gap-2 py-2.5">
+        <a class="flex items-center gap-1 text-base font-extrabold tracking-tight text-[#1a1a1a]" href="index.html">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#e60023]"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+          Doordarshan
+        </a>
+        <a href="admin.html" class="text-[11px] font-medium text-[#6b7280]">Admin</a>
       </div>
-      <a href="tel:7020209281">📞 <span data-i18n="call_btn">Call</span></a>
-      <a href="https://wa.me/917020209281" target="_blank">💬 <span data-i18n="wa_btn">WhatsApp</span></a>
     </div>
   </div>
-</div>
-
-<!-- HEADER -->
-<header class="header">
-  <div class="header-inner">
-    <a href="index.html" class="logo" aria-label="Doordarshan Electronics Home">
-      <div class="logo-name">Doordarshan <span>Electronics</span></div>
-      <div class="logo-tagline" data-i18n="store_tagline">Dharashiv's Largest Electronics Superstore</div>
-    </a>
-    <form class="search-bar" id="search-form" role="search" style="position:relative;">
-      <select aria-label="Category" id="search-category">
-        <option value="">All Categories</option>
-        <option value="tv">LED TVs</option>
-        <option value="refrigerator">Refrigerators</option>
-        <option value="ac">Air Conditioners</option>
-        <option value="washing">Washing Machines</option>
-      </select>
-      <input type="search" id="search-input" placeholder="Search brands, TVs, ACs, Refrigerators…" aria-label="Search" autocomplete="off" />
-      <button type="submit" class="search-btn" aria-label="Search">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-        </svg>
-      </button>
-      <div id="search-suggest-box" class="search-suggest-box"></div>
-    </form>
-    <div class="header-actions">
-      <!-- Compare Button -->
-      <button type="button" class="hdr-btn" id="nav-compare-btn" title="Compare Products" onclick="CompareEngine.openModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <path d="M9 3H5a2 2 0 00-2 2v14a2 2 0 002 2h4M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M9 12h6M12 9l3 3-3 3"/>
-        </svg>
-        <span class="hdr-label">Compare</span>
-        <span class="compare-badge" id="compare-badge" style="display:none;">0</span>
-      </button>
-      <a href="contact.html" class="hdr-btn" title="Stores">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
-        </svg>
-        <span class="hdr-label">Stores</span>
-      </a>
-      <a href="https://wa.me/917020209281" target="_blank" class="hdr-btn" id="wa-header-btn">
-        <svg viewBox="0 0 24 24" fill="currentColor" style="color:#25D366;" width="22" height="22">
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-        </svg>
-        <span class="hdr-label">WhatsApp</span>
-      </a>
-      <a href="cart.html" class="hdr-btn" id="cart-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-          <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/>
-        </svg>
-        <span class="hdr-label">Cart</span>
-        <span class="cart-badge" style="display:none;">0</span>
-      </a>
+  <!-- Nav ribbon -->
+  <div class="hidden md:block border-b border-[#e5e7eb]">
+    <div class="mx-auto max-w-7xl px-4">
+      <nav><ul class="flex items-center gap-1 overflow-x-auto no-scrollbar py-1">
+        <li><a class="block px-3 py-2 text-[13px] font-medium text-[#1a1a1a] rounded-md hover:text-[#e60023] hover:bg-[#f5f5f5] transition-colors whitespace-nowrap" href="category.html?cat=tv">TV &amp; Entertainment</a></li>
+        <li><a class="block px-3 py-2 text-[13px] font-medium text-[#1a1a1a] rounded-md hover:text-[#e60023] hover:bg-[#f5f5f5] transition-colors whitespace-nowrap" href="category.html?cat=refrigerator">Refrigerators</a></li>
+        <li><a class="block px-3 py-2 text-[13px] font-medium text-[#1a1a1a] rounded-md hover:text-[#e60023] hover:bg-[#f5f5f5] transition-colors whitespace-nowrap" href="category.html?cat=washing">Appliances</a></li>
+        <li><a class="block px-3 py-2 text-[13px] font-medium text-[#1a1a1a] rounded-md hover:text-[#e60023] hover:bg-[#f5f5f5] transition-colors whitespace-nowrap" href="category.html?cat=ac">Air Conditioners</a></li>
+        <li><a class="block px-3 py-2 text-[13px] font-medium text-[#1a1a1a] rounded-md hover:text-[#e60023] hover:bg-[#f5f5f5] transition-colors whitespace-nowrap" href="category.html?cat=small">Small Appliances</a></li>
+        <li><a class="block px-3 py-2 text-[13px] font-medium text-[#1a1a1a] rounded-md hover:text-[#e60023] hover:bg-[#f5f5f5] transition-colors whitespace-nowrap" href="category.html?cat=kitchen">Furniture</a></li>
+        <li><a class="block px-3 py-2 text-[13px] font-medium text-[#1a1a1a] rounded-md hover:text-[#e60023] hover:bg-[#f5f5f5] transition-colors whitespace-nowrap" href="category.html">All Products</a></li>
+      </ul></nav>
     </div>
   </div>
 </header>
 
-<main>
-  <div class="container">
-    <nav class="breadcrumb" id="breadcrumb" aria-label="Breadcrumb">
-      <a href="index.html">Home</a>
-      <span class="sep">›</span>
-      <a href="category.html?cat=tv" id="bc-cat">LED TVs</a>
-      <span class="sep">›</span>
-      <span class="current" id="bc-name">Loading…</span>
+<!-- ══════════════════ MAIN ══════════════════ -->
+<main class="flex-1">
+  <div class="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
+
+    <!-- Breadcrumb -->
+    <nav id="breadcrumb" class="flex items-center gap-1.5 text-xs text-[#6b7280] mb-6">
+      <a href="index.html" class="hover:text-[#e60023] transition-colors">Home</a>
+      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+      <a id="bc-cat" href="category.html" class="hover:text-[#e60023] transition-colors">Category</a>
+      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+      <span id="bc-name" class="text-[#1a1a1a] font-medium truncate max-w-xs">Product</span>
     </nav>
 
-    <!-- ── Product Detail ── -->
-    <div class="product-detail" id="product-detail">
-      <p style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-muted);">Loading product…</p>
-    </div>
+    <!-- Product detail -->
+    <div id="product-detail" class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
 
-    <!-- ── Tabs ── -->
-    <div class="detail-tabs" id="detail-tabs" style="display:none;">
-      <div class="tab-nav">
-        <button class="tab-btn active" onclick="switchTab('description', this)" data-i18n="description">Description</button>
-        <button class="tab-btn" onclick="switchTab('specs', this)" data-i18n="specifications">Specifications</button>
-        <button class="tab-btn" onclick="switchTab('emi', this)" data-i18n="emi_plans">EMI Plans</button>
-        <button class="tab-btn" onclick="switchTab('delivery', this)" data-i18n="delivery_info">Delivery Info</button>
+      <!-- Left: Image gallery -->
+      <div class="sticky top-20 self-start">
+        <!-- Offer badges -->
+        <div id="offer-badges" class="flex items-center gap-2 mb-3 flex-wrap"></div>
+
+        <!-- Main image -->
+        <div class="relative aspect-square w-full overflow-hidden rounded-2xl bg-[#f5f5f5] border border-[#e5e7eb] mb-3">
+          <div id="main-image" class="w-full h-full flex items-center justify-center">
+            <div class="flex flex-col items-center gap-2 text-[#d1d5dc]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+              <span class="text-sm">No image</span>
+            </div>
+          </div>
+          <!-- Prev/Next image arrows -->
+          <button id="img-prev" type="button" class="hidden absolute left-3 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-white/90 shadow flex items-center justify-center hover:bg-white text-[#1a1a1a] transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <button id="img-next" type="button" class="hidden absolute right-3 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-white/90 shadow flex items-center justify-center hover:bg-white text-[#1a1a1a] transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
+
+        <!-- Thumbnails -->
+        <div id="thumb-strip" class="flex gap-2 overflow-x-auto no-scrollbar"></div>
+
+        <!-- Trust badges -->
+        <div class="grid grid-cols-3 gap-2 mt-4">
+          <div class="flex flex-col items-center gap-1 p-3 rounded-xl bg-white border border-[#e5e7eb] text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#1a1a1a]"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            <span class="text-[11px] font-semibold text-[#1a1a1a]">7-Day Returns</span>
+            <span class="text-[10px] text-[#6b7280]">Replacement</span>
+          </div>
+          <div class="flex flex-col items-center gap-1 p-3 rounded-xl bg-white border border-[#e5e7eb] text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#1a1a1a]"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+            <span class="text-[11px] font-semibold text-[#1a1a1a]">1-Yr Warranty</span>
+            <span class="text-[10px] text-[#6b7280]">Manufacturer</span>
+          </div>
+          <div class="flex flex-col items-center gap-1 p-3 rounded-xl bg-white border border-[#e5e7eb] text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#1a1a1a]"><path d="m9 12 2 2 4-4"/><path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/></svg>
+            <span class="text-[11px] font-semibold text-[#1a1a1a]">100% Genuine</span>
+            <span class="text-[10px] text-[#6b7280]">Brand-sealed</span>
+          </div>
+        </div>
       </div>
-      <div id="tab-description" class="tab-panel active"></div>
-      <div id="tab-specs" class="tab-panel"></div>
-      <div id="tab-emi" class="tab-panel">
-        <div id="emi-table"></div>
-      </div>
-      <div id="tab-delivery" class="tab-panel">
-        <div style="max-width:640px;">
-          <h3 style="margin-bottom:16px;">📦 Delivery Information</h3>
-          <div class="highlight"><span class="icon">🚚</span><div><strong>Safe Doorstep Delivery</strong><span>Carefully packaged and delivered directly to your home across Maharashtra.</span></div></div>
-          <br>
-          <div class="highlight"><span class="icon">📅</span><div><strong>Estimated Delivery: 3–7 Business Days</strong><span>Metro cities: 2–4 days. Other cities/towns: 5–7 days.</span></div></div>
-          <br>
-          <div class="highlight"><span class="icon">💬</span><div><strong>Track via WhatsApp</strong><span>After ordering, we'll share tracking details directly on WhatsApp: 7020209281</span></div></div>
-          <br>
-          <div class="highlight"><span class="icon">🔧</span><div><strong>Free Installation</strong><span>For ACs, Wall-mount TVs and Washing Machines — our technician will visit for free installation.</span></div></div>
-          <br>
-          <div class="highlight"><span class="icon">🔄</span><div><strong>7-Day Return Policy</strong><span>Not satisfied? Return within 7 days for a full refund or exchange.</span></div></div>
+
+      <!-- Right: Product info -->
+      <div class="flex flex-col gap-4">
+
+        <!-- Brand + title -->
+        <div>
+          <p id="p-brand" class="text-xs text-[#6b7280] uppercase tracking-widest font-semibold mb-1">Brand</p>
+          <h1 id="p-name" class="text-2xl sm:text-3xl font-bold text-[#1a1a1a] leading-tight">Product Name</h1>
+          <p id="p-sku" class="text-xs text-[#6b7280] mt-1">SKU: —</p>
+          <p id="p-desc" class="text-sm text-[#6b7280] mt-2 leading-relaxed"></p>
+        </div>
+
+        <!-- Price block -->
+        <div class="bg-white rounded-xl border border-[#e5e7eb] p-4 space-y-2">
+          <div class="flex items-baseline gap-3 flex-wrap">
+            <span id="p-price" class="text-3xl font-bold text-[#1a1a1a]">₹—</span>
+            <span id="p-mrp" class="text-base text-[#6b7280] line-through hidden"></span>
+            <span id="p-disc" class="text-sm font-bold text-[#e60023] bg-[#fef2f2] px-2 py-0.5 rounded-full hidden"></span>
+          </div>
+          <p class="text-[11px] text-[#6b7280]">Incl. of all taxes</p>
+        </div>
+
+        <!-- Qty + Buy -->
+        <div class="flex items-center gap-3 flex-wrap">
+          <div class="flex items-center border border-[#e5e7eb] rounded-full bg-white overflow-hidden">
+            <button id="qty-dec" type="button" class="px-3 py-2 text-[#1a1a1a] hover:bg-[#f5f5f5] transition-colors font-bold text-lg">−</button>
+            <span id="qty-val" class="px-4 text-sm font-semibold text-[#1a1a1a]">1</span>
+            <button id="qty-inc" type="button" class="px-3 py-2 text-[#1a1a1a] hover:bg-[#f5f5f5] transition-colors font-bold text-lg">+</button>
+          </div>
+          <button id="buy-btn" type="button" class="flex-1 min-w-[160px] flex items-center justify-center gap-2 bg-[#1a1a1a] hover:bg-[#333] text-white font-semibold rounded-full h-11 text-sm transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+            Buy Now
+          </button>
+          <button id="wa-enquire" type="button" class="flex items-center justify-center gap-2 border border-[#e5e7eb] bg-white text-[#1a1a1a] hover:border-[#1a1a1a] font-medium rounded-full h-11 px-4 text-sm transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+            Enquire
+          </button>
+        </div>
+
+        <!-- Available offers -->
+        <div class="bg-white rounded-xl border border-[#e5e7eb] p-4">
+          <h3 class="text-sm font-semibold text-[#1a1a1a] mb-2">Available Offers</h3>
+          <ul class="space-y-2">
+            <li class="flex items-start gap-2 text-xs text-[#6b7280]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#e60023] mt-0.5 shrink-0"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg>
+              No Cost EMI available on Bajaj Finserv &amp; major credit cards
+            </li>
+            <li class="flex items-start gap-2 text-xs text-[#6b7280]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#e60023] mt-0.5 shrink-0"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg>
+              Bank offer: ₹4,000 off on select bank credit/debit cards
+            </li>
+            <li class="flex items-start gap-2 text-xs text-[#6b7280]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#e60023] mt-0.5 shrink-0"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg>
+              Free home delivery in Dharashiv. Installation support available.
+            </li>
+          </ul>
+        </div>
+
+        <!-- Delivery info -->
+        <div class="flex items-center gap-3 text-sm text-[#1a1a1a] bg-white rounded-xl border border-[#e5e7eb] p-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#6b7280] shrink-0"><path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11"/><path d="M14 9h4l4 4v4h-8V9z"/><circle cx="7" cy="18" r="2"/><path d="M15 18H9"/><circle cx="17" cy="18" r="2"/></svg>
+          <span>Delivery to <strong>Dharashiv</strong> — enquire for timing via WhatsApp</span>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Similar Products -->
-  <div class="similar-section" id="similar-section" style="display:none;">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-title"><h2 data-i18n="similar_products">Similar Products</h2></div>
-        <a href="category.html?cat=tv" class="view-all" data-i18n="view_all">View All →</a>
+    <!-- ── Tabs: Overview / Specs / Pickup ── -->
+    <div class="mt-8 bg-white rounded-2xl border border-[#e5e7eb] overflow-hidden">
+      <div class="flex border-b border-[#e5e7eb]">
+        <button type="button" onclick="switchTab('overview',this)" id="tab-overview" class="flex-1 py-3.5 text-sm font-semibold border-b-2 tab-active transition-colors">Overview</button>
+        <button type="button" onclick="switchTab('specs',this)" id="tab-specs" class="flex-1 py-3.5 text-sm font-medium text-[#6b7280] border-b-2 border-transparent hover:text-[#1a1a1a] transition-colors">Specifications</button>
+        <button type="button" onclick="switchTab('pickup',this)" id="tab-pickup" class="flex-1 py-3.5 text-sm font-medium text-[#6b7280] border-b-2 border-transparent hover:text-[#1a1a1a] transition-colors">Pickup &amp; Returns</button>
       </div>
-      <div class="scroll-strip" id="similar-products"></div>
+
+      <!-- Overview tab -->
+      <div id="panel-overview" class="tab-panel active p-5 sm:p-6">
+        <h2 class="text-base font-semibold text-[#1a1a1a] mb-3">About this product</h2>
+        <p id="about-text" class="text-sm text-[#6b7280] leading-relaxed mb-5">Loading product details…</p>
+
+        <div id="highlights-section" class="hidden">
+          <p class="text-xs font-bold uppercase tracking-wider text-[#6b7280] mb-3">Highlights</p>
+          <div id="highlights-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+        </div>
+      </div>
+
+      <!-- Specs tab -->
+      <div id="panel-specs" class="tab-panel p-5 sm:p-6">
+        <div id="specs-table" class="divide-y divide-[#f3f4f6]">
+          <p class="text-sm text-[#6b7280]">Loading specifications…</p>
+        </div>
+      </div>
+
+      <!-- Pickup & Returns tab -->
+      <div id="panel-pickup" class="tab-panel p-5 sm:p-6">
+        <div class="space-y-4 text-sm text-[#6b7280]">
+          <div class="flex items-start gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#1a1a1a] mt-0.5 shrink-0"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+            <div>
+              <p class="font-semibold text-[#1a1a1a]">Samta Colony, Dharashiv</p>
+              <p>Visit our store or call <a href="tel:+917020209281" class="text-[#e60023] font-medium">+91 7020209281</a> for pickup.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#1a1a1a] mt-0.5 shrink-0"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            <div>
+              <p class="font-semibold text-[#1a1a1a]">7-Day Return Policy</p>
+              <p>Products can be returned within 7 days of delivery if defective or not as described. Enquire on WhatsApp to initiate a return.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#1a1a1a] mt-0.5 shrink-0"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+            <div>
+              <p class="font-semibold text-[#1a1a1a]">Manufacturer Warranty</p>
+              <p>This product comes with standard manufacturer warranty. Warranty card included in the box.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#1a1a1a] mt-0.5 shrink-0"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+            <div>
+              <p class="font-semibold text-[#1a1a1a]">WhatsApp Support</p>
+              <p>For any queries, <a href="https://wa.me/917020209281" target="_blank" class="text-[#e60023] font-medium hover:underline">chat with us on WhatsApp</a> — we respond quickly.</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- Related products -->
+    <div class="mt-10">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-bold text-[#1a1a1a]">Related Products</h2>
+        <a id="related-more" href="category.html" class="text-xs font-medium text-[#e60023] hover:underline">View All →</a>
+      </div>
+      <div id="related-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"></div>
+    </div>
+
   </div>
 </main>
 
-<footer class="footer">
-  <div class="container">
-    <div class="footer-bottom">
-      <p data-i18n="rights_reserved">© <span class="current-year">2026</span> Doordarshan Electronics. All rights reserved.</p>
-      <a href="https://wa.me/917020209281" style="color:var(--accent);font-weight:600;">💬 WhatsApp: 7020209281</a>
+<!-- ══════════════════ FOOTER ══════════════════ -->
+<footer class="mt-12 bg-[#1a1a1a] text-white">
+  <div class="border-b border-white/10">
+    <div class="mx-auto max-w-7xl px-4 py-6 grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+      <div class="flex items-center gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#e60023] shrink-0"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/></svg>
+        <span>Call us: <a href="tel:+917020209281" class="font-semibold">+91 7020209281</a></span>
+      </div>
+      <div class="flex items-center gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#e60023] shrink-0"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+        <a href="https://wa.me/917020209281" target="_blank" class="hover:underline">Enquire on WhatsApp</a>
+      </div>
+      <div class="flex items-center gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#e60023] shrink-0"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>Samta Colony, Dharashiv city</span>
+      </div>
+    </div>
+  </div>
+  <div class="mx-auto max-w-7xl px-4 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
+    <div>
+      <h3 class="text-sm font-bold uppercase tracking-wide text-white/90 mb-4">About Us</h3>
+      <ul class="space-y-2.5">
+        <li><a class="text-sm text-white/70 hover:text-white" href="about.html">About Doordarshan</a></li>
+        <li><a class="text-sm text-white/70 hover:text-white" href="contact.html">Contact Us</a></li>
+        <li><a class="text-sm text-white/70 hover:text-white" href="contact.html">Help Center</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="text-sm font-bold uppercase tracking-wide text-white/90 mb-4">Customer Service</h3>
+      <ul class="space-y-2.5">
+        <li><a class="text-sm text-white/70 hover:text-white" href="https://wa.me/917020209281" target="_blank">Enquire on WhatsApp</a></li>
+        <li><a class="text-sm text-white/70 hover:text-white" href="contact.html">Delivery &amp; Installation</a></li>
+        <li><a class="text-sm text-white/70 hover:text-white" href="contact.html">Warranty</a></li>
+        <li><a class="text-sm text-white/70 hover:text-white" href="contact.html">FAQs</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="text-sm font-bold uppercase tracking-wide text-white/90 mb-4">Policies</h3>
+      <ul class="space-y-2.5">
+        <li><a class="text-sm text-white/70 hover:text-white" href="contact.html">Privacy Policy</a></li>
+        <li><a class="text-sm text-white/70 hover:text-white" href="contact.html">Return Policy</a></li>
+        <li><a class="text-sm text-white/70 hover:text-white" href="contact.html">Warranty Policy</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="text-sm font-bold uppercase tracking-wide text-white/90 mb-4">Shop</h3>
+      <ul class="space-y-2.5">
+        <li><a class="text-sm text-white/70 hover:text-white" href="category.html">All Products</a></li>
+        <li><a class="text-sm text-white/70 hover:text-white" href="category.html">Offers</a></li>
+        <li><a class="text-sm text-white/70 hover:text-white" href="category.html">New Arrivals</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-white/10">
+    <div class="mx-auto max-w-7xl px-4 py-5 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
+      <span class="text-xs font-semibold uppercase tracking-wide text-white/70 flex items-center gap-1.5"><span class="h-1.5 w-1.5 rounded-full bg-[#e60023]"></span>Genuine Products</span>
+      <span class="text-xs font-semibold uppercase tracking-wide text-white/70 flex items-center gap-1.5"><span class="h-1.5 w-1.5 rounded-full bg-[#e60023]"></span>Manufacturer Warranty</span>
+      <span class="text-xs font-semibold uppercase tracking-wide text-white/70 flex items-center gap-1.5"><span class="h-1.5 w-1.5 rounded-full bg-[#e60023]"></span>WhatsApp Support</span>
+      <span class="text-xs font-semibold uppercase tracking-wide text-white/70 flex items-center gap-1.5"><span class="h-1.5 w-1.5 rounded-full bg-[#e60023]"></span>Local Delivery</span>
+    </div>
+  </div>
+  <div class="border-t border-white/10">
+    <div class="mx-auto max-w-7xl px-4 py-5 text-center text-xs text-white/50">
+      &copy; 2026 Doordarshan Electronics. Dharashiv, Maharashtra.
     </div>
   </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/supabase-config.js"></script>
-<script src="js/i18n.js"></script>
-<script src="js/products-data.js"></script>
-<script src="js/cart.js"></script>
-<script src="js/main.js"></script>
-<script>
-const searchParams = new URLSearchParams(window.location.search);
-let pid = parseInt(searchParams.get('id'));
-const slug = searchParams.get('slug');
+<!-- WhatsApp FAB -->
+<a href="https://wa.me/917020209281?text=Hello%2C%20I%20would%20like%20to%20place%20an%20order." target="_blank" rel="noopener noreferrer" aria-label="Order on WhatsApp" class="fixed bottom-6 right-6 z-50 hidden h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition hover:scale-105 hover:bg-[#1fb855] md:flex">
+  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+</a>
 
+<!-- ══════════════════ SCRIPTS ══════════════════ -->
+<script src="js/products-data.js"></script>
+<script>
+const CAT_NAMES = {
+  tv:'TV & Entertainment', refrigerator:'Refrigerators', ac:'Air Conditioners',
+  washing:'Appliances', small:'Small Appliances', kitchen:'Furniture', phones:'Smartphones', laptop:'Laptops'
+};
+
+const SP = new URLSearchParams(location.search);
+let currentImgIdx = 0;
+let productImages = [];
+let qty = 1;
+
+// Tab switcher
 function switchTab(name, btn) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
-  btn.classList.add('active');
+  document.querySelectorAll('[id^="tab-"]').forEach(b => {
+    b.className = 'flex-1 py-3.5 text-sm font-medium text-[#6b7280] border-b-2 border-transparent hover:text-[#1a1a1a] transition-colors';
+  });
+  document.getElementById(`panel-${name}`).classList.add('active');
+  btn.className = 'flex-1 py-3.5 text-sm font-semibold border-b-2 tab-active transition-colors';
 }
 
-function calcEMI(price, months, rate = 14) {
-  const r = rate / 12 / 100;
-  return Math.ceil(price * r * Math.pow(1+r, months) / (Math.pow(1+r, months) - 1));
+// Image gallery
+function showImage(idx) {
+  if (!productImages.length) return;
+  currentImgIdx = (idx + productImages.length) % productImages.length;
+  const mi = document.getElementById('main-image');
+  mi.innerHTML = `<img src="${productImages[currentImgIdx]}" alt="Product image" class="w-full h-full object-contain p-4" onerror="this.parentNode.innerHTML='<div class=\\'flex flex-col items-center gap-2 text-[#d1d5dc]\\'><svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'48\\' height=\\'48\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.5\\'><rect width=\\'18\\' height=\\'18\\' x=\\'3\\' y=\\'3\\' rx=\\'2\\'/><path d=\\'M3 9h18\\'/><path d=\\'M9 21V9\\'/></svg><span class=\\'text-sm\\'>No image</span></div>'">`;
+  document.querySelectorAll('.thumb-item').forEach((t, i) => {
+    t.className = `thumb-item w-14 h-14 sm:w-16 sm:h-16 rounded-lg border-2 cursor-pointer overflow-hidden bg-[#f5f5f5] shrink-0 flex items-center justify-center transition-colors ${i === currentImgIdx ? 'border-[#1a1a1a]' : 'border-[#e5e7eb] hover:border-[#6b7280]'}`;
+  });
 }
 
-function renderEMITable(price) {
-  const plans = [
-    { months: 3,  label: '3 Months' },
-    { months: 6,  label: '6 Months' },
-    { months: 12, label: '12 Months' },
-    { months: 18, label: '18 Months' },
-    { months: 24, label: '24 Months' },
-  ];
-  return `
-    <h3 style="margin-bottom:16px;">💳 EMI Plans (Approx.)</h3>
-    <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:16px;">EMI calculated at ~14% p.a. Actual EMI may vary by bank. <a href="https://wa.me/917020209281?text=I want to know about EMI options" target="_blank" style="color:var(--primary);">Ask us on WhatsApp for bank-specific offers.</a></p>
-    <table style="width:100%;border-collapse:collapse;max-width:480px;">
-      <thead><tr style="background:var(--primary);color:#fff;">
-        <th style="padding:12px 16px;text-align:left;border-radius:8px 0 0 0;">Tenure</th>
-        <th style="padding:12px 16px;text-align:right;">Monthly EMI</th>
-        <th style="padding:12px 16px;text-align:right;border-radius:0 8px 0 0;">Total Amount</th>
-      </tr></thead>
-      <tbody>
-        ${plans.map((p,i) => {
-          const emi = calcEMI(price, p.months);
-          return `<tr style="background:${i%2===0?'var(--bg)':'var(--surface)'};">
-            <td style="padding:12px 16px;font-weight:600;">${p.label}</td>
-            <td style="padding:12px 16px;text-align:right;font-weight:700;color:var(--primary);">₹${emi.toLocaleString('en-IN')}/mo</td>
-            <td style="padding:12px 16px;text-align:right;color:var(--text-muted);">₹${(emi*p.months).toLocaleString('en-IN')}</td>
-          </tr>`;
-        }).join('')}
-      </tbody>
-    </table>
-    <p style="margin-top:12px;font-size:0.8rem;color:var(--text-light);">* No Cost EMI available on select bank cards. Contact us for details.</p>
-  `;
+function buildThumbs(images) {
+  const strip = document.getElementById('thumb-strip');
+  if (!images.length) { strip.innerHTML = ''; return; }
+  strip.innerHTML = images.map((img, i) =>
+    `<div class="thumb-item w-14 h-14 sm:w-16 sm:h-16 rounded-lg border-2 cursor-pointer overflow-hidden bg-[#f5f5f5] shrink-0 flex items-center justify-center transition-colors ${i===0?'border-[#1a1a1a]':'border-[#e5e7eb] hover:border-[#6b7280]'}" onclick="showImage(${i})">
+      <img src="${img}" alt="Thumb ${i+1}" class="w-full h-full object-contain p-1" onerror="this.style.display='none'">
+    </div>`
+  ).join('');
+  document.getElementById('img-prev').classList.toggle('hidden', images.length < 2);
+  document.getElementById('img-next').classList.toggle('hidden', images.length < 2);
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-  if (typeof fetchProductsFromDB === 'function') {
-    const liveProds = await fetchProductsFromDB();
-    if (liveProds && liveProds.length > 0 && typeof PRODUCTS !== 'undefined') {
-      PRODUCTS.length = 0;
-      PRODUCTS.push(...liveProds);
-    }
-  }
+// Render product
+function renderProduct(p) {
+  document.title = `${p.name} — Doordarshan Electronics`;
 
-  let p = pid ? getProductById(pid) : null;
-  if (!p && slug) {
-    const sClean = slug.toLowerCase().replace(/[^a-z0-9]/g, '');
-    p = PRODUCTS.find(x => {
-      const xClean = ((x.name || '') + ' ' + (x.model || '')).toLowerCase().replace(/[^a-z0-9]/g, '');
-      return xClean.includes(sClean) || sClean.includes(xClean);
-    }) || PRODUCTS[0];
-  }
-  if (!p) p = PRODUCTS[0];
-
-  // Breadcrumb & title
-  document.title = p.name + ' — Doordarshan Electronics';
+  // Breadcrumb
+  const catHref = `category.html?cat=${p.category}`;
+  document.getElementById('bc-cat').href = catHref;
+  document.getElementById('bc-cat').textContent = CAT_NAMES[p.category] || p.category;
   document.getElementById('bc-name').textContent = p.name;
-  document.getElementById('bc-cat').href = `category.html?cat=${p.category}`;
-  document.getElementById('bc-cat').textContent = p.category === 'tv' ? 'LED TVs' : p.category;
 
-  const discount = getDiscount(p.mrp, p.price);
-  const imgUrl   = getProductImage(p);
-  const brandC   = getBrandColor(p.brand);
+  // Brand / name / sku / desc
+  document.getElementById('p-brand').textContent = p.brand;
+  document.getElementById('p-name').textContent = p.name;
+  document.getElementById('p-sku').textContent = `SKU: ${p.model || p.id}`;
+  document.getElementById('p-desc').textContent = p.desc || '';
 
-  // ── Render price section ──
-  let priceHTML;
-  if (p.mrp <= 1) {
-    priceHTML = `<div class="price-call">Call for Best Price: <a href="tel:7020209281" style="color:var(--accent);">7020209281</a></div>`;
-  } else {
-    priceHTML = `
-      <div class="price-box-main">
-        <span class="price-big">${formatPrice(p.price)}</span>
-        <span class="price-mrp-big">${formatPrice(p.mrp)}</span>
-        ${discount ? `<span class="price-badge">${discount}% OFF</span>` : ''}
-      </div>
-      ${discount ? `<div class="price-saving">🎉 You save ${formatPrice(p.mrp - p.price)} on this product!</div>` : ''}
-    `;
+  // Price
+  const price = p.price.toLocaleString('en-IN');
+  document.getElementById('p-price').textContent = `₹${price}`;
+  const disc = p.mrp && p.mrp > p.price ? Math.round((p.mrp - p.price) / p.mrp * 100) : 0;
+  if (p.mrp && p.mrp > p.price) {
+    const mrpEl = document.getElementById('p-mrp');
+    mrpEl.textContent = `MRP ₹${p.mrp.toLocaleString('en-IN')}`;
+    mrpEl.classList.remove('hidden');
+    const discEl = document.getElementById('p-disc');
+    discEl.textContent = `${disc}% off`;
+    discEl.classList.remove('hidden');
   }
 
-  // Stock badge
-  const isLow  = p.stock > 0 && p.stock <= 3;
-  const stockBadge = p.stock === 0
-    ? `<span style="color:var(--danger);font-weight:700;">✗ Out of Stock</span>`
-    : isLow
-      ? `<span style="color:var(--warning);font-weight:700;">⚡ Only ${p.stock} unit${p.stock>1?'s':''} left!</span>`
-      : `<span style="color:var(--success);font-weight:700;">✓ In Stock (${p.stock} available)</span>`;
+  // Offer badges
+  const badges = [];
+  if (disc > 0) badges.push(`<span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#f0fdf4] border border-[#b9f8cf] text-[#008138] text-xs font-semibold">No Cost EMI</span>`);
+  badges.push(`<span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#ecfdf5] border border-[#a4f4cf] text-[#007956] text-xs font-semibold">₹4000 Bank Offer</span>`);
+  document.getElementById('offer-badges').innerHTML = badges.join('');
 
-  // ── Render product detail HTML ──
-  document.getElementById('product-detail').innerHTML = `
-    <!-- Gallery -->
-    <div class="gallery">
-      <div class="main-img-wrap">
-        <img src="${imgUrl}" alt="${p.name}" id="main-img"
-          onerror="this.style.display='none';document.getElementById('main-placeholder').style.display='flex';" />
-        <div class="main-img-placeholder" id="main-placeholder" style="display:none;background:${brandC.bg};">
-          <span style="font-size:2rem;font-weight:900;color:${brandC.text}">${p.brand}</span>
-          <span style="font-size:3rem;">📺</span>
-          <span style="font-size:0.9rem;color:rgba(255,255,255,0.7);text-align:center;">${p.model}</span>
-        </div>
-      </div>
-      <div class="thumb-strip" id="thumb-strip">
-        <div class="thumb active"><img src="${imgUrl}" alt="${p.name}" onerror="this.parentElement.style.display='none';" /></div>
-      </div>
-    </div>
+  // Images
+  productImages = p.images || (p.image ? [p.image] : []);
+  buildThumbs(productImages);
+  if (productImages.length) showImage(0);
 
-    <!-- Info -->
-    <div class="product-detail-info">
-      <div>
-        <div class="detail-brand">${p.brand}</div>
-        <h1 class="detail-name">${p.name}</h1>
-        <div class="detail-model">Model: ${p.model}</div>
-      </div>
+  // Buy button
+  updateBuyBtn(p);
 
-      <div class="detail-rating">
-        <span class="stars">${renderStars(p.rating)}</span>
-        <span style="font-weight:600;">${p.rating}</span>
-        <span style="color:var(--text-muted);">(${p.reviews} reviews)</span>
-        <span style="margin-left:8px;">${stockBadge}</span>
-      </div>
+  // About text
+  document.getElementById('about-text').textContent = p.desc || `The ${p.brand} ${p.name} is a premium electronics product available at Doordarshan Electronics, Dharashiv. Authorized dealer — genuine product with manufacturer warranty.`;
 
-      <!-- Type badges -->
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        ${p.type.includes('OLED') ? '<span class="badge badge-oled">OLED</span>' : ''}
-        ${p.type.includes('QLED') ? '<span class="badge badge-qled">QLED</span>' : ''}
-        ${p.type.includes('4K') ? '<span class="badge" style="background:#EEF2FF;color:#4338CA;">4K UHD</span>' : ''}
-        ${p.type.includes('Google TV') ? '<span class="badge" style="background:#F0FDF4;color:#15803D;">Google TV</span>' : ''}
-        ${p.isNew ? '<span class="badge badge-new">New 2026</span>' : ''}
-      </div>
+  // Highlights
+  const types = Array.isArray(p.type) ? p.type : (p.type ? [p.type] : []);
+  const highlights = [
+    p.brand && `Brand: ${p.brand}`,
+    p.size && (p.category === 'tv' ? `${p.size}" Screen` : `${p.size}L Capacity`),
+    p.category === 'tv' && 'Smart TV with Android OS',
+    p.category === 'refrigerator' && types.includes('Frost Free') && 'Frost Free Technology',
+    p.category === 'refrigerator' && types.includes('Inverter Compressor') && 'Inverter Compressor',
+    types.includes('4K') && '4K Ultra HD',
+    types.includes('QLED') && 'QLED Display',
+    'Home Delivery Available',
+    'Genuine & Brand Sealed',
+    'EMI Available',
+    '1-Year Manufacturer Warranty',
+  ].filter(Boolean).slice(0, 8);
 
-      <!-- Price Box -->
-      <div class="price-box">
-        ${priceHTML}
-        <div class="emi-strip" style="margin-top:12px;">
-          <span>💳</span>
-          <span>EMI from <strong>${p.mrp>1 ? '₹'+calcEMI(p.price,12).toLocaleString('en-IN')+'/month' : 'Call for EMI details'}</strong> (12 months)</span>
-        </div>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="action-btns">
-        <button class="btn-primary" onclick="Cart.add(${p.id})" ${p.stock===0?'disabled style="opacity:0.5;cursor:not-allowed;"':''}>
-          🛒 Add to Cart
-        </button>
-        <button class="btn-whatsapp" onclick="Cart.openWhatsApp(${p.id})">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          Order on WhatsApp — 7020209281
-        </button>
-        <a href="tel:7020209281" class="btn-outline">📞 Call to Order: 7020209281</a>
-      </div>
-
-      <!-- Highlights -->
-      <div class="highlights">
-        <div class="highlight"><span class="icon">🚚</span><div><strong>Safe Doorstep Delivery</strong><span>Carefully handled and delivered to your doorstep across Maharashtra.</span></div></div>
-        <div class="highlight"><span class="icon">🔧</span><div><strong>Free Installation</strong><span>Our technician will install it for free at your home.</span></div></div>
-        <div class="highlight"><span class="icon">🔄</span><div><strong>7-Day Return Policy</strong><span>Not happy? Return within 7 days, no questions asked.</span></div></div>
-        <div class="highlight"><span class="icon">🛡️</span><div><strong>${p.specs['Warranty'] || '1 Year Manufacturer Warranty'}</strong><span>Authorised service support available.</span></div></div>
-      </div>
-
-      <!-- Payment note -->
-      <div style="background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px;font-size:0.83rem;color:var(--text-muted);">
-        💳 <strong style="color:var(--text);">Online Payment</strong> via Razorpay (UPI, Cards, Net Banking) —
-        <span style="background:var(--accent);color:#fff;padding:2px 8px;border-radius:4px;font-size:0.72rem;font-weight:700;">COMING SOON</span><br/>
-        <span style="margin-top:4px;display:block;">For now, order via WhatsApp and we'll arrange delivery + payment.</span>
-      </div>
-    </div>
-  `;
-
-  // Render tabs
-  document.getElementById('detail-tabs').style.display = 'block';
-  document.getElementById('tab-description').innerHTML = `
-    <div style="max-width:720px;">
-      <p style="font-size:0.95rem;line-height:1.8;color:var(--text-muted);">${p.description}</p>
-    </div>
-  `;
-  document.getElementById('tab-specs').innerHTML = `
-    <table class="specs-table">
-      <tbody>
-        ${Object.entries(p.specs).map(([k,v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join('')}
-        <tr><td>Stock</td><td>${p.stock} unit${p.stock!==1?'s':''} available</td></tr>
-        <tr><td>Screen Size</td><td>${p.size ? p.size+' Inches' : 'See specs'}</td></tr>
-      </tbody>
-    </table>
-  `;
-  document.getElementById('tab-emi').innerHTML = p.mrp > 1 ? renderEMITable(p.price) : '<p style="color:var(--text-muted);">Call us at 7020209281 for EMI details.</p>';
-
-  // Similar products
-  const similar = PRODUCTS.filter(x => x.category === p.category && x.id !== p.id && (x.brand === p.brand || x.subcategory === p.subcategory)).slice(0, 8);
-  if (similar.length) {
-    document.getElementById('similar-section').style.display = 'block';
-    document.getElementById('similar-products').innerHTML = similar.map(buildProductCard).join('');
+  if (highlights.length) {
+    document.getElementById('highlights-section').classList.remove('hidden');
+    document.getElementById('highlights-grid').innerHTML = highlights.map(h =>
+      `<div class="flex items-center gap-2 text-sm text-[#1a1a1a]">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-[#008138] shrink-0"><path d="m20 6-11 11-5-5"/></svg>
+        ${h}
+      </div>`
+    ).join('');
   }
+
+  // Specs table
+  const specs = [
+    ['Brand', p.brand],
+    p.model && ['Model', p.model],
+    p.category && ['Category', CAT_NAMES[p.category] || p.category],
+    p.size && (p.category === 'tv' ? ['Screen Size', `${p.size} inch`] : ['Capacity', `${p.size} Litres`]),
+    ...(types.map(t => ['Type / Technology', t])),
+    p.price && ['Price', `₹${p.price.toLocaleString('en-IN')}`],
+    p.mrp && p.mrp > p.price && ['MRP', `₹${p.mrp.toLocaleString('en-IN')}`],
+    disc > 0 && ['Discount', `${disc}% off`],
+    p.stock !== undefined && ['Availability', p.stock !== 0 ? 'In Stock' : 'Out of Stock'],
+  ].filter(Boolean);
+
+  document.getElementById('specs-table').innerHTML = specs.map(([k, v]) =>
+    `<div class="flex py-3">
+      <span class="w-40 shrink-0 text-sm text-[#6b7280] font-medium">${k}</span>
+      <span class="text-sm text-[#1a1a1a] flex-1">${v}</span>
+    </div>`
+  ).join('');
+
+  // Related products
+  const related = PRODUCTS.filter(r => r.category === p.category && r.id !== p.id).slice(0, 4);
+  document.getElementById('related-more').href = `category.html?cat=${p.category}`;
+  document.getElementById('related-grid').innerHTML = related.map(r => {
+    const d = r.mrp && r.mrp > r.price ? Math.round((r.mrp - r.price) / r.mrp * 100) : 0;
+    return `<a href="product.html?id=${r.id}" class="group flex flex-col rounded-xl bg-white border border-[#e5e7eb]/60 hover:border-[#d1d5dc] overflow-hidden transition-all p-2">
+      <div class="aspect-square w-full bg-[#f5f5f5] rounded-lg mb-2 flex items-center justify-center overflow-hidden relative">
+        ${r.image
+          ? `<img src="${r.image}" alt="${r.name}" class="w-full h-full object-contain p-2" loading="lazy">`
+          : `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-[#d1d5dc]"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>`}
+        ${d > 0 ? `<span class="absolute top-1.5 left-1.5 text-[9px] font-bold text-white bg-[#e60023] px-1 py-0.5 rounded-full">${d}% OFF</span>` : ''}
+      </div>
+      <p class="text-[10px] text-[#6b7280] uppercase font-medium">${r.brand}</p>
+      <p class="text-xs font-semibold text-[#1a1a1a] line-clamp-2 mt-0.5">${r.name}</p>
+      <p class="text-sm font-bold text-[#1a1a1a] mt-1">₹${r.price.toLocaleString('en-IN')}</p>
+    </a>`;
+  }).join('');
+}
+
+function updateBuyBtn(p) {
+  const msg = encodeURIComponent(`Hello, I would like to order ${qty}x ${p.name} (₹${p.price.toLocaleString('en-IN')} each). Please confirm availability.`);
+  document.getElementById('buy-btn').onclick = () => window.open(`https://wa.me/917020209281?text=${msg}`, '_blank');
+  document.getElementById('wa-enquire').onclick = () => window.open(`https://wa.me/917020209281?text=${encodeURIComponent(`Hello, I would like to enquire about: ${p.name}`)}`, '_blank');
+}
+
+// Qty controls
+let currentProduct = null;
+document.getElementById('qty-dec').addEventListener('click', () => {
+  if (qty > 1) { qty--; document.getElementById('qty-val').textContent = qty; if (currentProduct) updateBuyBtn(currentProduct); }
 });
+document.getElementById('qty-inc').addEventListener('click', () => {
+  qty++; document.getElementById('qty-val').textContent = qty; if (currentProduct) updateBuyBtn(currentProduct);
+});
+
+// Image prev/next
+document.getElementById('img-prev').addEventListener('click', () => showImage(currentImgIdx - 1));
+document.getElementById('img-next').addEventListener('click', () => showImage(currentImgIdx + 1));
+
+// Header search
+document.getElementById('header-search').addEventListener('keydown', e => {
+  if (e.key === 'Enter') location.href = `category.html?q=${encodeURIComponent(e.target.value)}`;
+});
+
+// ── Load product ──
+function loadProduct() {
+  const pid = parseInt(SP.get('id'));
+  const slug = SP.get('slug') || '';
+
+  let p = null;
+  if (pid) p = PRODUCTS.find(x => x.id === pid);
+  if (!p && slug) {
+    const clean = slug.toLowerCase().replace(/[^a-z0-9]/g, '');
+    p = PRODUCTS.find(x => {
+      const xc = `${x.name}${x.brand}${x.model||''}`.toLowerCase().replace(/[^a-z0-9]/g, '');
+      return xc.includes(clean) || clean.includes(xc.substring(0, 20));
+    });
+  }
+  if (!p) p = PRODUCTS[0]; // fallback
+
+  currentProduct = p;
+  renderProduct(p);
+}
+
+loadProduct();
 </script>
 </body>
 </html>

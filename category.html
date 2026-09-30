@@ -1,606 +1,878 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light" style="color-scheme:light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Products — Doordarshan Electronics</title>
-  <meta name="description" content="Browse all electronics products at Doordarshan Electronics, Maharashtra. LED TVs, ACs, Refrigerators, Washing Machines and more." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
+  <meta name="description" content="Browse all electronics — LED TVs, Refrigerators, ACs, Washing Machines and more at Doordarshan Electronics, Dharashiv.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/v2-tailwind.css">
   <style>
-    .page-layout { display: grid; grid-template-columns: 280px 1fr; gap: 24px; padding: 28px 0 60px; align-items: start; }
-    /* ── Filter Sidebar ── */
-    .filter-sidebar { background: var(--surface); border-radius: var(--radius-lg); border: 1.5px solid var(--border); padding: 20px; position: sticky; top: 90px; }
-    .filter-sidebar h3 { font-size: 1rem; margin-bottom: 16px; display:flex;align-items:center;justify-content:space-between; }
-    .filter-clear { font-size: 0.78rem; font-weight: 600; color: var(--accent); cursor: pointer; }
-    .filter-group { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border-light); }
-    .filter-group:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-    .filter-group-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 12px; display:flex;align-items:center;justify-content:space-between;cursor:pointer; }
-    .filter-group-title .chevron { transition: transform 0.2s; }
-    .filter-group.collapsed .filter-group-title .chevron { transform: rotate(-90deg); }
-    .filter-group.collapsed .filter-group-body { display: none; }
-    .filter-option { display: flex; align-items: center; gap: 10px; padding: 7px 0; cursor: pointer; font-size: 0.87rem; color: var(--text); transition: color 0.2s; }
-    .filter-option:hover { color: var(--primary); }
-    .filter-option input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer; }
-    .filter-option .filter-count { margin-left: auto; font-size: 0.72rem; color: var(--text-muted); background: var(--surface-2); padding: 1px 6px; border-radius: 999px; }
-    /* Price Range */
-    .price-range-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
-    .price-range-inputs input { width: 100%; border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; font-size: 0.82rem; color: var(--text); font-family: inherit; outline: none; transition: border-color 0.2s; }
-    .price-range-inputs input:focus { border-color: var(--primary); }
-    .price-apply-btn { width: 100%; margin-top: 10px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-sm); padding: 10px; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
-    .price-apply-btn:hover { background: var(--primary-light); }
-    /* ── Product area ── */
-    .products-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
-    .products-count { font-size: 0.9rem; color: var(--text-muted); }
-    .products-count strong { color: var(--text); font-weight: 700; }
-    .sort-select { border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 8px 14px; font-size: 0.85rem; color: var(--text); background: var(--surface); cursor: pointer; outline: none; font-family: inherit; }
-    /* Active filters strip */
-    .active-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-    .filter-tag { display: inline-flex; align-items: center; gap: 6px; background: var(--accent-pale); color: var(--accent); border: 1.5px solid rgba(255,107,0,0.2); padding: 5px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; }
-    .filter-tag button { background: none; border: none; cursor: pointer; color: var(--accent); font-size: 0.9rem; line-height: 1; padding: 0; }
-    /* ── Breadcrumb ── */
-    .breadcrumb { display: flex; align-items: center; gap: 8px; padding: 16px 0 4px; font-size: 0.82rem; color: var(--text-muted); flex-wrap: wrap; }
-    .breadcrumb a { color: var(--text-muted); transition: color 0.2s; }
-    .breadcrumb a:hover { color: var(--primary); }
-    .breadcrumb .sep { opacity: 0.4; }
-    .breadcrumb .current { color: var(--text); font-weight: 600; }
-    /* ── Sub-category tabs ── */
-    .subcat-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-    .subcat-tab { padding: 8px 18px; border-radius: 999px; font-size: 0.82rem; font-weight: 600; border: 1.5px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; transition: all 0.2s; }
-    .subcat-tab:hover { border-color: var(--primary); color: var(--primary); }
-    .subcat-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-    /* ── Grid ── */
-    #products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-    .no-products { text-align: center; padding: 60px 20px; color: var(--text-muted); }
-    .no-products h3 { font-size: 1.2rem; margin-bottom: 8px; }
-    @media (max-width: 1100px) { #products-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 900px) { .page-layout { grid-template-columns: 1fr; } .filter-sidebar { position: static; } }
-    @media (max-width: 500px) { #products-grid { grid-template-columns: 1fr; } }
+    body { font-family: 'Inter', 'Roboto', ui-sans-serif, system-ui, sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    /* Custom checkbox style matching v2 */
+    .v2-checkbox {
+      appearance: none; -webkit-appearance: none;
+      width: 1rem; height: 1rem; border: 1px solid #d1d5dc; border-radius: 0.375rem;
+      background: #fff; cursor: pointer; position: relative; flex-shrink: 0;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .v2-checkbox:checked {
+      background: #1a1a1a; border-color: #1a1a1a;
+    }
+    .v2-checkbox:checked::after {
+      content: ''; position: absolute; left: 3px; top: 0px;
+      width: 5px; height: 9px; border: 2px solid white;
+      border-top: none; border-left: none; transform: rotate(45deg);
+    }
+    /* Price slider */
+    input[type=range] {
+      -webkit-appearance: none; appearance: none; width: 100%; height: 4px;
+      background: #e5e7eb; border-radius: 9999px; outline: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 1rem; height: 1rem;
+      border-radius: 50%; background: #fff; border: 1.5px solid #1a1a1a;
+      cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    /* Skeleton animation */
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+    .animate-pulse { animation: pulse 2s cubic-bezier(.4,0,.6,1) infinite; }
+    /* Card hover */
+    .product-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
   </style>
 </head>
-<body>
+<body class="font-sans antialiased bg-[#F8F9FA] text-foreground">
 
-<!-- ══ TOPBAR ════════════════════════════════════════════════ -->
-<div class="topbar">
-  <div class="topbar-inner container">
-    <div class="topbar-scroll">
-      <div class="topbar-scroll-track">
-        <span><span class="dot"></span> Safe Doorstep Delivery</span>
-        <span><span class="dot"></span> Easy EMI Available</span>
-        <span><span class="dot"></span> WhatsApp: 7020209281</span>
-        <span><span class="dot"></span> Safe Doorstep Delivery</span>
-        <span><span class="dot"></span> Easy EMI Available</span>
-        <span><span class="dot"></span> WhatsApp: 7020209281</span>
+<!-- ══════════════════ HEADER ══════════════════ -->
+<header class="sticky top-0 z-40 w-full bg-white shadow-xs">
+  <!-- Top bar: logo, search, links -->
+  <div class="border-b border-[#e5e7eb]">
+    <div class="mx-auto max-w-7xl px-3 sm:px-4">
+      <!-- Desktop -->
+      <div class="hidden md:flex items-center gap-6 py-3">
+        <a class="flex items-center gap-1.5 text-xl font-extrabold tracking-tight shrink-0 text-[#1a1a1a]" href="index.html">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-[#e60023]" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+          Doordarshan <span class="text-sm font-medium text-[#6b7280]">Electronics</span>
+        </a>
+        <div class="flex-1 min-w-0 max-w-2xl mx-auto">
+          <div class="flex items-center gap-2 w-full rounded-full bg-white border border-[#e5e7eb] px-4 h-11 focus-within:border-[#e60023] transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 text-[#6b7280]"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+            <input id="header-search" placeholder="Search phones, TV, appliances..." class="flex-1 bg-transparent outline-none text-sm placeholder:text-[#6b7280] min-w-0" aria-label="Search products">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#6b7280]"><path d="M12 19v3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><rect x="9" y="2" width="6" height="13" rx="3"/></svg>
+          </div>
+        </div>
+        <div class="flex items-center gap-5 shrink-0">
+          <a class="flex items-center gap-1.5 text-sm text-[#1a1a1a] hover:text-[#e60023] transition-colors" href="contact.html">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+            Help Center
+          </a>
+          <a class="flex items-center gap-1 text-sm font-medium text-[#1a1a1a] hover:text-[#e60023] transition-colors" href="admin.html">Admin Login</a>
+        </div>
       </div>
-    </div>
-    <div class="topbar-right">
-      <div class="lang-switcher" aria-label="Language selection">
-        <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
-        <span style="opacity:0.4;color:#fff;">|</span>
-        <button class="lang-btn" data-lang="mr" onclick="setLanguage('mr')">मराठी</button>
+      <!-- Mobile -->
+      <div class="md:hidden flex items-center justify-between gap-2 py-2.5">
+        <div class="flex items-center gap-2 min-w-0">
+          <button type="button" id="mobile-menu-btn" aria-label="Open menu" class="p-1 -ml-1 text-[#1a1a1a]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h16"/><path d="M4 18h16"/><path d="M4 6h16"/></svg>
+          </button>
+          <a class="flex items-center gap-1 text-base font-extrabold tracking-tight text-[#1a1a1a] truncate" href="index.html">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#e60023] shrink-0"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+            <span class="truncate">Doordarshan</span>
+          </a>
+        </div>
+        <a href="admin.html" class="flex items-center gap-1 text-[11px] font-medium text-[#6b7280] hover:text-[#1a1a1a] shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2 2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></svg>
+          Admin
+        </a>
       </div>
-      <a href="tel:7020209281">📞 <span data-i18n="call_btn">Call</span></a>
-      <a href="https://wa.me/917020209281" target="_blank">💬 <span data-i18n="wa_btn">WhatsApp</span></a>
+      <!-- Mobile search -->
+      <div class="md:hidden pb-2.5 pt-0.5">
+        <div class="flex items-center gap-2 w-full rounded-full bg-white border border-[#e5e7eb] px-3 h-9 focus-within:border-[#e60023] transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 text-[#6b7280]"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+          <input id="mobile-search" placeholder="Search phones, TV, appliances..." class="flex-1 bg-transparent outline-none text-xs placeholder:text-[#6b7280] min-w-0" aria-label="Search products">
+        </div>
+      </div>
     </div>
   </div>
-</div>
-
-<!-- ══ HEADER ════════════════════════════════════════════════ -->
-<header class="header">
-  <div class="header-inner">
-    <a href="index.html" class="logo" aria-label="Doordarshan Electronics Home">
-      <div class="logo-name">Doordarshan <span>Electronics</span></div>
-      <div class="logo-tagline" data-i18n="store_tagline">Dharashiv's Largest Electronics Superstore</div>
-    </a>
-    <form class="search-bar" id="search-form" role="search" style="position:relative;">
-      <select id="search-category" aria-label="Category">
-        <option value="">All Categories</option>
-        <option value="tv">LED TVs</option>
-        <option value="refrigerator">Refrigerators</option>
-        <option value="ac">Air Conditioners</option>
-        <option value="washing">Washing Machines</option>
-        <option value="kitchen">Kitchen</option>
-      </select>
-      <input type="search" id="search-input" placeholder="Search brands, TVs, ACs, Refrigerators…" aria-label="Search" autocomplete="off" />
-      <button type="submit" class="search-btn" aria-label="Search">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-        </svg>
-      </button>
-      <div id="search-suggest-box" class="search-suggest-box"></div>
-    </form>
-    <div class="header-actions">
-      <!-- Compare Button -->
-      <button type="button" class="hdr-btn" id="nav-compare-btn" title="Compare Products" onclick="CompareEngine.openModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <path d="M9 3H5a2 2 0 00-2 2v14a2 2 0 002 2h4M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M9 12h6M12 9l3 3-3 3"/>
-        </svg>
-        <span class="hdr-label">Compare</span>
-        <span class="compare-badge" id="compare-badge" style="display:none;">0</span>
-      </button>
-      <a href="contact.html" class="hdr-btn" title="Stores">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
-        </svg>
-        <span class="hdr-label">Stores</span>
-      </a>
-      <a href="https://wa.me/917020209281" target="_blank" class="hdr-btn" id="wa-header-btn">
-        <svg viewBox="0 0 24 24" fill="currentColor" style="color:#25D366;" width="22" height="22">
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-        </svg>
-        <span class="hdr-label">WhatsApp</span>
-      </a>
-      <a href="cart.html" class="hdr-btn" id="cart-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-          <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/>
-        </svg>
-        <span class="hdr-label">Cart</span>
-        <span class="cart-badge" style="display:none;">0</span>
-      </a>
+  <!-- Category nav ribbon -->
+  <div class="hidden md:block border-b border-[#e5e7eb]">
+    <div class="mx-auto max-w-7xl px-4">
+      <nav class="w-full">
+        <ul class="flex items-center gap-1 overflow-x-auto no-scrollbar py-1">
+          <li class="shrink-0"><a class="block px-3 py-2 text-[13px] font-medium text-[#1a1a1a] rounded-md hover:text-[#e60023] hover:bg-[#f5f5f5] transition-colors whitespace-nowrap" href="category.html?cat=tv">TV &amp; Entertainment</a></li>
+          <li class="shrink-0"><a class="block px-3 py-2 text-[13px] font-medium text-[#1a1a1a] rounded-md hover:text-[#e60023] hover:bg-[#f5f5f5] transition-colors whitespace-nowrap" href="category.html?cat=refrigerator">Refrigerators</a></li>
+          <li class="shrink-0"><a class="block px-3 py-2 text-[13px] font-medium text-[#1a1a1a] rounded-md hover:text-[#e60023] hover:bg-[#f5f5f5] transition-colors whitespace-nowrap" href="category.html?cat=washing">Appliances</a></li>
+          <li class="shrink-0"><a class="block px-3 py-2 text-[13px] font-medium text-[#1a1a1a] rounded-md hover:text-[#e60023] hover:bg-[#f5f5f5] transition-colors whitespace-nowrap" href="category.html?cat=ac">Air Conditioners</a></li>
+          <li class="shrink-0"><a class="block px-3 py-2 text-[13px] font-medium text-[#1a1a1a] rounded-md hover:text-[#e60023] hover:bg-[#f5f5f5] transition-colors whitespace-nowrap" href="category.html?cat=small">Small Appliances</a></li>
+          <li class="shrink-0"><a class="block px-3 py-2 text-[13px] font-medium text-[#1a1a1a] rounded-md hover:text-[#e60023] hover:bg-[#f5f5f5] transition-colors whitespace-nowrap" href="category.html?cat=kitchen">Furniture</a></li>
+          <li class="shrink-0"><a class="block px-3 py-2 text-[13px] font-medium text-[#1a1a1a] rounded-md hover:text-[#e60023] hover:bg-[#f5f5f5] transition-colors whitespace-nowrap" href="category.html">All Products</a></li>
+        </ul>
+      </nav>
     </div>
   </div>
 </header>
 
-<!-- ══ MAIN ══════════════════════════════════════════════════ -->
-<main>
-  <div class="container">
-    <!-- Breadcrumb -->
-    <nav class="breadcrumb" aria-label="Breadcrumb">
-      <a href="index.html" data-i18n="breadcrumb_home">Home</a>
-      <span class="sep">›</span>
-      <span class="current" id="breadcrumb-current">LED Televisions</span>
-    </nav>
+<!-- Mobile menu overlay -->
+<div id="mobile-menu" class="fixed inset-0 z-50 hidden">
+  <div class="absolute inset-0 bg-black/50" id="mobile-menu-backdrop"></div>
+  <div class="absolute left-0 top-0 h-full w-72 bg-white shadow-xl p-6 flex flex-col gap-4">
+    <div class="flex items-center justify-between mb-2">
+      <span class="font-bold text-lg text-[#1a1a1a]">Menu</span>
+      <button id="mobile-menu-close" class="text-[#6b7280]">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+    <a href="index.html" class="text-[#1a1a1a] font-medium py-2 border-b border-[#f5f5f5]">Home</a>
+    <a href="category.html?cat=tv" class="text-[#1a1a1a] font-medium py-2 border-b border-[#f5f5f5]">TV &amp; Entertainment</a>
+    <a href="category.html?cat=refrigerator" class="text-[#1a1a1a] font-medium py-2 border-b border-[#f5f5f5]">Refrigerators</a>
+    <a href="category.html?cat=washing" class="text-[#1a1a1a] font-medium py-2 border-b border-[#f5f5f5]">Appliances</a>
+    <a href="category.html?cat=ac" class="text-[#1a1a1a] font-medium py-2 border-b border-[#f5f5f5]">Air Conditioners</a>
+    <a href="category.html?cat=small" class="text-[#1a1a1a] font-medium py-2 border-b border-[#f5f5f5]">Small Appliances</a>
+    <a href="contact.html" class="text-[#1a1a1a] font-medium py-2 border-b border-[#f5f5f5]">Help Center</a>
+    <a href="admin.html" class="text-[#1a1a1a] font-medium py-2">Admin Login</a>
+  </div>
+</div>
 
-    <!-- Page heading -->
-    <div style="margin-bottom:8px;">
-      <h1 id="page-title" style="font-size:1.6rem;font-weight:800;color:var(--text);">LED Televisions</h1>
+<!-- ══════════════════ MAIN ══════════════════ -->
+<main class="flex-1">
+  <div class="mx-auto w-full max-w-7xl px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
+
+    <!-- Title + controls row -->
+    <div class="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div>
+        <h1 id="cat-title" class="text-xl font-bold tracking-tight text-[#1a1a1a] sm:text-2xl">All Products</h1>
+        <p id="cat-count" class="mt-0.5 text-xs text-[#6b7280]">Loading products…</p>
+      </div>
+      <div class="flex items-center gap-2 self-start sm:self-auto">
+        <!-- Mobile filter button -->
+        <button id="mobile-filter-btn" type="button" class="flex items-center gap-1.5 border border-[#e5e7eb] bg-white rounded-full h-9 px-3 text-xs font-semibold lg:hidden shadow-xs">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/></svg>
+          Filters
+        </button>
+        <!-- Grid/List toggle -->
+        <div class="hidden sm:flex items-center gap-1 rounded-xl border border-[#e5e7eb]/80 bg-white p-1 shadow-xs">
+          <button id="view-grid" type="button" class="rounded-lg p-1.5 transition-colors cursor-pointer bg-[#1a1a1a] text-white shadow-xs" aria-label="Grid view">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+          </button>
+          <button id="view-list" type="button" class="rounded-lg p-1.5 transition-colors cursor-pointer text-[#6b7280] hover:text-[#1a1a1a]" aria-label="List view">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/></svg>
+          </button>
+        </div>
+        <!-- Sort -->
+        <div class="relative">
+          <select id="sort-select" class="appearance-none cursor-pointer border border-[#e5e7eb] bg-white rounded-full h-9 pl-3 pr-8 text-xs font-medium shadow-xs outline-none focus:border-[#e60023] transition-colors w-40">
+            <option value="popular">Most Popular</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="discount">Best Discount</option>
+            <option value="name-asc">Name: A to Z</option>
+          </select>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-[#6b7280]"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
     </div>
 
-    <!-- Sub-category tabs -->
-    <div class="subcat-tabs" id="subcat-tabs"></div>
+    <!-- Content: sidebar + grid -->
+    <div class="flex items-start gap-6">
 
-    <!-- Layout -->
-    <div class="page-layout">
-      <!-- ── VIJAY SALES EXPANDABLE ACCORDION FILTERS ── -->
-      <aside class="filter-sidebar" aria-label="Product filters">
-        <div class="accordion-filter-card">
-          <div class="accordion-filter-header">
-            <h3><span data-i18n="filters_title">Filters</span></h3>
-            <span class="filter-clear" onclick="clearFilters()" data-i18n="clear_all">Clear all</span>
-          </div>
+      <!-- ── Left sidebar filter ── -->
+      <aside id="filter-sidebar" class="hidden w-64 shrink-0 lg:block">
+        <div class="sticky top-20 rounded-2xl border border-[#e5e7eb]/80 bg-white shadow-xs overflow-hidden max-h-[calc(100vh-6rem)] overflow-y-auto">
+          <div class="space-y-5 p-4 sm:p-5">
 
-          <!-- 1. Brand Accordion -->
-          <div class="accordion-item open" id="acc-brand">
-            <button type="button" class="accordion-trigger" onclick="toggleAccordion('acc-brand')">
-              <span>Brand</span>
-              <span class="accordion-chevron">▾</span>
-            </button>
-            <div class="accordion-content">
-              <input type="text" class="brand-search-box" id="brand-search" placeholder="Search brands (e.g. Sony, LG)…" oninput="filterBrandList(this.value)">
-              <div class="filter-group-body" id="brand-options"></div>
+            <!-- Title row -->
+            <div class="flex items-center justify-between gap-2">
+              <h3 class="text-sm font-bold tracking-tight text-[#1a1a1a] uppercase">Filters</h3>
+              <button id="clear-filters" type="button" class="text-xs text-[#e60023] font-medium hover:underline hidden">Clear all</button>
             </div>
-          </div>
+            <hr class="border-[#e5e7eb]">
 
-          <!-- 2. Price Range Accordion -->
-          <div class="accordion-item open" id="acc-price">
-            <button type="button" class="accordion-trigger" onclick="toggleAccordion('acc-price')">
-              <span data-i18n="price_range">Price Range</span>
-              <span class="accordion-chevron">▾</span>
-            </button>
-            <div class="accordion-content">
-              <div class="quick-price-chips">
-                <button type="button" class="price-chip" onclick="setPriceChip(0, 20000)">Under ₹20k</button>
-                <button type="button" class="price-chip" onclick="setPriceChip(20000, 40000)">₹20k–₹40k</button>
-                <button type="button" class="price-chip" onclick="setPriceChip(40000, 70000)">₹40k–₹70k</button>
-                <button type="button" class="price-chip" onclick="setPriceChip(70000, 0)">₹70k+</button>
-              </div>
-              <div class="price-range-inputs">
-                <input type="number" id="price-min" placeholder="Min ₹" min="0" data-i18n-placeholder="min_price" />
-                <input type="number" id="price-max" placeholder="Max ₹" max="999999" data-i18n-placeholder="max_price" />
-              </div>
-              <button class="price-apply-btn" onclick="applyPriceFilter()" data-i18n="apply_btn">Apply Price</button>
-            </div>
-          </div>
-
-          <!-- 3. Screen Size / Capacity Accordion -->
-          <div class="accordion-item open" id="acc-size">
-            <button type="button" class="accordion-trigger" onclick="toggleAccordion('acc-size')">
-              <span id="size-accordion-label">Screen Size</span>
-              <span class="accordion-chevron">▾</span>
-            </button>
-            <div class="accordion-content">
-              <div class="filter-group-body" id="size-options">
-                <label class="filter-option"><input type="checkbox" data-size="32" onchange="applyFilters()"> 32 inch</label>
-                <label class="filter-option"><input type="checkbox" data-size="40" onchange="applyFilters()"> 40 inch</label>
-                <label class="filter-option"><input type="checkbox" data-size="43" onchange="applyFilters()"> 43 inch</label>
-                <label class="filter-option"><input type="checkbox" data-size="50" onchange="applyFilters()"> 50 inch</label>
-                <label class="filter-option"><input type="checkbox" data-size="55" onchange="applyFilters()"> 55 inch</label>
-                <label class="filter-option"><input type="checkbox" data-size="65" onchange="applyFilters()"> 65 inch</label>
-                <label class="filter-option"><input type="checkbox" data-size="75" onchange="applyFilters()"> 75 inch &amp; above</label>
+            <!-- Availability -->
+            <div class="space-y-2.5">
+              <label class="text-xs font-semibold uppercase tracking-wider text-[#6b7280] block">Availability</label>
+              <div class="space-y-2">
+                <label class="flex items-center gap-2.5 text-xs cursor-pointer group select-none">
+                  <input type="checkbox" id="filter-instock" class="v2-checkbox">
+                  <span class="text-[#1a1a1a] group-hover:text-[#e60023] transition-colors">In stock only</span>
+                </label>
+                <label class="flex items-center gap-2.5 text-xs cursor-pointer group select-none">
+                  <input type="checkbox" id="filter-offer" class="v2-checkbox">
+                  <span class="text-[#1a1a1a] group-hover:text-[#e60023] transition-colors">On offer &amp; discounts</span>
+                </label>
               </div>
             </div>
-          </div>
+            <hr class="border-[#e5e7eb]">
 
-          <!-- 4. Display Type / Technology Accordion -->
-          <div class="accordion-item open" id="acc-type">
-            <button type="button" class="accordion-trigger" onclick="toggleAccordion('acc-type')">
-              <span id="type-accordion-label">Display &amp; Features</span>
-              <span class="accordion-chevron">▾</span>
-            </button>
-            <div class="accordion-content">
-              <div class="filter-group-body" id="type-options">
-                <label class="filter-option"><input type="checkbox" data-type="OLED" onchange="applyFilters()"> OLED</label>
-                <label class="filter-option"><input type="checkbox" data-type="QLED" onchange="applyFilters()"> QLED</label>
-                <label class="filter-option"><input type="checkbox" data-type="4K" onchange="applyFilters()"> 4K Ultra HD</label>
-                <label class="filter-option"><input type="checkbox" data-type="Google TV" onchange="applyFilters()"> Google TV</label>
-                <label class="filter-option"><input type="checkbox" data-type="Smart TV" onchange="applyFilters()"> Smart TV</label>
+            <!-- Price -->
+            <div class="space-y-3">
+              <label class="text-xs font-semibold uppercase tracking-wider text-[#6b7280] block">Price (₹)</label>
+              <div class="space-y-3 pt-1">
+                <input type="range" id="price-slider" min="0" max="200000" value="200000" step="1000" style="background: linear-gradient(to right, #1a1a1a 0%, #1a1a1a var(--pct,100%), #e5e7eb var(--pct,100%), #e5e7eb 100%)">
+                <div class="flex items-center gap-2">
+                  <input type="number" id="price-min" class="border border-[#e5e7eb] rounded-md h-8 px-2 w-full text-xs outline-none focus:border-[#e60023]" placeholder="Min" min="0">
+                  <span class="text-xs text-[#6b7280]">–</span>
+                  <input type="number" id="price-max" class="border border-[#e5e7eb] rounded-md h-8 px-2 w-full text-xs outline-none focus:border-[#e60023]" placeholder="Max" min="0">
+                </div>
               </div>
             </div>
-          </div>
+            <hr class="border-[#e5e7eb]">
 
-          <!-- 5. Finance & Stock Accordion -->
-          <div class="accordion-item open" id="acc-stock">
-            <button type="button" class="accordion-trigger" onclick="toggleAccordion('acc-stock')">
-              <span>Offers &amp; Stock</span>
-              <span class="accordion-chevron">▾</span>
-            </button>
-            <div class="accordion-content">
-              <div class="filter-group-body">
-                <label class="filter-option"><input type="checkbox" id="filter-instock" onchange="applyFilters()"> Ready In Dharashiv Store</label>
+            <!-- Brand -->
+            <div class="space-y-2.5">
+              <label class="text-xs font-semibold uppercase tracking-wider text-[#6b7280] block">Brand</label>
+              <div id="brand-options" class="space-y-2">
+                <p class="text-[11px] text-[#6b7280]">Loading brands…</p>
               </div>
             </div>
+            <hr class="border-[#e5e7eb]">
+
+            <!-- Specifications (dynamic) -->
+            <div class="space-y-2.5">
+              <label id="spec-label" class="text-xs font-semibold uppercase tracking-wider text-[#6b7280] block">Specifications</label>
+              <div id="spec-options" class="space-y-2">
+                <p class="text-[11px] text-[#6b7280]">Select a category to see filters.</p>
+              </div>
+            </div>
+
           </div>
         </div>
       </aside>
 
-      <!-- ── Products Area ──────────────────────────── -->
-      <div>
-        <!-- Active filter tags -->
-        <div class="active-filters" id="active-filters"></div>
+      <!-- Mobile filter drawer -->
+      <div id="mobile-filter-drawer" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/50" id="mobile-filter-backdrop"></div>
+        <div class="absolute right-0 top-0 h-full w-80 bg-white shadow-xl overflow-y-auto">
+          <div class="flex items-center justify-between p-4 border-b border-[#e5e7eb]">
+            <h3 class="font-bold text-[#1a1a1a]">Filters</h3>
+            <button id="mobile-filter-close" class="text-[#6b7280]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          </div>
+          <!-- Same filter content duplicated for mobile -->
+          <div class="p-4 space-y-5">
+            <div class="space-y-2.5">
+              <label class="text-xs font-semibold uppercase tracking-wider text-[#6b7280] block">Availability</label>
+              <div class="space-y-2">
+                <label class="flex items-center gap-2.5 text-xs cursor-pointer"><input type="checkbox" id="m-filter-instock" class="v2-checkbox"> In stock only</label>
+                <label class="flex items-center gap-2.5 text-xs cursor-pointer"><input type="checkbox" id="m-filter-offer" class="v2-checkbox"> On offer &amp; discounts</label>
+              </div>
+            </div>
+            <hr class="border-[#e5e7eb]">
+            <div class="space-y-2.5">
+              <label class="text-xs font-semibold uppercase tracking-wider text-[#6b7280] block">Brand</label>
+              <div id="m-brand-options" class="space-y-2"></div>
+            </div>
+            <hr class="border-[#e5e7eb]">
+            <div class="space-y-2.5">
+              <label id="m-spec-label" class="text-xs font-semibold uppercase tracking-wider text-[#6b7280] block">Specifications</label>
+              <div id="m-spec-options" class="space-y-2"></div>
+            </div>
+            <button id="apply-mobile-filters" class="w-full bg-[#1a1a1a] text-white rounded-full h-10 text-sm font-semibold mt-4">Apply Filters</button>
+          </div>
+        </div>
+      </div>
 
-        <!-- Sort & count -->
-        <div class="products-header">
-          <p class="products-count" id="products-count">Showing <strong>0</strong> products</p>
-          <select class="sort-select" id="sort-select" onchange="applyFilters()" aria-label="Sort products">
-            <option value="featured">Sort: Featured</option>
-            <option value="price-asc">Price: Low to High</option>
-            <option value="price-desc">Price: High to Low</option>
-            <option value="discount">Best Discount</option>
-            <option value="rating">Top Rated</option>
-            <option value="newest">Newest First</option>
-          </select>
+      <!-- ── Product Grid ── -->
+      <div class="min-w-0 flex-1">
+        <!-- Subcategory tabs (TV/Fridge only) -->
+        <div id="subcat-tabs" class="flex gap-2 overflow-x-auto no-scrollbar mb-4"></div>
+
+        <!-- Grid -->
+        <div id="product-grid" class="grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 sm:gap-4">
+          <!-- Skeleton loaders -->
+          <div class="flex animate-pulse flex-col rounded-xl p-2 sm:p-3 bg-white">
+            <div class="aspect-square w-full bg-[#f3f4f6] rounded-lg mb-3"></div>
+            <div class="h-3.5 w-2/3 rounded bg-[#f3f4f6] mb-2"></div>
+            <div class="h-3 w-4/5 rounded bg-[#f3f4f6] mb-1"></div>
+            <div class="h-3 w-1/2 rounded bg-[#f3f4f6] mb-3"></div>
+            <div class="h-4 w-2/5 rounded bg-[#f3f4f6]"></div>
+          </div>
+          <div class="flex animate-pulse flex-col rounded-xl p-2 sm:p-3 bg-white">
+            <div class="aspect-square w-full bg-[#f3f4f6] rounded-lg mb-3"></div>
+            <div class="h-3.5 w-2/3 rounded bg-[#f3f4f6] mb-2"></div>
+            <div class="h-3 w-4/5 rounded bg-[#f3f4f6] mb-1"></div>
+            <div class="h-3 w-1/2 rounded bg-[#f3f4f6] mb-3"></div>
+            <div class="h-4 w-2/5 rounded bg-[#f3f4f6]"></div>
+          </div>
+          <div class="flex animate-pulse flex-col rounded-xl p-2 sm:p-3 bg-white">
+            <div class="aspect-square w-full bg-[#f3f4f6] rounded-lg mb-3"></div>
+            <div class="h-3.5 w-2/3 rounded bg-[#f3f4f6] mb-2"></div>
+            <div class="h-3 w-4/5 rounded bg-[#f3f4f6] mb-1"></div>
+            <div class="h-3 w-1/2 rounded bg-[#f3f4f6] mb-3"></div>
+            <div class="h-4 w-2/5 rounded bg-[#f3f4f6]"></div>
+          </div>
+          <div class="flex animate-pulse flex-col rounded-xl p-2 sm:p-3 bg-white">
+            <div class="aspect-square w-full bg-[#f3f4f6] rounded-lg mb-3"></div>
+            <div class="h-3.5 w-2/3 rounded bg-[#f3f4f6] mb-2"></div>
+            <div class="h-3 w-4/5 rounded bg-[#f3f4f6] mb-1"></div>
+            <div class="h-3 w-1/2 rounded bg-[#f3f4f6] mb-3"></div>
+            <div class="h-4 w-2/5 rounded bg-[#f3f4f6]"></div>
+          </div>
         </div>
 
-        <!-- Products Grid -->
-        <div id="products-grid"></div>
+        <!-- No results -->
+        <div id="no-results" class="hidden flex flex-col items-center justify-center py-20 text-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-[#d1d5dc] mb-4"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+          <h3 class="text-lg font-semibold text-[#1a1a1a]">No products found</h3>
+          <p class="text-sm text-[#6b7280] mt-1">Try adjusting your filters or search term.</p>
+          <button onclick="clearAllFilters()" class="mt-4 px-6 py-2 rounded-full bg-[#1a1a1a] text-white text-sm font-semibold hover:bg-[#333] transition-colors">Clear Filters</button>
+        </div>
       </div>
+
     </div>
   </div>
 </main>
 
-<!-- ══ FOOTER (Simplified) ═══════════════════════════════════ -->
-<footer class="footer" style="margin-top:0;">
-  <div class="container">
-    <div class="footer-bottom">
-      <p data-i18n="rights_reserved">© <span class="current-year">2026</span> Doordarshan Electronics. All rights reserved.</p>
-      <a href="https://wa.me/917020209281" style="color:var(--accent);font-weight:600;">💬 WhatsApp: 7020209281</a>
+<!-- ══════════════════ FOOTER ══════════════════ -->
+<footer class="mt-12 bg-[#1a1a1a] text-white">
+  <div class="border-b border-white/10">
+    <div class="mx-auto max-w-7xl px-4 py-6 grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+      <div class="flex items-center gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#e60023] shrink-0"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/></svg>
+        <span>Call us: <a href="tel:+917020209281" class="font-semibold">+91 7020209281</a></span>
+      </div>
+      <div class="flex items-center gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#e60023] shrink-0"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+        <a href="https://wa.me/917020209281?text=Hello%2C%20I%20would%20like%20to%20enquire%20about%20a%20product." target="_blank" class="hover:underline">Enquire on WhatsApp</a>
+      </div>
+      <div class="flex items-center gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#e60023] shrink-0"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>Samta Colony, Dharashiv city</span>
+      </div>
+    </div>
+  </div>
+  <div class="mx-auto max-w-7xl px-4 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
+    <div>
+      <h3 class="text-sm font-bold uppercase tracking-wide text-white/90 mb-4">About Us</h3>
+      <ul class="space-y-2.5">
+        <li><a class="text-sm text-white/70 hover:text-white transition-colors" href="about.html">About Doordarshan</a></li>
+        <li><a class="text-sm text-white/70 hover:text-white transition-colors" href="contact.html">Contact Us</a></li>
+        <li><a class="text-sm text-white/70 hover:text-white transition-colors" href="contact.html">Help Center</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="text-sm font-bold uppercase tracking-wide text-white/90 mb-4">Customer Service</h3>
+      <ul class="space-y-2.5">
+        <li><a class="text-sm text-white/70 hover:text-white transition-colors" href="https://wa.me/917020209281" target="_blank">Enquire on WhatsApp</a></li>
+        <li><a class="text-sm text-white/70 hover:text-white transition-colors" href="contact.html">Delivery &amp; Installation</a></li>
+        <li><a class="text-sm text-white/70 hover:text-white transition-colors" href="contact.html">Warranty</a></li>
+        <li><a class="text-sm text-white/70 hover:text-white transition-colors" href="contact.html">FAQs</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="text-sm font-bold uppercase tracking-wide text-white/90 mb-4">Policies</h3>
+      <ul class="space-y-2.5">
+        <li><a class="text-sm text-white/70 hover:text-white transition-colors" href="contact.html">Privacy Policy</a></li>
+        <li><a class="text-sm text-white/70 hover:text-white transition-colors" href="contact.html">Terms of Use</a></li>
+        <li><a class="text-sm text-white/70 hover:text-white transition-colors" href="contact.html">Return Policy</a></li>
+        <li><a class="text-sm text-white/70 hover:text-white transition-colors" href="contact.html">Warranty Policy</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="text-sm font-bold uppercase tracking-wide text-white/90 mb-4">Shop</h3>
+      <ul class="space-y-2.5">
+        <li><a class="text-sm text-white/70 hover:text-white transition-colors" href="category.html">All Products</a></li>
+        <li><a class="text-sm text-white/70 hover:text-white transition-colors" href="category.html">Brands</a></li>
+        <li><a class="text-sm text-white/70 hover:text-white transition-colors" href="category.html">Categories</a></li>
+        <li><a class="text-sm text-white/70 hover:text-white transition-colors" href="category.html">Offers</a></li>
+        <li><a class="text-sm text-white/70 hover:text-white transition-colors" href="category.html">New Arrivals</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-white/10">
+    <div class="mx-auto max-w-7xl px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <span class="text-sm text-white/70">Follow us:</span>
+        <a href="https://facebook.com" aria-label="Facebook" class="h-9 w-9 rounded-full bg-white/10 hover:bg-[#e60023] flex items-center justify-center transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+        <a href="https://instagram.com" aria-label="Instagram" class="h-9 w-9 rounded-full bg-white/10 hover:bg-[#e60023] flex items-center justify-center transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+        </a>
+        <a href="https://youtube.com" aria-label="YouTube" class="h-9 w-9 rounded-full bg-white/10 hover:bg-[#e60023] flex items-center justify-center transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="border-t border-white/10">
+    <div class="mx-auto max-w-7xl px-4 py-5 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
+      <span class="text-xs font-semibold uppercase tracking-wide text-white/70 flex items-center gap-1.5"><span class="h-1.5 w-1.5 rounded-full bg-[#e60023]"></span>Genuine Products</span>
+      <span class="text-xs font-semibold uppercase tracking-wide text-white/70 flex items-center gap-1.5"><span class="h-1.5 w-1.5 rounded-full bg-[#e60023]"></span>Manufacturer Warranty</span>
+      <span class="text-xs font-semibold uppercase tracking-wide text-white/70 flex items-center gap-1.5"><span class="h-1.5 w-1.5 rounded-full bg-[#e60023]"></span>WhatsApp Support</span>
+      <span class="text-xs font-semibold uppercase tracking-wide text-white/70 flex items-center gap-1.5"><span class="h-1.5 w-1.5 rounded-full bg-[#e60023]"></span>Local Delivery</span>
+    </div>
+  </div>
+  <div class="border-t border-white/10">
+    <div class="mx-auto max-w-7xl px-4 py-5 text-center text-xs text-white/50">
+      &copy; 2026 Doordarshan Electronics. Dharashiv, Maharashtra.
     </div>
   </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/supabase-config.js"></script>
-<script src="js/i18n.js"></script>
+<!-- WhatsApp FAB -->
+<a href="https://wa.me/917020209281?text=Hello%2C%20I%20would%20like%20to%20place%20an%20order." target="_blank" rel="noopener noreferrer" aria-label="Order on WhatsApp" class="fixed bottom-6 right-6 z-50 hidden h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition hover:scale-105 hover:bg-[#1fb855] md:flex">
+  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+</a>
+
+<!-- ══════════════════ SCRIPTS ══════════════════ -->
 <script src="js/products-data.js"></script>
-<script src="js/cart.js"></script>
-<script src="js/main.js"></script>
 <script>
-// ── Category page controller ──────────────────────────────
-const params = new URLSearchParams(window.location.search);
-const rawCat = (params.get('cat') || params.get('category') || 'tv').toLowerCase().trim();
-
+// ── Category map ──
 const CAT_MAP = {
-  'televisions': 'tv', 'television': 'tv', 'tv': 'tv', 'tvs': 'tv', 'led-tvs': 'tv', 'smart-tvs': 'tv', '65-inch-tvs': 'tv',
-  'refrigerators': 'refrigerator', 'refrigerator': 'refrigerator', 'fridge': 'refrigerator', 'fridges': 'refrigerator', 'bottom-freezer': 'refrigerator', 'double-door': 'refrigerator', 'triple-door': 'refrigerator',
-  'air-conditioners': 'ac', 'air-conditioner': 'ac', 'ac': 'ac', 'split-ac': 'ac',
-  'washing-machines': 'washing', 'washing-machine': 'washing', 'washing': 'washing', 'appliances': 'washing', 'clothes-dryer': 'washing',
-  'smartphones': 'phones', 'smartphone': 'phones', 'phones': 'phones', 'android-phones': 'phones',
-  'laptops': 'laptop', 'laptop': 'laptop', 'business-laptops': 'laptop',
-  'kitchen': 'kitchen', 'kitchen-appliances': 'kitchen', 'furniture': 'kitchen',
-  'small-appliances': 'small', 'small': 'small',
+  tv:'tv', television:'tv', televisions:'tv', 'led-tvs':'tv', 'smart-tvs':'tv',
+  refrigerator:'refrigerator', refrigerators:'refrigerator', fridge:'refrigerator', 'double-door':'refrigerator', 'single-door':'refrigerator', 'bottom-freezer':'refrigerator',
+  ac:'ac', 'air-conditioner':'ac', 'air-conditioners':'ac', 'split-ac':'ac',
+  washing:'washing', appliances:'washing', 'washing-machines':'washing',
+  small:'small', 'small-appliances':'small',
+  kitchen:'kitchen', furniture:'kitchen',
+  phones:'phones', smartphones:'phones', 'android-phones':'phones',
+  laptop:'laptop', laptops:'laptop', 'business-laptops':'laptop'
 };
-
-const CAT   = CAT_MAP[rawCat] || (PRODUCTS.some(p => p.category === rawCat) ? rawCat : 'tv');
-const BRAND = params.get('brand') || null;
-const SUB   = params.get('sub')   || null;
-const TYPE  = params.get('type')  || null;
-const Q     = params.get('q')     || null;
 
 const CAT_NAMES = {
-  tv: 'LED Televisions', refrigerator: 'Refrigerators',
-  ac: 'Air Conditioners', washing: 'Washing Machines & Appliances',
-  kitchen: 'Kitchen Appliances', phones: 'Smartphones & Tablets',
-  laptop: 'Laptops & Computers', small: 'Small Appliances',
+  tv:'TV & Entertainment', refrigerator:'Refrigerators', ac:'Air Conditioners',
+  washing:'Appliances', small:'Small Appliances', kitchen:'Furniture', phones:'Smartphones', laptop:'Laptops'
 };
 
+// Parse URL params
+const SP = new URLSearchParams(location.search);
+let CAT = CAT_MAP[SP.get('cat')?.toLowerCase()] || null;
+let SUB = SP.get('sub') || null;
+let SEARCH_Q = SP.get('q') || '';
+
+// Filter state
+let activeBrands = [];
+let activeSizes  = [];
+let activeTypes  = [];
+let activeInstock = false;
+let activeOffer   = false;
+let activePriceMin = 0;
+let activePriceMax = 0;
+let activeSubcat = SUB;
+let sortMode = 'popular';
+let viewMode = 'grid';
+
+// TV subcats
 const TV_SUBCATS = [
-  { label: 'All Sizes', key: null },
-  { label: '32"', key: '32-inch' },
-  { label: '40"', key: '40-inch' },
-  { label: '43"', key: '43-inch' },
-  { label: '50"', key: '50-inch' },
-  { label: '55"', key: '55-inch' },
-  { label: '58"', key: '58-inch' },
-  { label: '65"', key: '65-inch' },
-  { label: '75"+', key: '75-inch' },
+  { key: null, label: 'All TVs' },
+  { key: '32', label: '32 inch' },
+  { key: '40', label: '40 inch' },
+  { key: '43', label: '43 inch' },
+  { key: '50', label: '50 inch' },
+  { key: '55', label: '55 inch' },
+  { key: '65', label: '65 inch' },
+  { key: '75', label: '75 inch+' },
 ];
 
 const FRIDGE_SUBCATS = [
-  { label: 'All Fridges', key: null },
-  { label: 'Single Door', key: 'single-door' },
-  { label: 'Double Door', key: 'double-door' },
-  { label: 'Up to 200L', key: 'upto-200l' },
-  { label: '201–300L', key: '201-300l' },
-  { label: '301L+', key: '301-400l' },
+  { key: null, label: 'All' },
+  { key: 'single-door', label: 'Single Door' },
+  { key: 'double-door', label: 'Double Door' },
+  { key: 'upto-200l', label: 'Up to 200L' },
+  { key: '201-300l', label: '201–300L' },
+  { key: '301l+', label: '301L+' },
 ];
 
-let activeBrands = BRAND ? [BRAND] : [];
-let activeSizes  = SUB ? [SUB.replace('-inch','')] : [];
-let activeTypes  = TYPE ? [TYPE] : [];
-let activeInstock = false;
-let activePriceMin = 0;
-let activePriceMax = 0;
-let activeSubcat  = SUB;
-
-function renderCategoryView() {
-  // Update page title
-  const title = Q ? `Search: "${Q}"` : (BRAND ? BRAND + ' ' : '') + (CAT_NAMES[CAT] || 'Products');
-  document.getElementById('page-title').textContent = title;
-  document.getElementById('breadcrumb-current').textContent = title;
-  document.title = title + ' — Doordarshan Electronics';
-
-  // Customize size & type labels
-  const sizeLabel = document.getElementById('size-accordion-label');
-  const sizeContainer = document.getElementById('size-options');
-  const typeContainer = document.getElementById('type-options');
-
-  if (CAT === 'refrigerator') {
-    if (sizeLabel) sizeLabel.textContent = 'Capacity & Door Type';
-    if (sizeContainer) {
-      sizeContainer.innerHTML = `
-        <label class="filter-option"><input type="checkbox" data-sub="single-door" onchange="applyFilters()"> Single Door</label>
-        <label class="filter-option"><input type="checkbox" data-sub="double-door" onchange="applyFilters()"> Double Door</label>
-        <label class="filter-option"><input type="checkbox" data-sub="upto-200l" onchange="applyFilters()"> Up to 200 Litres</label>
-        <label class="filter-option"><input type="checkbox" data-sub="201-300l" onchange="applyFilters()"> 201 – 300 Litres</label>
-        <label class="filter-option"><input type="checkbox" data-sub="301-400l" onchange="applyFilters()"> 301+ Litres</label>
-      `;
-    }
-    if (typeContainer) {
-      typeContainer.innerHTML = `
-        <label class="filter-option"><input type="checkbox" data-type="Inverter" onchange="applyFilters()"> Inverter Compressor</label>
-        <label class="filter-option"><input type="checkbox" data-type="Frost Free" onchange="applyFilters()"> Frost Free</label>
-        <label class="filter-option"><input type="checkbox" data-type="Direct Cool" onchange="applyFilters()"> Direct Cool</label>
-      `;
-    }
-  } else if (CAT === 'tv') {
-    if (sizeLabel) sizeLabel.textContent = 'Screen Size';
-    if (sizeContainer) {
-      sizeContainer.innerHTML = `
-        <label class="filter-option"><input type="checkbox" data-size="32" onchange="applyFilters()"> 32 inch</label>
-        <label class="filter-option"><input type="checkbox" data-size="40" onchange="applyFilters()"> 40 inch</label>
-        <label class="filter-option"><input type="checkbox" data-size="43" onchange="applyFilters()"> 43 inch</label>
-        <label class="filter-option"><input type="checkbox" data-size="50" onchange="applyFilters()"> 50 inch</label>
-        <label class="filter-option"><input type="checkbox" data-size="55" onchange="applyFilters()"> 55 inch</label>
-        <label class="filter-option"><input type="checkbox" data-size="65" onchange="applyFilters()"> 65 inch</label>
-        <label class="filter-option"><input type="checkbox" data-size="75" onchange="applyFilters()"> 75 inch &amp; above</label>
-      `;
-    }
-    if (typeContainer) {
-      typeContainer.innerHTML = `
-        <label class="filter-option"><input type="checkbox" data-type="4K" onchange="applyFilters()"> 4K Ultra HD</label>
-        <label class="filter-option"><input type="checkbox" data-type="QLED" onchange="applyFilters()"> QLED</label>
-        <label class="filter-option"><input type="checkbox" data-type="OLED" onchange="applyFilters()"> OLED</label>
-        <label class="filter-option"><input type="checkbox" data-type="Google TV" onchange="applyFilters()"> Google TV</label>
-        <label class="filter-option"><input type="checkbox" data-type="Smart TV" onchange="applyFilters()"> Smart TV</label>
-      `;
-    }
+// ── Init ──
+function init() {
+  // Set title
+  const titleEl = document.getElementById('cat-title');
+  if (SEARCH_Q) {
+    titleEl.textContent = `Search: "${SEARCH_Q}"`;
+    document.getElementById('header-search').value = SEARCH_Q;
+    document.getElementById('mobile-search').value = SEARCH_Q;
+  } else if (CAT) {
+    titleEl.textContent = CAT_NAMES[CAT] || CAT;
+  } else {
+    titleEl.textContent = 'All Products';
   }
+  document.title = titleEl.textContent + ' — Doordarshan Electronics';
 
-  // Build brand options for this category
-  const catProds = PRODUCTS.filter(p => p.category === CAT);
-  const brands = [...new Set(catProds.map(p => p.brand))].sort();
-  const brandContainer = document.getElementById('brand-options');
-  if (brandContainer) {
-    brandContainer.innerHTML = brands.map(b => {
-      const cnt = catProds.filter(p => p.brand === b).length;
-      const checked = activeBrands.includes(b) ? 'checked' : '';
-      return `<label class="filter-option">
-        <input type="checkbox" data-brand="${b}" ${checked} onchange="toggleBrand('${b}')">
-        ${b} <span class="filter-count">${cnt}</span>
-      </label>`;
-    }).join('');
-  }
+  buildFilters();
+  renderProducts();
 
-  // Build subcategory tabs
-  const tabsEl = document.getElementById('subcat-tabs');
-  if (tabsEl) {
-    if (CAT === 'tv') {
-      tabsEl.innerHTML = TV_SUBCATS.map(sc => `
-        <button class="subcat-tab ${activeSubcat === sc.key ? 'active' : ''}"
-          onclick="setSubcat(${sc.key ? `'${sc.key}'` : 'null'})">
-          ${sc.label}
-        </button>
-      `).join('');
-    } else if (CAT === 'refrigerator') {
-      tabsEl.innerHTML = FRIDGE_SUBCATS.map(sc => `
-        <button class="subcat-tab ${activeSubcat === sc.key ? 'active' : ''}"
-          onclick="setSubcat(${sc.key ? `'${sc.key}'` : 'null'})">
-          ${sc.label}
-        </button>
-      `).join('');
-    } else {
-      tabsEl.innerHTML = '';
-    }
-  }
+  // Subcategory tabs
+  if (CAT === 'tv') buildSubcatTabs(TV_SUBCATS);
+  else if (CAT === 'refrigerator') buildSubcatTabs(FRIDGE_SUBCATS);
 
-  // Pre-check size filters
-  if (SUB) {
-    const sizeNum = SUB.replace('-inch', '');
-    document.querySelectorAll(`[data-size="${sizeNum}"]`).forEach(el => el.checked = true);
-    document.querySelectorAll(`[data-sub="${SUB}"]`).forEach(el => el.checked = true);
-  }
+  // Highlight active nav link
+  document.querySelectorAll('header nav a').forEach(a => {
+    const url = new URL(a.href, location.href);
+    const ac = CAT_MAP[url.searchParams.get('cat')?.toLowerCase()];
+    if (ac === CAT) a.classList.add('text-[#e60023]', '!text-[#e60023]');
+  });
 }
 
-function initPage() {
-  renderCategoryView();
-  applyFilters();
+function buildFilters() {
+  // Brands
+  const allProds = PRODUCTS.filter(filterByCategory);
+  const brands = [...new Set(allProds.map(p => p.brand))].sort();
+  const brandHtml = brands.map(b => {
+    const cnt = allProds.filter(p => p.brand === b).length;
+    return `<label class="flex items-center gap-2.5 text-xs cursor-pointer group select-none">
+      <input type="checkbox" class="v2-checkbox brand-cb" data-brand="${b}" onchange="toggleBrand('${b}')">
+      <span class="flex-1 text-[#1a1a1a] group-hover:text-[#e60023] transition-colors">${b}</span>
+      <span class="text-[10px] text-[#6b7280] bg-[#f5f5f5] px-1.5 py-0.5 rounded-full">${cnt}</span>
+    </label>`;
+  }).join('');
+  document.getElementById('brand-options').innerHTML = brandHtml || '<p class="text-[11px] text-[#6b7280]">No brands available.</p>';
+  document.getElementById('m-brand-options').innerHTML = brandHtml || '<p class="text-[11px] text-[#6b7280]">No brands available.</p>';
+  // Re-attach mobile brand listeners
+  document.querySelectorAll('#m-brand-options .brand-cb').forEach(cb => {
+    cb.addEventListener('change', () => toggleBrand(cb.dataset.brand));
+  });
 
-  if (typeof fetchProductsFromDB === 'function') {
-    fetchProductsFromDB().then(liveProds => {
-      if (liveProds && liveProds.length > 0 && typeof PRODUCTS !== 'undefined') {
-        PRODUCTS.length = 0;
-        PRODUCTS.push(...liveProds);
-        renderCategoryView();
-        applyFilters();
-      }
-    }).catch(() => {});
+  // Specs
+  buildSpecFilters();
+}
+
+function buildSpecFilters() {
+  let specHtml = '';
+  let specLabel = 'Specifications';
+
+  if (CAT === 'tv') {
+    specLabel = 'Screen Size';
+    specHtml = [32,40,43,50,55,65,75].map(s =>
+      `<label class="flex items-center gap-2.5 text-xs cursor-pointer group select-none">
+        <input type="checkbox" class="v2-checkbox size-cb" data-size="${s}" onchange="toggleSize('${s}')">
+        <span class="text-[#1a1a1a] group-hover:text-[#e60023] transition-colors">${s} inch${s===75?'+':''}</span>
+      </label>`
+    ).join('') +
+    `<hr class="border-[#e5e7eb] my-2">
+    <p class="text-[11px] text-[#6b7280] font-semibold uppercase tracking-wide mb-1.5">Display Type</p>` +
+    ['4K Ultra HD','QLED','OLED','Google TV','Smart TV'].map(t =>
+      `<label class="flex items-center gap-2.5 text-xs cursor-pointer group select-none">
+        <input type="checkbox" class="v2-checkbox type-cb" data-type="${t}" onchange="toggleType('${t}')">
+        <span class="text-[#1a1a1a] group-hover:text-[#e60023] transition-colors">${t}</span>
+      </label>`
+    ).join('');
+  } else if (CAT === 'refrigerator') {
+    specLabel = 'Capacity & Type';
+    specHtml =
+    `<p class="text-[11px] text-[#6b7280] font-semibold uppercase tracking-wide mb-1.5">Door Type</p>` +
+    ['Single Door','Double Door','Triple Door'].map(t =>
+      `<label class="flex items-center gap-2.5 text-xs cursor-pointer group select-none">
+        <input type="checkbox" class="v2-checkbox type-cb" data-type="${t}" onchange="toggleType('${t}')">
+        <span class="text-[#1a1a1a] group-hover:text-[#e60023] transition-colors">${t}</span>
+      </label>`
+    ).join('') +
+    `<hr class="border-[#e5e7eb] my-2">
+    <p class="text-[11px] text-[#6b7280] font-semibold uppercase tracking-wide mb-1.5">Technology</p>` +
+    ['Inverter Compressor','Frost Free','Direct Cool'].map(t =>
+      `<label class="flex items-center gap-2.5 text-xs cursor-pointer group select-none">
+        <input type="checkbox" class="v2-checkbox type-cb" data-type="${t}" onchange="toggleType('${t}')">
+        <span class="text-[#1a1a1a] group-hover:text-[#e60023] transition-colors">${t}</span>
+      </label>`
+    ).join('') +
+    `<hr class="border-[#e5e7eb] my-2">
+    <p class="text-[11px] text-[#6b7280] font-semibold uppercase tracking-wide mb-1.5">Capacity</p>` +
+    [
+      {s:'upto-200l', l:'Up to 200 Litres'},
+      {s:'201-300l', l:'201 – 300 Litres'},
+      {s:'301l+', l:'301+ Litres'},
+    ].map(({s,l}) =>
+      `<label class="flex items-center gap-2.5 text-xs cursor-pointer group select-none">
+        <input type="checkbox" class="v2-checkbox size-cb" data-size="${s}" onchange="toggleSize('${s}')">
+        <span class="text-[#1a1a1a] group-hover:text-[#e60023] transition-colors">${l}</span>
+      </label>`
+    ).join('');
+  } else if (!CAT) {
+    specHtml = '<p class="text-[11px] text-[#6b7280]">Browse a category for specific filters.</p>';
+  } else {
+    specHtml = '<p class="text-[11px] text-[#6b7280]">No specifications available for this selection.</p>';
   }
+
+  document.getElementById('spec-label').textContent = specLabel;
+  document.getElementById('spec-options').innerHTML = specHtml;
+  document.getElementById('m-spec-label').textContent = specLabel;
+  document.getElementById('m-spec-options').innerHTML = specHtml.replace(/onchange="[^"]+"/g, '');
+}
+
+function buildSubcatTabs(subcats) {
+  const tabs = subcats.map(sc => `
+    <button type="button" data-key="${sc.key||''}" onclick="setSubcat(${sc.key ? `'${sc.key}'` : 'null'})"
+      class="subcat-tab shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors whitespace-nowrap
+      ${activeSubcat === sc.key ? 'bg-[#1a1a1a] text-white border-[#1a1a1a]' : 'bg-white text-[#1a1a1a] border-[#e5e7eb] hover:border-[#1a1a1a]'}">
+      ${sc.label}
+    </button>
+  `).join('');
+  document.getElementById('subcat-tabs').innerHTML = tabs;
 }
 
 function setSubcat(key) {
-  activeSubcat = key;
+  activeSubcat = key === 'null' || key === '' ? null : key;
   const subcats = CAT === 'refrigerator' ? FRIDGE_SUBCATS : TV_SUBCATS;
-  document.querySelectorAll('.subcat-tab').forEach((tab, i) => {
-    tab.classList.toggle('active', subcats[i] && subcats[i].key === key);
-  });
-  if (CAT === 'tv') {
-    activeSizes = key ? [key.replace('-inch', '')] : [];
-    document.querySelectorAll('[data-size]').forEach(cb => {
-      cb.checked = activeSizes.includes(cb.dataset.size);
+  buildSubcatTabs(subcats);
+  renderProducts();
+}
+
+// ── Filter helpers ──
+function filterByCategory(p) {
+  if (!CAT) return true;
+  return p.category === CAT;
+}
+
+function matchesFilters(p) {
+  if (!filterByCategory(p)) return false;
+  if (SEARCH_Q && !`${p.name} ${p.brand} ${p.model||''}`.toLowerCase().includes(SEARCH_Q.toLowerCase())) return false;
+  if (activeBrands.length && !activeBrands.includes(p.brand)) return false;
+
+  // Size filter
+  if (activeSizes.length) {
+    const matchSize = activeSizes.some(s => {
+      if (!isNaN(s)) return String(p.size) === s;
+      if (s === 'upto-200l') return p.size <= 200;
+      if (s === '201-300l') return p.size > 200 && p.size <= 300;
+      if (s === '301l+') return p.size > 300;
+      return false;
     });
+    if (!matchSize) return false;
   }
-  applyFilters();
-}
 
-function toggleBrand(brand) {
-  const idx = activeBrands.indexOf(brand);
-  if (idx === -1) activeBrands.push(brand);
-  else activeBrands.splice(idx, 1);
-  applyFilters();
-}
+  // Type filter
+  if (activeTypes.length) {
+    const types = Array.isArray(p.type) ? p.type : [p.type||''];
+    if (!activeTypes.some(t => types.some(pt => pt.toLowerCase().includes(t.toLowerCase())))) return false;
+  }
 
-function toggleAccordion(id) {
-  const el = document.getElementById(id);
-  if (el) el.classList.toggle('open');
-}
-
-function filterBrandList(query) {
-  const q = (query || '').toLowerCase().trim();
-  const options = document.querySelectorAll('#brand-options .filter-option');
-  options.forEach(opt => {
-    const text = opt.textContent.toLowerCase();
-    opt.style.display = (!q || text.includes(q)) ? '' : 'none';
-  });
-}
-
-function setPriceChip(min, max) {
-  document.getElementById('price-min').value = min || '';
-  document.getElementById('price-max').value = max || '';
-  activePriceMin = min || 0;
-  activePriceMax = max || 0;
-  applyFilters();
-}
-
-function applyPriceFilter() {
-  activePriceMin = parseInt(document.getElementById('price-min').value) || 0;
-  activePriceMax = parseInt(document.getElementById('price-max').value) || 0;
-  applyFilters();
-}
-
-function clearFilters() {
-  activeBrands = [];
-  activeSizes  = [];
-  activeTypes  = [];
-  activeInstock = false;
-  activePriceMin = activePriceMax = 0;
-  document.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
-  document.getElementById('price-min').value = '';
-  document.getElementById('price-max').value = '';
-  const bs = document.getElementById('brand-search');
-  if (bs) bs.value = '';
-  filterBrandList('');
-  setSubcat(null);
-}
-
-function applyFilters() {
-  // Collect checked sizes and types
-  activeSizes  = [...document.querySelectorAll('[data-size]:checked')].map(cb => cb.dataset.size);
-  activeTypes  = [...document.querySelectorAll('[data-type]:checked')].map(cb => cb.dataset.type);
-  activeBrands = [...document.querySelectorAll('[data-brand]:checked')].map(cb => cb.dataset.brand);
-  activeInstock= document.getElementById('filter-instock').checked;
-
-  let results = PRODUCTS.filter(p => {
-    if (p.category !== CAT) return false;
-    if (Q && !p.name.toLowerCase().includes(Q.toLowerCase()) && !p.brand.toLowerCase().includes(Q.toLowerCase()) && !p.model.toLowerCase().includes(Q.toLowerCase())) return false;
-    if (activeBrands.length && !activeBrands.includes(p.brand)) return false;
-    if (activeSizes.length && !activeSizes.includes(String(p.size))) return false;
-    if (activeTypes.length && !activeTypes.some(t => (p.type || []).includes(t))) return false;
-    if (activeSubcat) {
-      if (activeSubcat === 'single-door' && !(p.type || []).includes('Single Door')) return false;
-      if (activeSubcat === 'double-door' && !(p.type || []).includes('Double Door')) return false;
-      if (activeSubcat === 'upto-200l' && p.size > 200) return false;
-      if (activeSubcat === '201-300l' && (p.size <= 200 || p.size > 300)) return false;
-      if (activeSubcat === '301-400l' && p.size <= 300) return false;
+  // Subcat filter
+  if (activeSubcat) {
+    if (!isNaN(activeSubcat)) {
+      if (String(p.size) !== activeSubcat) return false;
+    } else if (activeSubcat === 'single-door') {
+      const t = Array.isArray(p.type) ? p.type : [p.type||''];
+      if (!t.some(x => x.toLowerCase().includes('single'))) return false;
+    } else if (activeSubcat === 'double-door') {
+      const t = Array.isArray(p.type) ? p.type : [p.type||''];
+      if (!t.some(x => x.toLowerCase().includes('double'))) return false;
+    } else if (activeSubcat === 'upto-200l') {
+      if (p.size > 200) return false;
+    } else if (activeSubcat === '201-300l') {
+      if (p.size <= 200 || p.size > 300) return false;
+    } else if (activeSubcat === '301l+') {
+      if (p.size <= 300) return false;
     }
-    if (activeInstock && p.stock === 0) return false;
-    if (activePriceMin > 0 && p.price < activePriceMin) return false;
-    if (activePriceMax > 0 && p.price > activePriceMax) return false;
-    return true;
-  });
+  }
 
-  // Sort
-  const sort = document.getElementById('sort-select').value;
-  if (sort === 'price-asc')  results.sort((a,b) => a.price - b.price);
-  if (sort === 'price-desc') results.sort((a,b) => b.price - a.price);
-  if (sort === 'discount')   results.sort((a,b) => getDiscount(b.mrp,b.price) - getDiscount(a.mrp,a.price));
-  if (sort === 'rating')     results.sort((a,b) => b.rating - a.rating);
-  if (sort === 'newest')     results.sort((a,b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
-
-  renderResults(results);
-  renderActiveTags();
+  if (activeInstock && p.stock === 0) return false;
+  if (activeOffer && (!p.mrp || p.mrp <= p.price)) return false;
+  if (activePriceMin > 0 && p.price < activePriceMin) return false;
+  if (activePriceMax > 0 && p.price > activePriceMax) return false;
+  return true;
 }
 
-function renderResults(products) {
-  const grid = document.getElementById('products-grid');
-  const count = document.getElementById('products-count');
-  count.innerHTML = `Showing <strong>${products.length}</strong> product${products.length !== 1 ? 's' : ''}`;
-  if (!products.length) {
-    grid.innerHTML = `<div class="no-products" style="grid-column:1/-1;">
-      <div style="font-size:3rem;margin-bottom:12px;">🔍</div>
-      <h3>No products found</h3>
-      <p>Try clearing some filters or <a href="https://wa.me/917020209281" style="color:var(--accent);">ask us on WhatsApp</a></p>
-    </div>`;
+function sortProducts(prods) {
+  const arr = [...prods];
+  if (sortMode === 'price-asc') arr.sort((a,b) => a.price - b.price);
+  else if (sortMode === 'price-desc') arr.sort((a,b) => b.price - a.price);
+  else if (sortMode === 'discount') arr.sort((a,b) => ((b.mrp-b.price)/b.mrp||0) - ((a.mrp-a.price)/a.mrp||0));
+  else if (sortMode === 'name-asc') arr.sort((a,b) => a.name.localeCompare(b.name));
+  return arr;
+}
+
+// ── Render ──
+function renderProducts() {
+  const filtered = sortProducts(PRODUCTS.filter(matchesFilters));
+  const grid = document.getElementById('product-grid');
+  const noRes = document.getElementById('no-results');
+  const countEl = document.getElementById('cat-count');
+
+  countEl.textContent = `${filtered.length} product${filtered.length !== 1 ? 's' : ''} found`;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '';
+    noRes.classList.remove('hidden');
+    document.getElementById('clear-filters').classList.remove('hidden');
     return;
   }
-  grid.innerHTML = products.map(p => buildProductCard(p)).join('');
+  noRes.classList.add('hidden');
+
+  const isListView = viewMode === 'list';
+  if (isListView) {
+    grid.className = 'flex flex-col gap-3';
+  } else {
+    grid.className = 'grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 sm:gap-4';
+  }
+
+  grid.innerHTML = filtered.map(p => {
+    const disc = p.mrp && p.mrp > p.price ? Math.round((p.mrp - p.price) / p.mrp * 100) : 0;
+    const inStock = p.stock !== 0;
+    const price = `₹${p.price.toLocaleString('en-IN')}`;
+    const mrp = p.mrp ? `₹${p.mrp.toLocaleString('en-IN')}` : '';
+    const catLink = `category.html?cat=${p.category}`;
+
+    if (isListView) {
+      return `<a href="product.html?id=${p.id}" class="product-card flex gap-4 bg-white rounded-xl p-3 sm:p-4 border border-[#e5e7eb]/60 hover:border-[#d1d5dc] transition-all">
+        <div class="w-24 h-24 sm:w-32 sm:h-32 shrink-0 bg-[#f5f5f5] rounded-lg flex items-center justify-center overflow-hidden">
+          ${p.image ? `<img src="${p.image}" alt="${p.name}" class="w-full h-full object-contain">` :
+            `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-[#d1d5dc]"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>`}
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-[10px] text-[#6b7280] uppercase tracking-wide font-medium">${p.brand}</p>
+          <h3 class="text-sm font-semibold text-[#1a1a1a] leading-snug mt-0.5 line-clamp-2">${p.name}</h3>
+          ${p.desc ? `<p class="text-xs text-[#6b7280] mt-1 line-clamp-1">${p.desc}</p>` : ''}
+          <div class="flex items-center gap-2 mt-2 flex-wrap">
+            <span class="text-base font-bold text-[#1a1a1a]">${price}</span>
+            ${mrp ? `<span class="text-xs text-[#6b7280] line-through">${mrp}</span>` : ''}
+            ${disc > 0 ? `<span class="text-xs font-semibold text-[#e60023] bg-[#fef2f2] px-1.5 py-0.5 rounded-full">${disc}% OFF</span>` : ''}
+          </div>
+          <span class="mt-1 inline-block text-[11px] font-medium ${inStock ? 'text-[#008138]' : 'text-[#e60023]'}">${inStock ? 'In stock' : 'Out of stock'}</span>
+        </div>
+      </a>`;
+    }
+
+    return `<a href="product.html?id=${p.id}" class="product-card group flex flex-col rounded-xl bg-white border border-[#e5e7eb]/60 hover:border-[#d1d5dc] overflow-hidden transition-all p-2 sm:p-3">
+      <div class="aspect-square w-full bg-[#f5f5f5] rounded-lg mb-3 flex items-center justify-center overflow-hidden relative">
+        ${p.image
+          ? `<img src="${p.image}" alt="${p.name}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" loading="lazy">`
+          : `<div class="flex flex-col items-center gap-1 text-[#d1d5dc]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+              <span class="text-[10px]">No image</span>
+            </div>`}
+        ${disc > 0 ? `<span class="absolute top-2 left-2 text-[10px] font-bold text-white bg-[#e60023] px-1.5 py-0.5 rounded-full">${disc}% OFF</span>` : ''}
+        ${p.badge ? `<span class="absolute top-2 ${disc>0?'left-14':'left-2'} text-[10px] font-bold text-white bg-[#1a1a1a] px-1.5 py-0.5 rounded-full">${p.badge}</span>` : ''}
+      </div>
+      <p class="text-[10px] text-[#6b7280] uppercase tracking-wide font-medium mb-0.5">${p.brand}</p>
+      <h3 class="text-xs sm:text-sm font-semibold text-[#1a1a1a] leading-snug line-clamp-2 mb-1">${p.name}</h3>
+      ${p.desc ? `<p class="text-[11px] text-[#6b7280] line-clamp-2 mb-2">${p.desc}</p>` : '<div class="mb-2"></div>'}
+      <div class="mt-auto">
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <span class="text-sm sm:text-base font-bold text-[#1a1a1a]">${price}</span>
+          ${mrp ? `<span class="text-[11px] text-[#6b7280] line-through">${mrp}</span>` : ''}
+        </div>
+        <span class="text-[11px] font-medium ${inStock ? 'text-[#008138]' : 'text-[#e60023]'}">${inStock ? 'In stock' : 'Out of stock'}</span>
+      </div>
+    </a>`;
+  }).join('');
 }
 
-function renderActiveTags() {
-  const container = document.getElementById('active-filters');
-  const tags = [];
-  activeBrands.forEach(b => tags.push({ label: b, remove: () => { activeBrands = activeBrands.filter(x=>x!==b); document.querySelector(`[data-brand="${b}"]`).checked=false; applyFilters(); }}));
-  activeSizes.forEach(s => tags.push({ label: s+'"', remove: () => { document.querySelector(`[data-size="${s}"]`).checked=false; applyFilters(); }}));
-  activeTypes.forEach(t => tags.push({ label: t, remove: () => { document.querySelector(`[data-type="${t}"]`).checked=false; applyFilters(); }}));
-  if (activePriceMin || activePriceMax) tags.push({ label: `₹${activePriceMin}–₹${activePriceMax}`, remove: () => { activePriceMin=activePriceMax=0; document.getElementById('price-min').value=''; document.getElementById('price-max').value=''; applyFilters(); }});
-  container.innerHTML = tags.map((t,i) => `<span class="filter-tag">${t.label} <button onclick="window._filterRemove(${i})">×</button></span>`).join('');
-  window._filterRemove = i => tags[i].remove();
+// ── Toggle helpers ──
+function toggleBrand(brand) {
+  if (activeBrands.includes(brand)) activeBrands = activeBrands.filter(b => b !== brand);
+  else activeBrands.push(brand);
+  // Sync desktop + mobile checkboxes
+  document.querySelectorAll(`.brand-cb[data-brand="${brand}"]`).forEach(cb => cb.checked = activeBrands.includes(brand));
+  updateClearBtn();
+  renderProducts();
 }
 
-// Init on DOMContentLoaded (main.js fires its own, so we rely on products data being loaded)
-document.addEventListener('DOMContentLoaded', initPage);
+function toggleSize(size) {
+  if (activeSizes.includes(size)) activeSizes = activeSizes.filter(s => s !== size);
+  else activeSizes.push(size);
+  document.querySelectorAll(`.size-cb[data-size="${size}"]`).forEach(cb => cb.checked = activeSizes.includes(size));
+  updateClearBtn();
+  renderProducts();
+}
+
+function toggleType(type) {
+  if (activeTypes.includes(type)) activeTypes = activeTypes.filter(t => t !== type);
+  else activeTypes.push(type);
+  document.querySelectorAll(`.type-cb[data-type="${type}"]`).forEach(cb => cb.checked = activeTypes.includes(type));
+  updateClearBtn();
+  renderProducts();
+}
+
+function updateClearBtn() {
+  const hasFilters = activeBrands.length || activeSizes.length || activeTypes.length || activeInstock || activeOffer || activePriceMin || activePriceMax;
+  document.getElementById('clear-filters').classList.toggle('hidden', !hasFilters);
+}
+
+function clearAllFilters() {
+  activeBrands = []; activeSizes = []; activeTypes = [];
+  activeInstock = false; activeOffer = false; activePriceMin = 0; activePriceMax = 0;
+  activeSubcat = null;
+  document.querySelectorAll('.v2-checkbox').forEach(cb => cb.checked = false);
+  document.getElementById('price-min').value = '';
+  document.getElementById('price-max').value = '';
+  updateClearBtn();
+  if (CAT === 'tv') buildSubcatTabs(TV_SUBCATS);
+  else if (CAT === 'refrigerator') buildSubcatTabs(FRIDGE_SUBCATS);
+  renderProducts();
+}
+
+// ── Event listeners ──
+document.getElementById('filter-instock').addEventListener('change', e => {
+  activeInstock = e.target.checked;
+  document.getElementById('m-filter-instock').checked = e.target.checked;
+  renderProducts();
+});
+document.getElementById('m-filter-instock').addEventListener('change', e => {
+  activeInstock = e.target.checked;
+  document.getElementById('filter-instock').checked = e.target.checked;
+  renderProducts();
+});
+document.getElementById('filter-offer').addEventListener('change', e => {
+  activeOffer = e.target.checked;
+  document.getElementById('m-filter-offer').checked = e.target.checked;
+  renderProducts();
+});
+document.getElementById('m-filter-offer').addEventListener('change', e => {
+  activeOffer = e.target.checked;
+  document.getElementById('filter-offer').checked = e.target.checked;
+  renderProducts();
+});
+
+document.getElementById('price-min').addEventListener('input', e => {
+  activePriceMin = parseInt(e.target.value) || 0;
+  updateClearBtn(); renderProducts();
+});
+document.getElementById('price-max').addEventListener('input', e => {
+  activePriceMax = parseInt(e.target.value) || 0;
+  updateClearBtn(); renderProducts();
+});
+
+document.getElementById('sort-select').addEventListener('change', e => {
+  sortMode = e.target.value;
+  renderProducts();
+});
+
+document.getElementById('view-grid').addEventListener('click', () => {
+  viewMode = 'grid';
+  document.getElementById('view-grid').className = 'rounded-lg p-1.5 transition-colors cursor-pointer bg-[#1a1a1a] text-white shadow-xs';
+  document.getElementById('view-list').className = 'rounded-lg p-1.5 transition-colors cursor-pointer text-[#6b7280] hover:text-[#1a1a1a]';
+  renderProducts();
+});
+document.getElementById('view-list').addEventListener('click', () => {
+  viewMode = 'list';
+  document.getElementById('view-list').className = 'rounded-lg p-1.5 transition-colors cursor-pointer bg-[#1a1a1a] text-white shadow-xs';
+  document.getElementById('view-grid').className = 'rounded-lg p-1.5 transition-colors cursor-pointer text-[#6b7280] hover:text-[#1a1a1a]';
+  renderProducts();
+});
+
+// Header search
+document.getElementById('header-search').addEventListener('keydown', e => {
+  if (e.key === 'Enter') location.href = `category.html?q=${encodeURIComponent(e.target.value)}`;
+});
+document.getElementById('mobile-search').addEventListener('keydown', e => {
+  if (e.key === 'Enter') location.href = `category.html?q=${encodeURIComponent(e.target.value)}`;
+});
+
+// Mobile menu
+document.getElementById('mobile-menu-btn').addEventListener('click', () => document.getElementById('mobile-menu').classList.remove('hidden'));
+document.getElementById('mobile-menu-close').addEventListener('click', () => document.getElementById('mobile-menu').classList.add('hidden'));
+document.getElementById('mobile-menu-backdrop').addEventListener('click', () => document.getElementById('mobile-menu').classList.add('hidden'));
+
+// Mobile filter drawer
+document.getElementById('mobile-filter-btn').addEventListener('click', () => document.getElementById('mobile-filter-drawer').classList.remove('hidden'));
+document.getElementById('mobile-filter-close').addEventListener('click', () => document.getElementById('mobile-filter-drawer').classList.add('hidden'));
+document.getElementById('mobile-filter-backdrop').addEventListener('click', () => document.getElementById('mobile-filter-drawer').classList.add('hidden'));
+document.getElementById('apply-mobile-filters').addEventListener('click', () => document.getElementById('mobile-filter-drawer').classList.add('hidden'));
+
+document.getElementById('clear-filters').addEventListener('click', clearAllFilters);
+
+// Pre-set subcat from URL
+if (SUB) {
+  if (!isNaN(SUB)) { activeSizes = [SUB]; }
+  else { activeSubcat = SUB; }
+}
+
+// ── Run ──
+init();
 </script>
 </body>
 </html>
