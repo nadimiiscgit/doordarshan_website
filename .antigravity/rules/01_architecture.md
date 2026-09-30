@@ -110,3 +110,10 @@ Scripts must always be loaded in this strict sequential order at the closing of 
 - `Cart.openWhatsApp()` formats an order payload (product names, model codes, prices, total).
 - Message targets the verified showroom number: `+91 70202 09281`.
 - Store managers verify inventory and arrange direct local doorstep delivery.
+
+---
+
+## 3. Directory Cleanliness & Asset Architecture
+- Every tool, file, asset, or documentation piece added to this repository MUST strictly align with the layout map declared in the root 'README.md'.
+- FORBIDDEN: Saving loose asset media, log dumps, temporary spreadsheets, or markdown documentation directly in the root directory is strictly prohibited. The root must remain clean to preserve context budgets.
+

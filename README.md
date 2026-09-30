@@ -14,32 +14,18 @@ Deployed via Vercel. Auto-deploys on every push to `main`.
 
 ---
 
-## 📁 Project Structure
+## 📂 Repository Directory Map & File Discovery
+For both human developers and AI Agents (Cursor, Claude Code, Antigravity): Use this layout map to locate project files reliably. Do not create loose files outside this structure.
 
-```
-doordarshan_website/
-│
-├── index.html          Homepage — hero, categories, product strips, deals
-├── category.html       Category/search page — filters, product grid
-├── product.html        Product detail page — specs, EMI, delivery info
-├── admin.html          Admin panel — stock management, CSV upload (login required)
-│
-├── css/
-│   └── style.css       Complete design system (1,389 lines, vanilla CSS)
-│
-├── js/
-│   ├── supabase-config.js   Supabase client + all DB/storage functions
-│   ├── products-data.js     Static product catalogue (fallback, 1,097 lines)
-│   ├── cart.js              Shopping cart (localStorage) + toast notifications
-│   ├── i18n.js              English/Marathi bilingual system
-│   └── main.js              Homepage rendering, hero, menus, countdown
-│
-├── assets/             (Currently empty — product images stored in Supabase Storage)
-│
-├── README.md           ← You are here
-├── SECURITY.md         Security audit and fix plan
-└── ARCHITECTURE.md     System design and data flow diagrams
-```
+- `/` (Root): Core frontend presentation views (`index.html`, `category.html`, `product.html`, `admin.html`, `contact.html`, `about.html`) and global deployment configuration (`vercel.json`, `.cursorrules`).
+- `/.antigravity/rules/`: Core agent behavioral constraints and guardrail configurations.
+- `/assets/`: All active web UI assets.
+  - `/assets/brand_images/`: ALL logos, SVGs, brand vectors, and UI arrow assets.
+  - `/assets/css/` & `/assets/js/`: Standard global styles and UI layouts.
+- `/js/`: Unified Data Access Layer. Contains `supabase-config.js` (ALL database infrastructure connections) and `products-data.js` (local static fallback dataset).
+- `/docs/`: Secondary project markdown documentation (`ARCHITECTURE.md`, `SECURITY.md`, `ROADMAP_BRAINSTORMING.md`).
+- `/data/`: Raw store inventories and spreadsheet datasets (`Fridge stock.csv`).
+- `/scripts/`: Automated CI/CD guardrail and quality gates.
 
 ---
 
