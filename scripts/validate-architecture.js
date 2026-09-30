@@ -10,8 +10,9 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT_DIR = path.resolve(__dirname, '..');
-const UI_FILES = ['index.html', 'category.html', 'product.html', 'admin.html'];
+const UI_FILES = ['index.html', 'category.html', 'product.html', 'admin.html', 'about.html', 'contact.html'];
 const FORBIDDEN_TOKENS = ['supabase.from', 'createClient('];
+const UNAUTHORIZED_CREDITS = ['safaz', '7058011774'];
 const RULES_DIR = path.join(ROOT_DIR, '.antigravity', 'rules');
 const MAX_RULE_LINES = 500;
 
@@ -38,6 +39,16 @@ UI_FILES.forEach((file) => {
     if (content.includes(token)) {
       const errorMsg = `[ARCH-01] Direct DB access violation in "${file}": Contains "${token}". ` +
         `Direct client-side DB initialization or database calls bypass the repository pattern layer in 'js/supabase-config.js'.`;
+      violations.push(errorMsg);
+      hasViolations = true;
+    }
+  });
+
+  const contentLower = content.toLowerCase();
+  UNAUTHORIZED_CREDITS.forEach((credit) => {
+    if (contentLower.includes(credit)) {
+      const errorMsg = `[ARCH-03] Unauthorized credit/signature violation in "${file}": Contains unauthorized term "${credit}". ` +
+        `No external third-party credits, developer names, or unauthorized phone numbers are permitted on the UI.`;
       violations.push(errorMsg);
       hasViolations = true;
     }
