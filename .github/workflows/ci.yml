@@ -1,0 +1,44 @@
+name: Master CI/CD Gate
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - vijay-sales-theme
+  pull_request:
+    branches:
+      - main
+      - master
+      - vijay-sales-theme
+
+jobs:
+  validate-and-gate:
+    name: Security, Linting & Architecture Guardrails
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Initialize Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: TruffleHog Secret Scanner
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          extra_args: --only-verified
+
+      - name: Architectural Linting Gate (Single Point of Data Access)
+        run: node scripts/validate-architecture.js
+
+      - name: Physical Existence Sanity Check (Core Assets)
+        run: |
+          echo "Verifying presence of critical runtime assets in workspace..."
+          test -f js/supabase-config.js || { echo "FATAL: js/supabase-config.js missing!"; exit 1; }
+          test -f js/products-data.js || { echo "FATAL: js/products-data.js missing!"; exit 1; }
+          echo "✓ All core runtime files verified successfully."

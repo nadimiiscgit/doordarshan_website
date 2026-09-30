@@ -1,0 +1,84 @@
+name: Supabase Maintenance & Data Protection Pipeline
+
+on:
+  schedule:
+    # 1. Keep-Alive: Run every 3 days at 08:00 AM UTC to prevent free-tier project pausing
+    - cron: '0 8 */3 * *'
+    # 2. Data Backup: Run every Sunday at midnight (00:00 UTC)
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+    inputs:
+      force_backup:
+        description: 'Force JSON catalog backup during manual execution'
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  database-maintenance:
+    name: Keep-Alive Ping & Sunday Backup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Supabase Keep-Alive Ping
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL || 'https://lodiiprfdimohskhcpyf.supabase.co' }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY || 'sb_publishable_FdkBuPPvZVRDCSSY6A-cwQ_0coG4MrF' }}
+        run: |
+          echo "Sending keep-alive ping to Supabase to keep free-tier instances awake..."
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
+            "${SUPABASE_URL}/rest/v1/products?select=id&limit=1")
+
+          echo "Response code: HTTP ${HTTP_STATUS}"
+          if [ "${HTTP_STATUS}" -ne 200 ]; then
+            echo "ERROR: Keep-alive ping failed with HTTP status ${HTTP_STATUS}."
+            exit 1
+          fi
+          echo "✓ Supabase database connection active and awake (HTTP 200)."
+
+      - name: Execute Sunday / On-Demand Catalog Backup
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '0 0 * * 0'
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL || 'https://lodiiprfdimohskhcpyf.supabase.co' }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY || 'sb_publishable_FdkBuPPvZVRDCSSY6A-cwQ_0coG4MrF' }}
+        run: |
+          mkdir -p backups
+          TIMESTAMP=$(date -u +"%Y%m%d_%H%M%S")
+          echo "Initiating database backup snapshot at ${TIMESTAMP} UTC..."
+
+          # Fetch full products table snapshot
+          curl -s -f \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
+            "${SUPABASE_URL}/rest/v1/products?select=*" \
+            -o "backups/products_${TIMESTAMP}.json"
+
+          # Fetch full categories table snapshot
+          curl -s -f \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
+            "${SUPABASE_URL}/rest/v1/categories?select=*" \
+            -o "backups/categories_${TIMESTAMP}.json"
+
+          # Validate snapshot contents
+          if [ ! -s "backups/products_${TIMESTAMP}.json" ] || [ ! -s "backups/categories_${TIMESTAMP}.json" ]; then
+            echo "ERROR: Downloaded backup files are empty or missing!"
+            exit 1
+          fi
+
+          echo "✓ Successfully created backup snapshots:"
+          ls -lh backups/*_${TIMESTAMP}.json
+
+          # Commit and push backup snapshot directly to repository
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add backups/
+          git commit -m "chore(backup): automated Supabase data snapshot [${TIMESTAMP}] [skip ci]" || echo "No backup delta to commit."
+          git push
