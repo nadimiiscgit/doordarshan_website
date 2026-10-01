@@ -38,7 +38,7 @@ Keep the call/WhatsApp model, make catalog/admin information trustworthy, and tr
 - [x] Fix malformed homepage selectors and add a JavaScript syntax check for inline and external scripts.
 - [x] Add the missing HTML doctype and correct broken local brand/arrow asset paths.
 - [x] Add a local asset/config checker. Manual desktop/mobile and deployed nested-route smoke tests remain open.
-- [x] Replace mismatched homepage banner imagery and unsupported discount/product promos with a clear call/WhatsApp enquiry hero; enquiry is not an order.
+- [x] Use the existing iPhone and Samsung S26 FE banner artwork for featured products, remove the redundant bottom “Explore Our Featured Products” tagline, and keep banner actions enquiry-only without unsupported discount claims.
 - [ ] Confirm homepage search, hero enquiry links, navigation, category filters, product links, and mobile menu all work on desktop and mobile.
 - [ ] Parse and honor supported query parameters consistently (including category, subcategory, search, and brand where shown); provide an empty-results state and pagination or progressive loading for larger catalogues.
 - [x] Show a not-found UI for unknown product IDs/slugs rather than falling back to the first product. An HTTP 404 response still needs hosting support/configuration.
