@@ -23,7 +23,7 @@ find js -type f -name '*.js' -print0 | xargs -0 -n1 node --check
 node -e "JSON.parse(require('node:fs').readFileSync('vercel.json', 'utf8'))"
 ```
 
-CI alone does **not** prevent a failed merge or direct push. In GitHub branch protection/rulesets, require the `Security, Linting & Architecture Guardrails` status check, require pull requests, and restrict bypass/direct pushes. Confirm the rule is active with a failing test PR. The current CI is a baseline, not a browser, image, accessibility or Supabase policy test.
+GitHub branch protection is active on `main`: it requires pull requests and the `Security, Linting & Architecture Guardrails` check, with bypass disabled (including administrators). Review approvals are not required. The rule has not yet been exercised by an intentionally failing PR. The current CI is a baseline, not a browser, image, accessibility or Supabase policy test.
 
 ## Known release risks
 
