@@ -1068,6 +1068,7 @@
         <button class="nav-link active" onclick="showPanel('dashboard',this)">📊 Dashboard</button>
         <button class="nav-link" onclick="showPanel('products',this)">📦 Products Catalog</button>
         <button class="nav-link" onclick="showPanel('categories',this)">🏷️ Store Categories</button>
+        <button class="nav-link" onclick="showPanel('content',this)">✦ Site Content</button>
         <button class="nav-link" onclick="showPanel('images',this)">📸 Image Uploader &amp; Bulk</button>
         <button class="nav-link" onclick="showPanel('upload',this)">📂 CSV / XLS Upload</button>
         <div class="nav-label" style="margin-top:8px;">Settings</div>
@@ -1185,6 +1186,7 @@
                   <th>MRP / Sale Price</th>
                   <th>Discount</th>
                   <th>Stock</th>
+                  <th>Public</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -1217,11 +1219,28 @@
                     <th>Category Code (Key)</th>
                     <th>Description</th>
                     <th>Total Products</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody id="categories-tbody"></tbody>
               </table>
             </div>
+          </div>
+        </div>
+
+        <div class="panel" id="panel-content">
+          <div style="background:var(--surface);border-radius:14px;padding:28px;border:1px solid var(--border);max-width:960px;">
+            <h2>Site content</h2>
+            <p style="color:var(--muted);">Save a draft, preview it in your browser, then publish. Only approved products can appear publicly.</p>
+            <p id="content-status" role="status">Loading content…</p>
+            <div class="form-grid"><div class="field"><label for="content-hero-title">Homepage headline</label><input id="content-hero-title" maxlength="80" placeholder="Good electronics."></div><div class="field"><label for="content-hero-emphasis">Headline accent</label><input id="content-hero-emphasis" maxlength="80" placeholder="Helpful people."></div></div>
+            <div class="field"><label for="content-hero-description">Homepage introduction</label><textarea id="content-hero-description" maxlength="350"></textarea></div>
+            <div class="form-grid"><div class="field"><label for="content-phone">Call number (with country code)</label><input id="content-phone" inputmode="tel" placeholder="917020209281"></div><div class="field"><label for="content-whatsapp">WhatsApp number (with country code)</label><input id="content-whatsapp" inputmode="tel" placeholder="917020209281"></div></div>
+            <div class="field"><label for="content-address">Store address</label><input id="content-address" placeholder="Samta Colony, Dharashiv, Maharashtra"></div>
+            <div class="field"><label for="content-intro">Store introduction</label><textarea id="content-intro" placeholder="A short, factual introduction to the showroom"></textarea></div>
+            <div class="field"><label for="content-store-image">Showroom photo URL</label><input id="content-store-image" type="url" placeholder="https://..."><input id="content-store-file" type="file" accept="image/png,image/jpeg,image/webp"><span class="helper">Optional. Upload an actual store photo, not a stock image.</span></div>
+            <div class="form-grid"><div class="field"><label for="content-featured">Featured product IDs (up to 4, comma-separated)</label><input id="content-featured" placeholder="12, 18, 21"></div><div class="field"><label for="content-new">New-arrival product IDs (up to 4, comma-separated)</label><input id="content-new" placeholder="24, 25"></div></div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;"><button class="btn btn-primary" onclick="saveSiteDraft()">Save draft</button><button class="btn btn-outline" onclick="previewSiteDraft()">Preview draft</button><button class="btn btn-success" onclick="publishSiteDraft()">Publish</button><button class="btn btn-outline" onclick="restoreSiteVersion()">Restore previous</button></div>
           </div>
         </div>
 
@@ -1448,7 +1467,7 @@
             </div>
             <div class="arrow">→</div>
             <div class="calc-field">
-              <label>Sale Price (₹)</label>
+              <label>Verified asking price (₹; 0 to hide)</label>
               <input type="number" id="edit-price" placeholder="44000" oninput="calcPrice('price')" />
             </div>
           </div>
@@ -1477,17 +1496,19 @@
           <label>Features / Tags (comma-separated)</label>
           <input type="text" id="edit-type" placeholder="4K, Smart TV, Google TV, Inverter" />
         </div>
+        <div class="field"><label for="edit-specs">Verified specifications (one Key: Value per line)</label><textarea id="edit-specs" placeholder="Screen size: 43 inches"></textarea></div>
 
         <div style="border:1.5px solid var(--border);border-radius:10px;padding:14px;">
           <div class="toggle-row">
-            <div><label>Mark as New Arrival</label></div>
+            <div><label>New-arrival tag</label><span class="helper">Choose homepage products and order in Site Content.</span></div>
             <label class="toggle"><input type="checkbox" id="edit-new" /><span class="toggle-slider"></span></label>
           </div>
           <div class="toggle-row" style="border-top:1px solid var(--border);margin-top:8px;padding-top:8px;">
-            <div><label>Featured Product on Homepage</label></div>
+            <div><label>Featured tag</label><span class="helper">Choose homepage products and order in Site Content.</span></div>
             <label class="toggle"><input type="checkbox" id="edit-featured" /><span
                 class="toggle-slider"></span></label>
           </div>
+          <div class="toggle-row" style="border-top:1px solid var(--border);margin-top:8px;padding-top:8px;"><div><label>Approved for public catalogue</label><span class="helper">Only enable after checking name, model, image, highlights and price.</span></div><label class="toggle"><input type="checkbox" id="edit-approved"><span class="toggle-slider"></span></label></div>
         </div>
 
       </div>
@@ -1508,6 +1529,7 @@
       <div class="modal-body">
         <div class="field">
           <label>Category Name</label>
+          <input type="hidden" id="cat-id-input" />
           <input type="text" id="cat-name-input" placeholder="e.g. Smart Watches" />
         </div>
         <div class="field">
@@ -1523,6 +1545,7 @@
           <label>Description</label>
           <textarea id="cat-desc-input" placeholder="Short summary of items in this category..."></textarea>
         </div>
+        <div class="field"><label for="cat-image-input">Category photo URL</label><input id="cat-image-input" type="url" placeholder="https://..."><input id="cat-image-file" type="file" accept="image/png,image/jpeg,image/webp"></div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-outline" onclick="closeCategoryModal()">Cancel</button>
@@ -1534,9 +1557,8 @@
   <div id="toast-container"></div>
 
   <!-- ══ SCRIPTS ════════════════════════════════════════════════ -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2"></script>
   <script src="js/supabase-config.js"></script>
-  <script src="js/products-data.js"></script>
   <script src="js/csv-import.js"></script>
   <script>
     // Rate limiting state for admin login
@@ -1615,6 +1637,12 @@
             return;
           }
 
+          if (!await isSiteAdmin()) {
+            await signOutAdmin();
+            loginErr.textContent = 'This login is not on the store-owner allowlist.';
+            loginErr.style.display = 'block';
+            return;
+          }
           // Success
           loginRateLimit.attempts = 0;
           loginRateLimit.lockedUntil = null;
@@ -1654,7 +1682,7 @@
       // Check active Supabase Auth session
       try {
         const session = typeof getAdminSession === 'function' ? await getAdminSession() : null;
-        if (session) {
+        if (session && await isSiteAdmin()) {
           document.getElementById('login-screen').style.display = 'none';
           document.getElementById('app').style.display = 'block';
           resetInactivityTimer();
@@ -1686,6 +1714,7 @@
     async function initApp() {
       await loadCategoriesData();
       await loadAdminData();
+      if (typeof loadSiteContentEditor === 'function') await loadSiteContentEditor();
     }
 
     async function loadCategoriesData() {
@@ -1703,7 +1732,7 @@
       const prodCat = document.getElementById('prod-category');
       const bulkCat = document.getElementById('bulk-filter-cat');
 
-      const optionsHTML = liveCategories.map(c => `<option value="${c.key}">${c.icon || '📦'} ${c.name}</option>`).join('');
+      const optionsHTML = liveCategories.map(c => `<option value="${escapeHtml(c.key)}">${escapeHtml(c.icon || '📦')} ${escapeHtml(c.name)}</option>`).join('');
 
       if (editCat) editCat.innerHTML = optionsHTML;
       if (prodCat) prodCat.innerHTML = '<option value="">All Categories</option>' + optionsHTML;
@@ -1716,7 +1745,7 @@
         if (!dbClient || typeof fetchProductsFromDB !== 'function') {
           throw new Error('Supabase is not connected.');
         }
-        liveProducts = await fetchProductsFromDB({ allowFallback: false });
+        liveProducts = await fetchProductsFromDB();
         adminProductsLoadedFromDB = true;
       } catch (error) {
         liveProducts = [];
@@ -1742,6 +1771,7 @@
           toast('❌ Admin session expired. Sign in again; no changes were saved.', 'error');
           return false;
         }
+        if (!await isSiteAdmin()) throw new Error('User is not on the store-owner allowlist.');
         return true;
       } catch (error) {
         toast('❌ Could not verify the admin session. No changes were saved.', 'error');
@@ -1759,7 +1789,7 @@
       document.getElementById('panel-' + name).classList.add('active');
       document.getElementById('panel-title').textContent = {
         dashboard: 'Dashboard', products: 'Products Catalog', categories: 'Store Categories',
-        images: 'Image Uploader & Bulk Assign', upload: 'CSV Upload', settings: 'Settings'
+        content: 'Site Content', images: 'Image Uploader & Bulk Assign', upload: 'CSV Upload', settings: 'Settings'
       }[name] || name;
       if (btn) btn.classList.add('active');
       if (window.innerWidth <= 900) {
@@ -1780,7 +1810,7 @@
 
     function renderBrandSummary() {
       const prods = getMergedProducts();
-      const brands = {};
+      const brands = Object.create(null);
       prods.forEach(p => { brands[p.brand] = (brands[p.brand] || { total: 0, inStock: 0 }); brands[p.brand].total++; if (p.stock > 0) brands[p.brand].inStock++; });
       const el = document.getElementById('dash-brand-summary');
       el.innerHTML = `<table style="width:100%;border-collapse:collapse;">
@@ -1792,7 +1822,7 @@
     </tr></thead>
     <tbody>
       ${Object.entries(brands).map(([b, v], i) => `<tr style="border-top:1px solid var(--border);${i % 2 ? 'background:var(--bg)' : ''}">
-        <td style="padding:10px 16px;font-weight:700;">${b}</td>
+        <td style="padding:10px 16px;font-weight:700;">${escapeHtml(b)}</td>
         <td style="padding:10px 16px;text-align:center;">${v.total}</td>
         <td style="padding:10px 16px;text-align:center;color:var(--success);font-weight:700;">${v.inStock}</td>
         <td style="padding:10px 16px;text-align:center;color:${v.total - v.inStock > 0 ? 'var(--danger)' : 'var(--muted)'};font-weight:700;">${v.total - v.inStock}</td>
@@ -1807,20 +1837,37 @@
       tbody.innerHTML = liveCategories.map(c => {
         const prodCount = liveProducts.filter(p => p.category === c.key).length;
         return `<tr>
-      <td style="font-size:1.4rem;">${c.icon || '📦'}</td>
-      <td style="font-weight:700;color:var(--primary);">${c.name}</td>
-      <td><code>${c.key}</code></td>
-      <td style="color:var(--muted);">${c.description || '—'}</td>
+      <td style="font-size:1.4rem;">${escapeHtml(c.icon || '📦')}</td>
+      <td style="font-weight:700;color:var(--primary);">${escapeHtml(c.name)}</td>
+      <td><code>${escapeHtml(c.key)}</code></td>
+      <td style="color:var(--muted);">${escapeHtml(c.description || '—')}</td>
       <td><span class="cat-tag">${prodCount} products</span></td>
+      <td><button class="icon-btn" onclick="openEditCategoryModal(${Number(c.id)})" title="Edit category">✏️</button></td>
     </tr>`;
       }).join('');
     }
 
     function openAddCategoryModal() {
+      document.getElementById('cat-id-input').value = '';
+      document.getElementById('cat-key-input').disabled = false;
       document.getElementById('cat-name-input').value = '';
       document.getElementById('cat-key-input').value = '';
       document.getElementById('cat-icon-input').value = '';
       document.getElementById('cat-desc-input').value = '';
+      document.getElementById('cat-image-input').value = '';
+      document.getElementById('category-modal').classList.add('open');
+    }
+
+    function openEditCategoryModal(id) {
+      const category = liveCategories.find(c => Number(c.id) === id);
+      if (!category) return;
+      document.getElementById('cat-id-input').value = category.id;
+      document.getElementById('cat-name-input').value = category.name || '';
+      document.getElementById('cat-key-input').value = category.key || '';
+      document.getElementById('cat-key-input').disabled = true;
+      document.getElementById('cat-icon-input').value = category.icon || '';
+      document.getElementById('cat-desc-input').value = category.description || '';
+      document.getElementById('cat-image-input').value = category.image || '';
       document.getElementById('category-modal').classList.add('open');
     }
 
@@ -1837,8 +1884,13 @@
       if (!name) { toast('❌ Category name is required', 'error'); return; }
       if (!key) key = name.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-      const catObj = { key, name, description: desc, icon };
+      const image = document.getElementById('cat-image-input').value.trim();
+      if (image && !safeImageUrl(image)) { toast('❌ Use a valid HTTPS image URL.', 'error'); return; }
+      const catObj = { key, name, description: desc, icon, image };
+      const existingId = Number(document.getElementById('cat-id-input').value);
+      if (existingId) catObj.id = existingId;
 
+      if (!await ensureAdminWriteReady()) return;
       try {
         await saveCategoryToDB(catObj);
         await loadCategoriesData();
@@ -1883,38 +1935,39 @@
         const isLow = p.stock > 0 && p.stock <= 3;
         const stockCls = p.stock === 0 ? 'stock-out' : isLow ? 'stock-low' : 'stock-in';
         const stockLbl = p.stock === 0 ? '✗ Out' : isLow ? `⚡ ${p.stock} left` : `✓ ${p.stock}`;
-        const imgThumb = p.image ? `<img src="${p.image}" style="width:100%;height:100%;object-fit:cover;" />` : `<span style="font-size:0.55rem;font-weight:900;">${p.brand}</span>`;
+        const imgThumb = safeImageUrl(p.image) ? `<img src="${escapeHtml(safeImageUrl(p.image))}" style="width:100%;height:100%;object-fit:cover;" />` : `<span style="font-size:0.55rem;font-weight:900;">${escapeHtml(p.brand)}</span>`;
         const catObj = liveCategories.find(c => c.key === p.category);
         const catName = catObj ? catObj.name : p.category;
 
         return `<tr>
-      <td><input type="checkbox" class="row-check" value="${p.id}" /></td>
+      <td><input type="checkbox" class="row-check" value="${Number(p.id)}" /></td>
       <td>
         <div class="product-cell">
           <div class="product-thumb">
             ${imgThumb}
           </div>
           <div class="product-name-cell">
-            <div class="name">${p.name}</div>
-            <div class="model">${p.model || ''}</div>
+            <div class="name">${escapeHtml(p.name)}</div>
+            <div class="model">${escapeHtml(p.model || '')}</div>
           </div>
         </div>
       </td>
-      <td><span class="cat-tag">${catName}</span></td>
-      <td><span class="brand-tag">${p.brand}</span></td>
+      <td><span class="cat-tag">${escapeHtml(catName)}</span></td>
+      <td><span class="brand-tag">${escapeHtml(p.brand)}</span></td>
       <td>
         <div class="price-cell">
           ${p.mrp > 1 ? `<div class="mrp">₹${p.mrp.toLocaleString('en-IN')}</div>` : '<div class="mrp">—</div>'}
-          <div class="sale">₹${p.price.toLocaleString('en-IN')}</div>
+          <div class="sale">${p.price > 1 ? `₹${p.price.toLocaleString('en-IN')}` : 'Confirm rate'}</div>
         </div>
       </td>
       <td>${disc > 0 ? `<span class="discount-pill">-${disc}%</span>` : '<span style="color:var(--muted);font-size:0.8rem;">—</span>'}</td>
       <td><span class="stock-pill ${stockCls}">${stockLbl}</span></td>
+      <td>${p.isApproved === true ? 'Approved' : 'Review needed'}</td>
       <td>
         <div class="action-btns-cell">
-          <button class="icon-btn" style="background:#EFF6FF;color:#1E40AF;" title="Edit" onclick="openEditModal(${p.id})">✏️</button>
-          <button class="icon-btn" style="background:#FEE2E2;color:#DC2626;" title="Delete" onclick="deleteProduct(${p.id})">🗑️</button>
-          <a class="icon-btn" style="background:#F0FDF4;color:#15803D;" title="View on site" href="product.html?id=${p.id}" target="_blank">👁️</a>
+          <button class="icon-btn" style="background:#EFF6FF;color:#1E40AF;" title="Edit" onclick="openEditModal(${Number(p.id)})">✏️</button>
+          <button class="icon-btn" style="background:#FEE2E2;color:#DC2626;" title="Delete" onclick="deleteProduct(${Number(p.id)})">🗑️</button>
+          <a class="icon-btn" style="background:#F0FDF4;color:#15803D;" title="View on site" href="product.html?id=${Number(p.id)}" target="_blank">👁️</a>
         </div>
       </td>
     </tr>`;
@@ -2002,13 +2055,13 @@
       const tbody = document.getElementById('bulk-products-tbody');
       if (!tbody) return;
       tbody.innerHTML = prods.map(p => {
-        const currentImg = p.image ? `<img src="${p.image}" style="width:40px;height:30px;object-fit:cover;border-radius:4px;" />` : `<span style="color:var(--muted);font-size:0.75rem;">None</span>`;
+        const currentImg = safeImageUrl(p.image) ? `<img src="${escapeHtml(safeImageUrl(p.image))}" style="width:40px;height:30px;object-fit:cover;border-radius:4px;" />` : `<span style="color:var(--muted);font-size:0.75rem;">None</span>`;
         const catObj = liveCategories.find(c => c.key === p.category);
         return `<tr style="border-bottom:1px solid var(--border);">
-      <td style="padding:10px 14px;"><input type="checkbox" class="bulk-item-check" value="${p.id}" onchange="updateBulkSelectedCount()" /></td>
-      <td style="padding:10px 14px;font-weight:700;">${p.name} <span style="font-size:0.75rem;color:var(--muted);">(${p.model || ''})</span></td>
-      <td style="padding:10px 14px;"><span class="cat-tag">${catObj ? catObj.name : p.category}</span></td>
-      <td style="padding:10px 14px;"><span class="brand-tag">${p.brand}</span></td>
+      <td style="padding:10px 14px;"><input type="checkbox" class="bulk-item-check" value="${Number(p.id)}" onchange="updateBulkSelectedCount()" /></td>
+      <td style="padding:10px 14px;font-weight:700;">${escapeHtml(p.name)} <span style="font-size:0.75rem;color:var(--muted);">(${escapeHtml(p.model || '')})</span></td>
+      <td style="padding:10px 14px;"><span class="cat-tag">${escapeHtml(catObj ? catObj.name : p.category)}</span></td>
+      <td style="padding:10px 14px;"><span class="brand-tag">${escapeHtml(p.brand)}</span></td>
       <td style="padding:10px 14px;">${currentImg}</td>
     </tr>`;
       }).join('');
@@ -2033,6 +2086,7 @@
         toast('❌ Upload or enter an image URL first!', 'error');
         return;
       }
+      if (!safeImageUrl(currentBulkImageUrl)) { toast('❌ Use a valid HTTPS image URL.', 'error'); return; }
       const selectedBoxes = document.querySelectorAll('.bulk-item-check:checked');
       if (selectedBoxes.length === 0) {
         toast('❌ Select at least one product below!', 'error');
@@ -2052,6 +2106,7 @@
       liveProducts.forEach(p => {
         if (selectedIds.includes(p.id)) {
           p.image = currentBulkImageUrl;
+          p.isApproved = false;
         }
       });
 
@@ -2112,8 +2167,10 @@
       document.getElementById('edit-size').value = p.size || '';
       document.getElementById('edit-desc').value = p.description || '';
       document.getElementById('edit-type').value = (p.type || []).join(', ');
+      document.getElementById('edit-specs').value = Object.entries(p.specs || {}).map(([key, value]) => `${key}: ${value}`).join('\n');
       document.getElementById('edit-new').checked = p.isNew || false;
       document.getElementById('edit-featured').checked = p.isFeatured || false;
+      document.getElementById('edit-approved').checked = p.isApproved === true;
       document.getElementById('edit-image-url').value = p.image || '';
       updateModalImagePreview(p.image || '');
 
@@ -2125,13 +2182,14 @@
 
     function openAddModal() {
       document.getElementById('modal-title').textContent = '+ Add New Product';
-      ['edit-id', 'edit-name', 'edit-model', 'edit-mrp', 'edit-price', 'edit-stock', 'edit-size', 'edit-desc', 'edit-type', 'edit-discount-pct', 'edit-image-url'].forEach(id => {
+      ['edit-id', 'edit-name', 'edit-model', 'edit-mrp', 'edit-price', 'edit-stock', 'edit-size', 'edit-desc', 'edit-type', 'edit-specs', 'edit-discount-pct', 'edit-image-url'].forEach(id => {
         const el = document.getElementById(id); if (el) el.value = '';
       });
       document.getElementById('edit-category').value = liveCategories[0]?.key || 'tv';
       document.getElementById('edit-brand').value = 'Sony';
       document.getElementById('edit-new').checked = false;
       document.getElementById('edit-featured').checked = false;
+      document.getElementById('edit-approved').checked = false;
       updateModalImagePreview('');
       updatePricePreview();
       showPanel('products', document.querySelectorAll('.nav-link')[1]);
@@ -2147,7 +2205,7 @@
       const category = document.getElementById('edit-category').value;
       const brand = document.getElementById('edit-brand').value;
       const model = document.getElementById('edit-model').value.trim();
-      const mrp = parseFloat(document.getElementById('edit-mrp').value) || 1;
+      const mrp = parseFloat(document.getElementById('edit-mrp').value) || 0;
       const price = parseFloat(document.getElementById('edit-price').value) || 0;
       const stock = parseInt(document.getElementById('edit-stock').value) || 0;
       const sizeVal = document.getElementById('edit-size').value.trim();
@@ -2155,15 +2213,25 @@
       const typeRaw = document.getElementById('edit-type').value;
       const isNew = document.getElementById('edit-new').checked;
       const isFeat = document.getElementById('edit-featured').checked;
+      const isApproved = document.getElementById('edit-approved').checked;
       const image = document.getElementById('edit-image-url').value.trim();
+      if (image && !safeImageUrl(image)) { toast('❌ Use a valid HTTPS image URL.', 'error'); return; }
 
       if (!name || name.length < 2) { toast('❌ Product name must be at least 2 characters', 'error'); return; }
       if (!brand) { toast('❌ Brand is required', 'error'); return; }
-      if (isNaN(price) || price <= 0) { toast('❌ Sale price must be greater than ₹0', 'error'); return; }
+      if (isNaN(price) || price < 0) { toast('❌ Sale price cannot be negative', 'error'); return; }
       if (mrp > 0 && mrp < price) { toast('❌ MRP cannot be less than sale price', 'error'); return; }
       if (isNaN(stock) || stock < 0) { toast('❌ Stock cannot be negative', 'error'); return; }
 
       const type = typeRaw ? typeRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+      const specs = Object.create(null);
+      for (const line of document.getElementById('edit-specs').value.split('\n').filter(Boolean)) {
+        const at = line.indexOf(':');
+        if (at < 1) { toast('❌ Each specification needs Key: Value.', 'error'); return; }
+        const key = line.slice(0, at).trim();
+        if (['__proto__', 'constructor', 'prototype'].includes(key) || !key) { toast('❌ Invalid specification name.', 'error'); return; }
+        specs[key] = line.slice(at + 1).trim();
+      }
       const sizeNum = parseInt(sizeVal) || null;
 
       const record = {
@@ -2181,6 +2249,8 @@
         description: desc,
         is_new: isNew,
         is_featured: isFeat,
+        is_approved: isApproved,
+        specs: specs,
         image: image
       };
 
@@ -2196,8 +2266,7 @@
       const idx = liveProducts.findIndex(p => p.id === id);
       const formattedObj = {
         id, name, category, brand, model, subcategory: record.subcategory,
-        type, mrp, price, stock, size: sizeNum, description: desc, isNew, isFeatured: isFeat, image,
-        rating: 4.0, reviews: 0
+        type, mrp, price, stock, size: sizeNum, description: desc, isNew, isFeatured: isFeat, isApproved, specs, image
       };
 
       if (idx !== -1) {
@@ -2472,6 +2541,7 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeCategoryModal(); } });
   </script>
   <script src="js/admin-csv-ui.js"></script>
+  <script src="js/admin-site-content.js"></script>
 </body>
 
 </html>

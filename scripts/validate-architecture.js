@@ -10,7 +10,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT_DIR = path.resolve(__dirname, '..');
-const UI_FILES = ['index.html', 'category.html', 'product.html', 'admin.html', 'about.html', 'contact.html'];
+const UI_FILES = ['index.html', 'category.html', 'product.html', 'store.html', 'admin.html', 'about.html', 'contact.html'];
 const FORBIDDEN_TOKENS = ['supabase.from', 'createClient('];
 const UNAUTHORIZED_CREDITS = ['safaz', '7058011774'];
 const RULES_DIR = path.join(ROOT_DIR, '.antigravity', 'rules');

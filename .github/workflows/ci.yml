@@ -19,6 +19,7 @@ jobs:
   validate-and-gate:
     name: Security, Linting & Architecture Guardrails
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -45,6 +46,9 @@ jobs:
       - name: Validate local HTML assets and Vercel configuration
         run: node scripts/validate-assets.js
 
+      - name: Validate public catalogue boundaries
+        run: node scripts/validate-public-site.js
+
       - name: Run CSV import tests
         run: node --test tests/*.test.js
 
@@ -52,5 +56,6 @@ jobs:
         run: |
           echo "Verifying presence of critical runtime assets in workspace..."
           test -f js/supabase-config.js || { echo "FATAL: js/supabase-config.js missing!"; exit 1; }
-          test -f js/products-data.js || { echo "FATAL: js/products-data.js missing!"; exit 1; }
+          test -f js/site.js || { echo "FATAL: js/site.js missing!"; exit 1; }
+          test -f data/catalog-snapshot.json || { echo "FATAL: sanitized snapshot missing!"; exit 1; }
           echo "✓ All core runtime files verified successfully."

@@ -21,8 +21,10 @@
     { "source": "/category/:cat", "destination": "/category.html?cat=:cat" },
     { "source": "/search", "destination": "/category.html" },
     { "source": "/admin/login", "destination": "/admin.html" },
-    { "source": "/support", "destination": "/contact.html" },
-    { "source": "/about", "destination": "/about.html" },
+    { "source": "/support", "destination": "/store.html" },
+    { "source": "/contact", "destination": "/store.html" },
+    { "source": "/about", "destination": "/store.html" },
+    { "source": "/store", "destination": "/store.html" },
     { "source": "/product/:slug", "destination": "/product.html?slug=:slug" }
   ],
   "headers": [
@@ -37,10 +39,6 @@
         {
           "key": "Content-Security-Policy",
           "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; connect-src 'self' https://lodiiprfdimohskhcpyf.supabase.co wss://lodiiprfdimohskhcpyf.supabase.co; font-src 'self' https://fonts.gstatic.com; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'"
-        },
-        {
-          "key": "Content-Security-Policy-Report-Only",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://lodiiprfdimohskhcpyf.supabase.co https://ik.imagekit.io https://images.unsplash.com https://picsum.photos; connect-src 'self' https://lodiiprfdimohskhcpyf.supabase.co wss://lodiiprfdimohskhcpyf.supabase.co; font-src 'self' https://fonts.gstatic.com; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'"
         }
       ]
     }

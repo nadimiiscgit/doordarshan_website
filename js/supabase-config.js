@@ -80,10 +80,10 @@ async function fetchCategoriesFromDB() {
   try {
     const { data, error } = await dbClient
       .from('categories')
-      .select('*')
+      .select('id,key,name,description,icon,image')
       .order('id', { ascending: true });
 
-    if (error || !data || data.length === 0) {
+    if (error || !data) {
       return DEFAULT_CATEGORIES;
     }
     return data;
@@ -104,12 +104,6 @@ async function saveCategoryToDB(categoryObj) {
   return data;
 }
 
-function getStaticFallbackProducts() {
-  return typeof PRODUCTS !== 'undefined'
-    ? PRODUCTS.map(product => ({ ...product, _catalogSource: 'static-fallback' }))
-    : [];
-}
-
 function mapSupabaseProductRows(rows) {
   return rows.map(item => ({
     id: item.id,
@@ -123,10 +117,9 @@ function mapSupabaseProductRows(rows) {
     price: parseFloat(item.price || 0),
     stock: parseInt(item.stock || 0, 10),
     size: item.size,
-    rating: item.rating == null ? null : parseFloat(item.rating),
-    reviews: item.reviews == null ? 0 : parseInt(item.reviews, 10),
     isNew: item.is_new,
     isFeatured: item.is_featured,
+    isApproved: item.is_approved === true,
     specs: item.specs || {},
     description: item.description,
     image: item.image || '',
@@ -135,43 +128,96 @@ function mapSupabaseProductRows(rows) {
   }));
 }
 
-// Public pages may use a clearly marked static fallback. Admin callers pass
-// { allowFallback: false } so an offline snapshot can never be edited as live data.
-async function fetchProductsFromDB(options = {}) {
-  const allowFallback = options.allowFallback !== false;
-  if (!dbClient) {
-    if (!allowFallback) throw new Error('Supabase is not connected; live products were not loaded.');
-    console.warn('Using static fallback products catalog; prices and stock need confirmation.');
-    return getStaticFallbackProducts();
-  }
-  try {
-    const { data, error } = await dbClient
-      .from('products')
-      .select('*')
-      .order('id', { ascending: true });
+// Admin only. Never return a static snapshot as editable live data.
+async function fetchProductsFromDB() {
+  if (!dbClient) throw new Error('Supabase is not connected; live products were not loaded.');
+  const { data, error } = await dbClient
+    .from('products')
+    .select('*')
+    .order('id', { ascending: true });
+  if (error) throw error;
+  return mapSupabaseProductRows(data || []);
+}
 
-    if (error) {
-      console.error('Error fetching products from Supabase:', error);
-      if (!allowFallback) throw error;
-      return getStaticFallbackProducts();
-    }
+const PUBLIC_PRODUCT_COLUMNS = 'id,name,brand,category,subcategory,type,model,price,size,is_new,is_featured,specs,description,image,images';
 
-    if (data && data.length > 0) {
-      return mapSupabaseProductRows(data);
-    }
-    return allowFallback ? getStaticFallbackProducts() : [];
-  } catch (err) {
-    console.error('Supabase fetch exception:', err);
-    if (!allowFallback) throw err;
+async function fetchPublicProducts(filters = {}) {
+  if (!dbClient) throw new Error('Catalogue connection unavailable');
+  const page = Math.max(1, Number(filters.page) || 1);
+  const pageSize = Math.min(24, Math.max(1, Number(filters.pageSize) || 12));
+  let query = dbClient.from('catalogue_products').select(PUBLIC_PRODUCT_COLUMNS, { count: 'exact' });
+  if (filters.id != null) query = query.eq('id', filters.id);
+  if (Array.isArray(filters.ids) && filters.ids.length) query = query.in('id', filters.ids);
+  if (filters.category) query = query.eq('category', filters.category);
+  if (filters.subcategory) query = query.eq('subcategory', filters.subcategory);
+  if (filters.brand) query = query.eq('brand', filters.brand);
+  if (filters.featured) query = query.eq('is_featured', true);
+  if (filters.newArrivals) query = query.eq('is_new', true);
+  if (filters.search) {
+    const term = String(filters.search).replace(/[^\p{L}\p{N}\s-]/gu, ' ').trim().slice(0, 80);
+    if (term) query = query.or(`name.ilike.%${term}%,brand.ilike.%${term}%,model.ilike.%${term}%`);
   }
-  return getStaticFallbackProducts();
+  const sorts = { name_asc: ['name', true], name_desc: ['name', false], price_asc: ['price', true], price_desc: ['price', false] };
+  const [sortColumn, ascending] = sorts[filters.sort] || ['id', false];
+  query = query.order(sortColumn, { ascending });
+  if (sortColumn !== 'id') query = query.order('id', { ascending: true });
+  const { data, error, count } = await query.range((page - 1) * pageSize, page * pageSize - 1);
+  if (error) throw error;
+  return { products: mapSupabaseProductRows(data || []), count: count || 0, source: 'live' };
+}
+
+async function fetchPublicBrands() {
+  if (!dbClient) throw new Error('Catalogue connection unavailable');
+  const { data, error } = await dbClient.from('catalogue_products').select('brand').order('brand').limit(1000);
+  if (error) throw error;
+  return [...new Set((data || []).map(row => row.brand).filter(Boolean))];
+}
+
+async function fetchPublishedSiteContent() {
+  if (!dbClient) throw new Error('Site content connection unavailable');
+  const { data, error } = await dbClient.from('site_content').select('published,published_at').eq('id', 'main').single();
+  if (error) throw error;
+  return data;
+}
+
+async function fetchEditableSiteContent() {
+  if (!dbClient) throw new Error('Site content connection unavailable');
+  const { data, error } = await dbClient.from('site_content').select('*').eq('id', 'main').single();
+  if (error) throw error;
+  return data;
+}
+
+async function saveSiteContentDraft(draft) {
+  if (!dbClient) throw new Error('Site content connection unavailable');
+  const { error } = await dbClient.from('site_content').update({ draft }).eq('id', 'main');
+  if (error) throw error;
+}
+
+async function publishSiteContent() {
+  if (!dbClient) throw new Error('Site content connection unavailable');
+  const { error } = await dbClient.rpc('publish_site_content');
+  if (error) throw error;
+}
+
+async function restoreSiteContent() {
+  if (!dbClient) throw new Error('Site content connection unavailable');
+  const { error } = await dbClient.rpc('restore_site_content');
+  if (error) throw error;
+}
+
+async function isSiteAdmin() {
+  if (!dbClient) return false;
+  const { data, error } = await dbClient.from('site_admins').select('user_id').limit(1);
+  return !error && Array.isArray(data) && data.length > 0;
 }
 
 async function upsertProductsToDB(records) {
   if (!dbClient) throw new Error('Database is not connected.');
   if (!Array.isArray(records) || !records.length) throw new Error('No validated product rows were provided.');
 
-  const { data, error } = await dbClient.from('products').upsert(records).select('id');
+  // Imports without an explicit, reviewed approval always unpublish touched rows.
+  const safeRecords = records.map(record => ({ ...record, is_approved: record.is_approved === true }));
+  const { data, error } = await dbClient.from('products').upsert(safeRecords).select('id');
   if (error) throw error;
   if (!Array.isArray(data) || data.length !== records.length) {
     throw new Error(`Database confirmed ${data ? data.length : 0} of ${records.length} imported products.`);
@@ -207,7 +253,7 @@ async function updateProductImagesInDB(ids, imageUrl) {
 
   const { data, error } = await dbClient
     .from('products')
-    .update({ image: imageUrl })
+    .update({ image: imageUrl, is_approved: false })
     .in('id', ids)
     .select('id');
   if (error) throw error;
@@ -230,16 +276,30 @@ async function uploadProductImageToStorage(file) {
   if (!dbClient) {
     throw new Error('Supabase client is not connected.');
   }
-
-  const fileExt = file.name.split('.').pop();
-  const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
+  if (!file || file.size < 12 || file.size > 5 * 1024 * 1024) throw new Error('Use an image under 5 MB.');
+  const formats = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
+  const fileExt = formats[file.type];
+  if (!fileExt) throw new Error('Only JPEG, PNG and WebP images are supported.');
+  const bytes = new Uint8Array(await file.slice(0, 12).arrayBuffer());
+  const jpeg = bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+  const png = bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47;
+  const webp = String.fromCharCode(...bytes.slice(0, 4)) === 'RIFF' && String.fromCharCode(...bytes.slice(8, 12)) === 'WEBP';
+  if (!(fileExt === 'jpg' && jpeg || fileExt === 'png' && png || fileExt === 'webp' && webp)) throw new Error('Image file type does not match its contents.');
+  if (typeof createImageBitmap === 'function') {
+    const bitmap = await createImageBitmap(file);
+    const tooLarge = bitmap.width > 5000 || bitmap.height > 5000;
+    bitmap.close();
+    if (tooLarge) throw new Error('Image dimensions must be 5000px or smaller.');
+  }
+  const fileName = `${Date.now()}_${crypto.randomUUID()}.${fileExt}`;
   const filePath = `uploads/${fileName}`;
 
   const { data, error } = await dbClient.storage
     .from('product-images')
     .upload(filePath, file, {
       cacheControl: '3600',
-      upsert: true
+      upsert: false,
+      contentType: file.type
     });
 
   if (error) {
