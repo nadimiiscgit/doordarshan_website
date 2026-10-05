@@ -18,7 +18,8 @@ Updated 5 October 2026. Checked items mean implemented **in this branch**, not d
 - [ ] Audit and approve each public product: model, imagery, description, highlights, specifications and genuine rates. Current stock-summary CSVs do not carry rate fields. Do not treat old placeholder prices or brand logos as verified.
 - [ ] Add real showroom/category images and publish Site Content. Refresh and review the sanitized snapshot after product approval. Its initial empty state is intentional.
 - [ ] Run browser/device and Vercel preview smoke tests, including console, images, redirects, headers, draft/publish/restore, WhatsApp and calls. Browser preview was unavailable in the current sandbox.
-- [ ] Configure and verify GitHub required status checks, pull-request requirement and no-direct-push protection on `main`; CI alone cannot prevent merging a failure. Verify with a failing test PR.
+- [x] Configure GitHub `main` protection to require pull requests and the CI status check, with bypass disabled (including administrators). Separate review approval is not required.
+- [ ] Verify the protection blocks a pull request when its CI check fails.
 - [ ] Review a public shareable Vercel preview, merge **one** chosen site version, then point/verify the single production domain. Keep a rollback deployment. Do not combine the old main design with this branch's design.
 
 ## Follow-up hardening
