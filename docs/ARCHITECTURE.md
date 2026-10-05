@@ -1,222 +1,35 @@
-# ARCHITECTURE.md — Current Website Architecture
+# Architecture — branch implementation
 
-> Updated 30 September 2026 from the code currently present in the repository. This document describes the implementation that is actually served, not the earlier intended shared-runtime design.
+This describes the repository as of 5 October 2026. It does not claim the redesigned branch is deployed.
 
-## Executive summary
-
-The project is a static Vercel site with three different browser runtimes:
-
-1. `index.html` is a generated homepage snapshot with inline carousel/search controllers.
-2. `category.html` and `product.html` are separate inline-script catalogue views that load Supabase and the static product catalogue.
-3. `admin.html` is a large inline-script administration application using Supabase Auth.
-
-The files `js/main.js`, `js/cart.js`, and `js/i18n.js` describe an older shared-runtime design, but none of the current HTML entry points references them. `css/style.css` is likewise not referenced by the current HTML pages.
-
-## Runtime map
+## Runtime
 
 ```text
-                           Vercel static hosting
-                                    │
-                 ┌──────────────────┼──────────────────┐
-                 │                  │                  │
-             index.html        category.html        product.html
-           generated snapshot   inline catalogue     inline detail view
-           + inline scripts     + Supabase           + Supabase
-                 │                  │                  │
-                 │                  └────────┬─────────┘
-                 │                           │
-                 │                   supabase-config.js
-                 │                           │
-                 │                  products-data.js fallback
-                 │
-                 └────────────── no shared live catalogue runtime
+Vercel static routes → index / category / product / store HTML
+                    → css/site.css + js/site.js
+                    → js/supabase-config.js → Supabase public catalogue_products projection
+                                             ↘ data/catalog-snapshot.json on error only
 
-                              admin.html
-                                  │
-                         Supabase Auth session
-                                  │
-                  products / categories / Storage mutations
+admin.html → Supabase Auth + site_admins allowlist (after SQL rollout)
+           → products / categories / site_content / product-images Storage
 ```
 
-## Active page inventory
+The public HTML is hand-authored and intentionally has no checkout/cart or promotional banners. `about.html` and `contact.html` redirect to `store.html`; Vercel also rewrites `/about`, `/contact`, `/support`, and `/store` to the store page. Other legacy category/product rewrites remain in `vercel.json`.
 
-| Page | Active implementation | Data source | Current limitations |
-|---|---|---|---|
-| `index.html` | Generated HTML plus inline scripts | Embedded snapshot and assets; no live product query | Product tiles contain contact prompts rather than snapshot prices/stock; names, imagery, product claims, and featured lists can still drift |
-| `category.html` | Inline filtering/rendering script | Static fallback followed by Supabase refresh | Loads all products; no pagination; fallback prices/stock are suppressed |
-| `product.html` | Inline product detail script | Static fallback followed by Supabase refresh | Unknown IDs/slugs show not-found UI; static hosting may still return HTTP 200; fallback prices/stock are suppressed |
-| `admin.html` | Inline admin application plus CSV UI module | Supabase Auth, Postgres, Storage | Large unbundled file; authorization depends on deployed RLS |
-| `about.html` / `contact.html` | Static HTML | None | Mostly informational/WhatsApp contact pages |
+## Data contracts
 
-## Catalogue data flow
+- `products`: admin-only CRUD; added `is_approved` defaults false. A trigger copies approved rows into `catalogue_products` and deletes them from that projection when unapproved or deleted. Public clients have no base-table grant. The projection contains no stock, ratings, reviews or MRP. Valid empty query results remain empty. Product cards link to `product.html?id=<id>`; old slug URLs are resolved by paging approved products and exact slug comparison.
+- `categories`: admin-managed name, key, description, icon and optional image. Public read; default categories are only a connection fallback, not an override of a valid empty result.
+- `site_admins`: SQL-managed Auth UUID allowlist, not browser metadata. Admin UI checks it after sign-in; RLS is the actual write boundary.
+- `site_content`: singleton `main` row with published, draft, previous JSON and a version. The admin saves draft, previews in the same browser using local storage, publishes atomically via a security-invoker RPC, or restores the immediately previous version. Published content holds homepage copy, store introduction/address, contact numbers, showroom image and curated product ID lists. There is only one-level restore, not full revision history.
+- `product-images` Storage: admin-uploaded product, category and showroom images. Public reads; image URLs must be HTTPS. The browser checks MIME/signature, size and dimensions before upload; Storage policies must be verified remotely.
 
-```text
-category.html or product.html loads
-             │
-             ▼
-      products-data.js
-      static PRODUCTS[]
-             │
-             ├── Render immediately from local data
-             │
-             └── fetchProductsFromDB()
-                    │
-                    ├── Supabase returns rows
-                    │       └── map DB fields to frontend fields
-                    │           replace PRODUCTS[] in memory
-                    │
-                    └── Error, empty result, or missing client
-                            └── retain static fallback
-```
+## Public catalogue and fallback
 
-The fallback improves availability but is not an inventory synchronization mechanism. Rows are tagged `_catalogSource: 'static-fallback'`; category and product pages suppress their price/availability fields and ask visitors to contact the store. The homepage is an independent static snapshot with contact prompts instead of baked-in prices/stock; it is still not a live catalogue feed.
+The catalogue performs server-side category/brand/search/sort/range filtering on the approved-only projection with a 12-item page. Brand options are loaded from at most 1,000 public brand rows; a larger catalogue needs a dedicated facets query. The homepage loads up to four IDs per curated section. Product details load by ID and show at most four related products. Prices display only for valid live values and always ask for confirmation.
 
-The current database query uses `select('*')` and retrieves the complete product table. Filtering and sorting happen in the browser. There is no pagination, query limit, cache layer, timeout, or server-side filtering.
+Only a network/API error invokes `data/catalog-snapshot.json`. The snapshot generator strips price, stock, MRP, rating and reviews. The initial snapshot is empty. The read-only Action compares the live approved set against the checked-in snapshot and reports drift by failing; it needs the GitHub `SUPABASE_URL` variable and `SUPABASE_ANON_KEY` secret. GitHub schedules run only from the default branch, so its weekly schedule is not active while this workflow exists only on `vijay-sales-theme`. Refresh is a manual, reviewed `--write` operation. This is not a database backup. Snapshot prices are never shown. Offline category data still comes from the built-in category fallback if the category API is unavailable.
 
-## Category page flow
+## Boundaries and known limits
 
-`category.html` reads `cat`, `sub`, and `q` from the query string. It then applies category, search, brand, size, type, price, offer, and stock filters in browser memory.
-
-Current caveats:
-
-- The `brand` query parameter is not converted into an active brand filter.
-- Product cards use their own inline markup rather than a shared card component.
-- The page reports a product count but does not paginate.
-- Price/stock filters operate only on live Supabase rows; fallback values are not presented as current.
-
-## Product detail flow
-
-```text
-product.html?id=<number> or /product/<slug>
-             │
-             ▼
-   static PRODUCTS[] lookup
-             │
-             ├── exact ID lookup
-             ├── exact slug lookup
-             └── not-found UI when no record matches
-                     │
-                     ▼
-              renderProduct()
-                     │
-                     ├── show price/stock only for live Supabase rows
-                     ├── gallery and thumbnails
-                     ├── highlights and specifications
-                     ├── related products
-                     └── WhatsApp enquiry and phone-call links
-```
-
-The page no longer falls back to the first product or uses fuzzy slug matching. Its not-found UI is client-rendered; a static Vercel rewrite may still serve HTTP 200 unless separately configured.
-
-Product detail pages do not currently load `cart.js`; the primary action is WhatsApp rather than an internal cart/checkout flow.
-
-## Admin flow
-
-```text
-admin.html loads
-       │
-       ▼
-getAdminSession()
-       │
-       ├── session exists → load admin application
-       └── no session → show Supabase Auth login
-
-Authenticated admin actions:
-       ├── fetch products/categories
-       ├── upsert/delete products
-       ├── upsert categories
-       ├── upload files to product-images Storage
-       ├── bulk-update product image URLs
-       ├── preview/validate CSV with `js/csv-import.js` and `js/admin-csv-ui.js`
-       ├── import catalog rows or stock-only updates through DB helpers
-       ├── export quoted CSV
-       └── update current Auth user's password
-```
-
-The browser session check only controls the UI. Supabase RLS and Storage policies must be the final authorization boundary. The current policy blueprint grants write access to the broad `authenticated` role; it does not establish an admin-only role.
-
-Admin product loading is strict: it does not substitute the static catalogue after an error. Product mutations check for a loaded live catalogue and an active Auth session, and report database-confirmed results. This client guard is not a replacement for RLS.
-
-## Supabase integration
-
-The active helper is `js/supabase-config.js`.
-
-### Active functions
-
-- `signInAdminWithAuth(email, password)`
-- `signOutAdmin()`
-- `getAdminSession()`
-- `updateAdminPasswordInDB(_, newPassword)` — the first argument is currently unused
-- `fetchCategoriesFromDB()`
-- `saveCategoryToDB(categoryObj)`
-- `fetchProductsFromDB({ allowFallback })` — public pages may receive tagged static fallback rows; admin requests strict live data.
-- `upsertProductsToDB()`, `updateProductStocksInDB()`, `updateProductImagesInDB()`, `deleteProductFromDB()` — verify database-returned rows.
-- `uploadProductImageToStorage(file)`
-
-### Product mapping
-
-Database fields are mapped as follows:
-
-| Database field | Browser field |
-|---|---|
-| `is_new` | `isNew` |
-| `is_featured` | `isFeatured` |
-| `description` | `description` |
-| `images` | `images` |
-| `price`, `mrp`, `stock`, `size` | numeric browser values; current only when `_catalogSource === 'supabase'` |
-
-The mapping should be formalized in one schema module. Renderers accept legacy `desc` as a description fallback, and product galleries use `image` when `images` is missing or empty.
-
-## CSV import
-
-`admin.html` loads `js/csv-import.js` and `js/admin-csv-ui.js`. The first parses common CSV headers and creates a pure validation plan; the second renders a text-only row preview, requires a live catalogue/admin session, and calls the Supabase data helpers. Files are capped at 5 MB and 1,000 data rows.
-
-The checked-in stock-summary CSVs contain names and quantities, not sale rates or MRP. Their row serials are not database IDs. Stock-only imports update stock only, and only when the product name/model has one exact match; ambiguous/unmatched rows are blocked. A rate-bearing file (e.g. a `Rate`, `Selling Price`, or `Price` column) is required to update prices.
-
-## Orders and inventory
-
-There is no checkout or order service. The customer contacts the store by WhatsApp or phone; the store confirms price, availability, payment, delivery, installation, invoice, and warranty outside the site. A WhatsApp enquiry is not an order and does not reserve stock. `localStorage` cart state in the unwired legacy `Cart` object is not authoritative.
-
-```text
-Browser product data
-       │
-       ▼
-WhatsApp enquiry or phone call
-       │
-       ▼
-Manual store confirmation
-       │
-       └── payment, stock, delivery, installation, invoice, and warranty handled outside site
-```
-
-## Deployment
-
-```text
-Developer commit
-      │
-      ▼
-Git push to configured Vercel branch
-      │
-      ▼
-Vercel serves repository files as static assets
-      │
-      └── vercel.json supplies rewrites and security headers
-```
-
-There is no build step or staging environment documented in the repository. The deploy must therefore be treated as a direct production/static publish unless Vercel project settings provide otherwise.
-
-The GitHub Actions CI workflow runs on pull requests and checks secrets, architecture, JavaScript syntax, local HTML assets/Vercel JSON, and CSV tests. The repository currently has no branch protection/ruleset requiring the CI status, so a failed check does not automatically block merging. The separate scheduled Supabase workflow creates a weekly JSON catalogue snapshot; it does not compare that snapshot with the static catalogue. A future comparator should live in `scripts/` as Node code and run from GitHub Actions, not in HTML. Recommended cadence: weekly automated diff, plus admin review before any bulk catalogue import/publication.
-
-## Known architecture drift
-
-The following earlier assumptions are no longer true:
-
-- All pages do not share one script load order.
-- `main.js` is not the active homepage renderer.
-- `cart.js` is not wired into the current product detail flow.
-- `i18n.js` is not loaded by the current HTML entry points.
-- `style.css` is not the active shared stylesheet.
-- Login does not query `admin_users`; it uses Supabase Auth.
-- The homepage does not receive live product updates from Supabase.
-
-The next architectural step should be to choose one implementation direction: either wire the shared modules into every intended page or remove/archive the unused modules and make the inline/generated runtime the deliberate source of truth.
+This is a modular static site, not a server-rendered framework. It is sufficient for a local contact-first catalogue; individual product SEO, a large catalogue, accounts or checkout may justify a later framework migration. The public JS and data helper are distinct, and stable product IDs/routes ease migration. The admin remains inline-heavy and its legacy unused code should be retired separately. No online order, payment, stock reservation, invoice or order-status flow exists.
