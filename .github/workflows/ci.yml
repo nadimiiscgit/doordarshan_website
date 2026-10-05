@@ -1,0 +1,32 @@
+name: Website CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate-and-gate:
+    name: Security, Linting & Architecture Guardrails
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check JavaScript syntax
+        run: find js -type f -name '*.js' -print0 | xargs -0 -n1 node --check
+      - name: Validate Vercel configuration
+        run: node -e "JSON.parse(require('node:fs').readFileSync('vercel.json', 'utf8'))"
+      - name: Check core pages and assets exist
+        run: |
+          for file in index.html category.html product.html admin.html css/style.css js/supabase-config.js js/products-data.js js/cart.js js/i18n.js js/main.js; do
+            test -f "$file" || { echo "Missing $file"; exit 1; }
+          done
